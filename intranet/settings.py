@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 from decouple import config, Csv
 from dj_database_url import parse as dburl
+from authlib.django.client import OAuth
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -30,6 +31,29 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default=[], cast=Csv())
 
 AUTH_USER_MODEL = 'accounts.User'
+
+# OAuth Configuration
+
+oauth = OAuth()
+
+REDIRECT_URI = 'http://localhost:8000/auth/authorize'
+
+AUTHLIB_OAUTH_CLIENTS = {
+    'usp': {
+        'client_id': config('OAUTH_CLIENT_ID'),
+        'client_secret': config('OAUTH_CLIENT_SECRET')
+    }
+}
+
+oauth.register(
+    name='usp',
+    request_token_url=config('REQUEST_TOKEN_URL'),
+    access_token_url=config('ACCESS_TOKEN_URL'),
+    authorize_url=config('AUTHORIZE_URL'),
+    api_base_url=config('API_BASE_URL')
+)
+
+USP_CLIENT = oauth
 
 # Application definition
 
