@@ -36,7 +36,7 @@ class TestAccountsLoginAuxiliar(TestCase):
     def setUp(self):
         user_data = '{"loginUsuario":"jameson", "nomeUsuário":"Thomas Jameson", "emailPrincipal":"test@test.com", "vinculo":[{"tipoVinculo":"SERVIDOR"}]}'
         self.data = json.loads(user_data)
-        
+
     def test_data_transform(self):
         mapper = {
             'loginUsuario': 'login',
@@ -65,7 +65,7 @@ class TestAccountsLoginAuxiliar(TestCase):
         views.persist_user(user_data)
         self.assertTrue(User.objects.exists())
 
-    def test_already_exist_user(self):
+    def test_user_already_exist(self):
         """It must persist only users that not exists"""
         user_data = {
             'login': '5554477',

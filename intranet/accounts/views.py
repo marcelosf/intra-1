@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import login as auth_login
-from django.shortcuts import redirect, resolve_url as r
+from django.shortcuts import redirect, render, resolve_url as r
 from django.http import HttpResponse
 from intranet.accounts.models import User
 import json
@@ -19,7 +19,10 @@ def authorize(request):
     data = data_transform(profile, mapper())
     user = persist_user(data)
     log_user_in(request, user)
-    return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+    return redirect(r('accounts:user'))
+
+def user(request):
+    return render(request, 'user.html')
 
 def get_client():
     client = getattr(settings, 'USP_CLIENT', None)
