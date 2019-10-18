@@ -10,3 +10,13 @@ EMAIL_HOST_USER=
 EMAIL_HOST_PASSWORD=
 
 DEFAULT_FROM_EMAIL=intranet@test.com
+
+# OAuth configuration
+
+OAUTH_CLIENT_ID=Your_OAuth_Client_Id
+OAUTH_CLIENT_SECRET=Your_OAuth_Client_Secret
+
+REQUEST_TOKEN_URL=Your_Request_Token
+ACCESS_TOKEN_URL=Your_Token_Url
+AUTHORIZE_URL=Authorize_Url
+API_BASE_URL=Api_Base_url
