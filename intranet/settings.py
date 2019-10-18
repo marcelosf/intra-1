@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'test_without_migrations',
     'intranet.accounts',
+    'intranet.locals',
 ]
 
 MIDDLEWARE = [
