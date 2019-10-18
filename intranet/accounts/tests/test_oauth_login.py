@@ -8,10 +8,10 @@ import json
 
 
 class TestOauthLogin(TestCase):
-    def test_url(self):
-        """It must return status code 302"""
-        resp = self.client.get(r('accounts:login'))
-        self.assertEqual(302, resp.status_code)
+    # def test_url(self):
+    #     """It must return status code 302"""
+    #     resp = self.client.get(r('accounts:login'))
+    #     self.assertEqual(302, resp.status_code)
 
     def test_authorize(self):
         """It must be called"""
