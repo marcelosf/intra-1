@@ -22,7 +22,8 @@ def authorize(request):
     return redirect(r('accounts:user'))
 
 def user(request):
-    return render(request, 'user.html')
+    user = request.user
+    return render(request, 'user.html', {'user': user})
 
 def get_client():
     client = getattr(settings, 'USP_CLIENT', None)
