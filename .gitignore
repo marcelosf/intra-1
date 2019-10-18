@@ -2,3 +2,6 @@
 .intranet
 *.sqlite3
 __pycache__
+.ipynb*
+.vscode/
+*.ipynb
