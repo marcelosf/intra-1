@@ -10,3 +10,13 @@ EMAIL_HOST_USER=
 EMAIL_HOST_PASSWORD=
 
 DEFAULT_FROM_EMAIL=intranet@test.com
+
+# OAuth configuration
+
+OAUTH_CLIENT_ID=OAuth_client_id
+OAUTH_CLIENT_SECRET=OAuth_Client_Secret
+
+REQUEST_TOKEN_URL=http://yourrequesttoquen.com/request/token
+ACCESS_TOKEN_URL=https://ypuraccesstoken.com/access_token
+AUTHORIZE_URL=https://yourauthorizetoken.com/authorize
+API_BASE_URL=https://yourapibaseurl.com/api
