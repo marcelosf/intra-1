@@ -1,0 +1,8 @@
+Um novo acesso foi solicitado:
+
+    De: {{ access.period_to|date:'d/m/Y' }}
+    Até: {{ access.period_from|date:'d/m/Y' }}
+
+    Para: {{ access.name }}
+
+    Responsável: {{ access.answerable }}

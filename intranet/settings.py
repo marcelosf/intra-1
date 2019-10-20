@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'test_without_migrations',
     'intranet.accounts',
     'intranet.locals',
+    'intranet.access',
 ]
 
 MIDDLEWARE = [
@@ -81,6 +82,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'intranet.urls'
+
+LOGIN_URL='/auth/login'
 
 TEMPLATES = [
     {
@@ -148,3 +151,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+#Email configuration
+EMAIL_BACKEND = config('EMAIL_BACKEND')
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
