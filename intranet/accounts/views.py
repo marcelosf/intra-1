@@ -7,6 +7,7 @@ import json
 
 
 def login(request):
+    request.session['next'] = request.GET['next']
     usp = get_client()
     redirect_uri = request.build_absolute_uri(r('accounts:authorize'))
     return usp.authorize_redirect(request, redirect_uri)
@@ -19,7 +20,8 @@ def authorize(request):
     data = data_transform(profile, mapper())
     user = persist_user(data)
     log_user_in(request, user)
-    return redirect(r('accounts:user'))
+    path = path_redirect(request)
+    return redirect(path)
 
 def user(request):
     user = request.user
@@ -60,3 +62,8 @@ def mapper():
         'wsuserid': 'wsuserid',
         'vinculo': 'bond'
     }
+
+def path_redirect(request):
+    if (request.session['next']):
+        return request.session['next']
+    return r('accounts:user')

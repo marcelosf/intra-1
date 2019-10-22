@@ -115,3 +115,12 @@ class TestAccessNewPostInvalid(TestCase):
 
     def test_dont_save_access(self):
         self.assertFalse(Access.objects.exists())
+
+
+class TestAccessNewAnonimous(TestCase):
+    def setUp(self):
+        self.resp = self.client.get(r('access:new'))
+    
+    def test_redirect(self):
+        """Status code must be 302"""
+        self.assertEqual(302, self.resp.status_code)
