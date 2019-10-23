@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth import logout
 from django.contrib.auth import login as auth_login
 from django.shortcuts import redirect, render, resolve_url as r
 from django.http import HttpResponse
@@ -7,6 +8,8 @@ import json
 
 
 def login(request):
+    if(request.user.is_authenticated):
+        return redirect(r('accounts:user'))
     request.session['next'] = request.GET['next']
     usp = get_client()
     redirect_uri = request.build_absolute_uri(r('accounts:authorize'))
@@ -22,6 +25,10 @@ def authorize(request):
     log_user_in(request, user)
     path = path_redirect(request)
     return redirect(path)
+
+def logout_view(request):
+    logout(request)
+    return HttpResponse()
 
 def user(request):
     user = request.user

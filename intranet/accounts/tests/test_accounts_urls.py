@@ -43,3 +43,4 @@ class TestAccountsUrls(TestCase):
         for item in words:
             with self.subTest():
                 self.assertContains(self.resp, item)
+
