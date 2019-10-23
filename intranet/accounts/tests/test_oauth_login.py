@@ -29,10 +29,10 @@ class TestOauthLogin(TestCase):
             'main_email': 'thomas@test.com',
             'bond': "[{'tipoVinculo': 'SERVIDOR'}]"
         }
-        user = views.persist_user(user_data)
-        return user
+        
+        return user_data
 
-class TestAccountsLoginAuxiliar(TestCase):
+class TestAccountsLoginHelpers(TestCase):
     def setUp(self):
         user_data = '{"loginUsuario":"jameson", "nomeUsuário":"Thomas Jameson", "emailPrincipal":"test@test.com", "vinculo":[{"tipoVinculo":"SERVIDOR"}]}'
         self.data = json.loads(user_data)
