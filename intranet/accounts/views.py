@@ -31,6 +31,8 @@ def logout_view(request):
     return HttpResponse()
 
 def user(request):
+    if not (request.user.is_authenticated):
+        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
     user = request.user
     return render(request, 'user.html', {'user': user})
 
@@ -72,5 +74,5 @@ def mapper():
 
 def path_redirect(request):
     if (request.session['next']):
-        return request.session['next']
+        return request.session.pop('next')
     return r('accounts:user')

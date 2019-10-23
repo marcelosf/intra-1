@@ -44,3 +44,10 @@ class TestAccountsUrls(TestCase):
             with self.subTest():
                 self.assertContains(self.resp, item)
 
+
+
+class TestAccountsUrlLoggedOut(TestCase):
+    def test_user_url(self):
+        """User must be logged in to access user url"""
+        resp = self.client.get(r('accounts:user'))
+        self.assertEqual(302, resp.status_code)
