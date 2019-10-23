@@ -97,6 +97,10 @@ class TestAccessNewPostValid(TestCase):
         """Must show status message"""
         self.assertContains(self.resp, 'Solicitação enviada com sucesso.')
 
+    def test_relation(self):
+        expected = Access.objects.get(pk=1)
+        self.assertEqual(expected.created_by.login, 'Marc')
+
 
 class TestAccessNewPostInvalid(TestCase):
     def setUp(self):
