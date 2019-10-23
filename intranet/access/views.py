@@ -23,6 +23,8 @@ def create(request):
         return render(request, 'access/access_form.html', {'form': form})
 
     access = Access.objects.create(**form.cleaned_data)
+    request.user.access_set.add(access)
+
     _send_email({'access': access})
     messages.success(request, 'Solicitação enviada com sucesso.')
 
