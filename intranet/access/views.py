@@ -30,6 +30,12 @@ def create(request):
 
     return empty_form(request)
 
+def detail(request, slug):
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+    access = Access.objects.get(uuid=slug)
+    context = {'access': access}
+    return render(request, 'access/access_detail.html', context)
 
 def empty_form(request):
     return render(request, 'access/access_form.html', {'form': AccessForm()})

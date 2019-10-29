@@ -1,13 +1,14 @@
 from django.db import models
 from intranet.accounts.models import User
 from intranet.access.forms import form_choices
-
+import uuid
 
 class Access(models.Model):
     DOCS = form_choices.DOCS
     ANSWERABLE = form_choices.ANSWERABLE
     STATUS = form_choices.STATUS
 
+    uuid = models.UUIDField('uuid', default=uuid.uuid4, editable=False)
     enable = models.BooleanField('ativar', default=False)
     period_to = models.DateField('data de término')
     period_from = models.DateField('data de início')
