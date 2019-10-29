@@ -45,3 +45,8 @@ class TestAccessModel(TestCase):
         """Must have a created by attr"""
         self.assertIsInstance(self.obj.created_by, User)
 
+    def test_uuid_field(self):
+        """Access must have a uuid field"""
+        self.assertTrue(Access._meta.get_field('uuid'))
+
+

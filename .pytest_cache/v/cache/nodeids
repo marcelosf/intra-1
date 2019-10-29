@@ -1,0 +1,10 @@
+[
+  "intranet/access/tests/test_form_access.py::TestFormAccess::test_form_has_fields",
+  "intranet/accounts/tests/test_authlib_config.py::TestAuthlibConfig::test_authlib_oauth_clients",
+  "intranet/accounts/tests/test_authlib_config.py::TestAuthlibConfig::test_oauth",
+  "intranet/accounts/tests/test_authlib_config.py::TestAuthlibConfig::test_redirect_uri",
+  "intranet/core/tests/test_core_views.py::TestCoreViews::test_has_nav_bar",
+  "intranet/core/tests/test_core_views.py::TestCoreViews::test_template",
+  "intranet/core/tests/test_core_views.py::TestCoreViews::test_template_inheritance",
+  "intranet/core/tests/test_core_views.py::TestCoreViews::test_url"
+]

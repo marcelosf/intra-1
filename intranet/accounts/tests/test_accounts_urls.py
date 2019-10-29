@@ -22,17 +22,6 @@ class TestAccountsUrls(TestCase):
     def test_template(self):
         self.assertTemplateUsed(self.resp, 'user.html')
 
-    def test_html(self):
-        words = (
-            ('Nome'),
-            ('Número USP'),
-            ('Email')
-        )
-
-        for item in words:
-            with self.subTest():
-                self.assertContains(self.resp, item)
-
     def test_content(self):
         words = (
             ('Marc Thompson'),
