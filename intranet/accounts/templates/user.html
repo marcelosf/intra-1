@@ -1,3 +1,27 @@
-<p>Nome: {{ user.get_full_name }}</p>
-<p>Número USP: {{ user.login }}</p>
-<p>Email: {{ user.main_email }}</p>
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+        <h4>Usuário</h4>
+    <div class="row">
+        <div class="col s12 m6">
+            <ul class="collection">
+                <li class="collection-item avatar">
+                    <i class="material-icons circle">account_circle</i>
+                    <span class="title">{{ user.get_full_name }}</span>
+                </li>
+                <li class="collection-item avatar">
+                    <i class="material-icons circle">credit_card</i>
+                    <span class="title">{{ user.login }}</span>
+                </li>
+                <li class="collection-item avatar">
+                    <i class="material-icons circle">mail_outline</i>
+                    <span class="title">{{ user.main_email }}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
