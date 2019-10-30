@@ -10,3 +10,4 @@ staticfiles
 *.ipynb
 .ipynb*
 .pytest*
+
