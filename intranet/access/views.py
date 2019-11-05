@@ -15,7 +15,6 @@ def new(request):
 
     return empty_form(request)
 
-
 def create(request):
     form = AccessForm(request.POST)
 
@@ -37,9 +36,12 @@ def detail(request, slug):
     context = {'access': access}
     return render(request, 'access/access_detail.html', context)
 
+def report_list(request):
+    access = Access.objects.all()
+    return render(request, 'access/report_list.html', {'list': access})
+
 def empty_form(request):
     return render(request, 'access/access_form.html', {'form': AccessForm()})
-
 
 def _send_email(context):
     subject = '[IAG-INTRANET] Solicitação de acesso'

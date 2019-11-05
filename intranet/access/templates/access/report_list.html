@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+
+    <h4>Lista de acessos</h4>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Instituição</th>
+                <th>Período</th>
+                <th>Autorização</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in list %}
+                <tr>
+                    <td>{{ row.name }}</td>
+                    <td>{{ row.institution }}</td>
+                    <td>{{ row.period_from|date:'d/m/Y' }} - {{ row.period_to|date:'d/m/Y' }}</td>
+                    <td>{{ row.enable }}</tr>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>    
+{% endblock content %}
