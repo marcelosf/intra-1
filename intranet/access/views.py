@@ -5,6 +5,8 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from intranet.access.forms.forms import AccessForm
 from intranet.access.models import Access
+from intranet.access.filters import AccessFilter
+
 
 
 def new(request):
@@ -37,7 +39,8 @@ def detail(request, slug):
     return render(request, 'access/access_detail.html', context)
 
 def report_list(request):
-    access = Access.objects.all()
+    access = AccessFilter(request.GET, queryset=Access.objects.all())
+    # access = Access.objects.all()
     return render(request, 'access/report_list.html', {'list': access})
 
 def empty_form(request):

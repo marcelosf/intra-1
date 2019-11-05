@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'test_without_migrations',
+    'django_filters',
     'intranet.core',
     'intranet.accounts',
     'intranet.locals',

@@ -5,6 +5,19 @@
 
     <h4>Lista de acessos</h4>
 
+    <form action="" method="get">
+        <div class="row">
+            <div class="col s12 m4">
+                <div class="input-field">
+                    {{ list.form.name.erros }}
+                    {{ list.form.name }}
+                    {{ list.form.name.label_tag }}
+                </div>
+            </div>
+        </div>
+        <button class="btn waves-effect" type="submit">Enviar</button>
+    </form>
+
     <table>
         <thead>
             <tr>
@@ -15,7 +28,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for row in list %}
+            {% for row in list.qs %}
                 <tr>
                     <td>{{ row.name }}</td>
                     <td>{{ row.institution }}</td>
