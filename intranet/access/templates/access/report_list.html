@@ -7,11 +7,34 @@
 
     <form action="" method="get">
         <div class="row">
-            <div class="col s12 m4">
+            <div class="col s12 m3">
                 <div class="input-field">
                     {{ list.form.name.erros }}
                     {{ list.form.name }}
                     {{ list.form.name.label_tag }}
+                </div>
+            </div>    
+            <div class="col s12 m3">
+                <div class="input-field">
+                    {{ list.form.period_from.erros }}
+                    {{ list.form.period_from }}
+                    {{ list.form.period_from.label_tag }}
+                </div>
+            </div>
+            <div class="col s12 m3">
+                <div class="input-field">
+                    {{ list.form.period_to.erros }}
+                    {{ list.form.period_to }}
+                    {{ list.form.period_to.label_tag }}
+                </div>
+            </div>
+            <div class="col s12 m3">
+                <div class="input-field">
+                    {{ list.form.enable.erros }}
+                    <label>
+                        {{ list.form.enable }}
+                        <span>{{ list.form.enable.label }}</span>
+                    </label>
                 </div>
             </div>
         </div>

@@ -23,6 +23,13 @@ class AccessListViewTest(TestCase):
         form = self.resp.context
         self.assertIn('list', form)
 
+    def test_filter(self):
+        content = ['name', 'period_to', 'period_from', 'enable']
+
+        for expected in content:
+            with self.subTest():
+                self.assertContains(self.resp, expected)
+
 
 
 
