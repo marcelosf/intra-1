@@ -57,9 +57,15 @@
                     <td>{{ row.name }}</td>
                     <td>{{ row.institution }}</td>
                     <td>{{ row.period_from|date:'d/m/Y' }} - {{ row.period_to|date:'d/m/Y' }}</td>
-                    <td>{{ row.enable }}</td>
                     <td>
-                        <a class="btn waves-effect" href="{{ row.get_absolute_url }}">
+                        {% if row.enable %}
+                            <i class="material-icons teal-text text-accent-4">check_circle</i>
+                        {% else %}
+                            <i class="material-icons red-text">not_interested</i>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a class="btn btn-flat waves-effect" href="{{ row.get_absolute_url }}">
                             <i class="small material-icons">search</i>
                         </a>
                     </td>
