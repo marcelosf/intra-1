@@ -41,13 +41,14 @@
         <button class="btn waves-effect" type="submit">Enviar</button>
     </form>
 
-    <table>
+    <table class="highlight">
         <thead>
             <tr>
                 <th>Nome</th>
                 <th>Instituição</th>
                 <th>Período</th>
                 <th>Autorização</th>
+                <th>Detalhar</th>
             </tr>
         </thead>
         <tbody>
@@ -56,7 +57,12 @@
                     <td>{{ row.name }}</td>
                     <td>{{ row.institution }}</td>
                     <td>{{ row.period_from|date:'d/m/Y' }} - {{ row.period_to|date:'d/m/Y' }}</td>
-                    <td>{{ row.enable }}</tr>
+                    <td>{{ row.enable }}</td>
+                    <td>
+                        <a class="btn waves-effect" href="{{ row.get_absolute_url }}">
+                            <i class="small material-icons">search</i>
+                        </a>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

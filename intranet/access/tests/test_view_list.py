@@ -13,7 +13,7 @@ class AccessListViewTest(TestCase):
         self.assertTemplateUsed(self.resp, 'access/report_list.html')
 
     def test_html(self):
-        content = ['Nome', 'Instituição', 'Período', 'Autorização']
+        content = ['Nome', 'Instituição', 'Período', 'Autorização', 'Detalhar']
 
         for expected in content:
             with self.subTest():
