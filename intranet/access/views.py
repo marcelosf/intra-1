@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core import mail
+from django.core.paginator import Paginator
 from django.conf import settings
 from django.template.loader import render_to_string
 from intranet.access.forms.forms import AccessForm
 from intranet.access.models import Access
 from intranet.access.filters import AccessFilter
+from intranet.access.filters import PERPAGE
 
 
 def new(request):
@@ -39,7 +41,12 @@ def detail(request, slug):
 
 def report_list(request):
     access = AccessFilter(request.GET, queryset=Access.objects.all())
-    return render(request, 'access/report_list.html', {'list': access})
+    paginator = Paginator(access.qs, PERPAGE)
+    page = request.GET.get('page')
+    access._qs = paginator.get_page(page)
+    page_range = range(1, paginator.num_pages + 1)
+    page_list = list(page_range)
+    return render(request, 'access/report_list.html', {'list': access, 'page_list': page_list})
 
 def empty_form(request):
     return render(request, 'access/access_form.html', {'form': AccessForm()})

@@ -4,6 +4,7 @@ from django import forms
 from intranet.access.models import Access
 from intranet.access.forms.form_choices import STATUS
 
+PERPAGE = 10
 
 class AccessFilter(django_filters.FilterSet):
     name = django_filters.CharFilter(lookup_expr='icontains', label='Nome')

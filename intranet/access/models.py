@@ -6,7 +6,6 @@ import uuid
 
 
 
-
 class Access(models.Model):
     DOCS = form_choices.DOCS
     ANSWERABLE = form_choices.ANSWERABLE
