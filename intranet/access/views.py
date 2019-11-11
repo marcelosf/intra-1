@@ -8,7 +8,6 @@ from intranet.access.models import Access
 from intranet.access.filters import AccessFilter
 
 
-
 def new(request):
     if not request.user.is_authenticated:
         return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
@@ -40,7 +39,6 @@ def detail(request, slug):
 
 def report_list(request):
     access = AccessFilter(request.GET, queryset=Access.objects.all())
-    # access = Access.objects.all()
     return render(request, 'access/report_list.html', {'list': access})
 
 def empty_form(request):

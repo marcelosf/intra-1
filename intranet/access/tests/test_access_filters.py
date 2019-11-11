@@ -4,7 +4,7 @@ from intranet.access.filters import AccessFilter
 
 class AccessFiltersTest(TestCase):
     def test_fields(self):
-        fields = ['name', 'period_from', 'period_to', 'enable']
+        fields = ['name', 'period_from', 'period_to', 'status']
         filter_fields = AccessFilter.Meta.fields
 
         for expected in fields:

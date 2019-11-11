@@ -24,7 +24,7 @@ class AccessListViewTest(TestCase):
         self.assertIn('list', form)
 
     def test_filter(self):
-        content = ['name', 'period_to', 'period_from', 'enable']
+        content = ['name', 'period_to', 'period_from', 'status']
 
         for expected in content:
             with self.subTest():
