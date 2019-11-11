@@ -2,6 +2,7 @@ from django.test import TestCase
 from intranet.accounts.models import User
 from intranet.access.models import Access
 from datetime import datetime
+from django.shortcuts import resolve_url as r
 
 
 class TestAccessModel(TestCase):
@@ -48,5 +49,13 @@ class TestAccessModel(TestCase):
     def test_uuid_field(self):
         """Access must have a uuid field"""
         self.assertTrue(Access._meta.get_field('uuid'))
+
+    def test_uuid_field_unique(self):
+        uuid_field = Access._meta.get_field('uuid')
+        self.assertTrue(uuid_field.unique)
+
+    def test_get_absolute_url(self):
+        url = r('access:access_detail', slug=self.obj.uuid)
+        self.assertEqual(url, self.obj.get_absolute_url())
 
 

@@ -10,8 +10,17 @@ ANSWERABLE = (
     ('Pessoa2', 'Pessoa2'),
 )
 
+
+AUTHORIZED = 'Autorizado'
+WAITING = 'Para autorização'
+NOT_ATHORIZED = 'Não authorizado'
+
+AUTHORIZED_ICON = 'check_circle'
+WAITING_ICON = 'access_time'
+NOT_ATHORIZED_ICON = 'not_interested'
+
 STATUS = (
-    ('Autorizado', 'Autorizado'),
-    ('Para autorização', 'Para autorização'),
-    ('Não autorizado', 'Não autorizado')
+    (AUTHORIZED, AUTHORIZED),
+    (WAITING, WAITING),
+    (NOT_ATHORIZED, NOT_ATHORIZED)
 )
