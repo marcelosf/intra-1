@@ -9,6 +9,7 @@ from intranet.access.models import Access
 from intranet.access.filters import AccessFilter
 from intranet.access.filters import PERPAGE
 from django_filters.views import FilterView
+from intranet.core.mixins import PaginatorMixin
 
 
 def new(request):
@@ -41,17 +42,24 @@ def detail(request, slug):
     return render(request, 'access/access_detail.html', context)
             
 def access_list(request):
-    access = AccessFilter(request.GET, queryset=Access.objects.all())
-    paginator = Paginator(access.qs, PERPAGE)
-    page = request.GET.get('page')
-    updateGET = request.GET.copy()
-    if page:
-        updateGET.pop('page')
-        request.GET = updateGET
-    access._qs = paginator.get_page(page)
-    page_range = range(1, paginator.num_pages + 1)
-    page_list = list(page_range)
-    return render(request, 'access/access_list.html', {'list': access, 'page_list': page_list})
+    paginator = PaginatorMixin(model=Access, filterset=AccessFilter, request=request)
+    paginator.set_per_page(PERPAGE)
+    pages = paginator.get_paginator()
+    context = {'list': pages['object_list'], 'page_list': pages['page_list']}
+    return render(pages['request'], 'access/access_list.html', context)
+
+# def access_list(request):
+#     access = AccessFilter(request.GET, queryset=Access.objects.all())
+#     paginator = Paginator(access.qs, PERPAGE)
+#     page = request.GET.get('page')
+#     updateGET = request.GET.copy()
+#     if page:
+#         updateGET.pop('page')
+#         request.GET = updateGET
+#     access._qs = paginator.get_page(page)
+#     page_range = range(1, paginator.num_pages + 1)
+#     page_list = list(page_range)
+#     return render(request, 'access/access_list.html', {'list': access, 'page_list': page_list})
 
 def empty_form(request):
     return render(request, 'access/access_form.html', {'form': AccessForm()})
