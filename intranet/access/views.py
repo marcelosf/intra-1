@@ -43,6 +43,10 @@ def report_list(request):
     access = AccessFilter(request.GET, queryset=Access.objects.all())
     paginator = Paginator(access.qs, PERPAGE)
     page = request.GET.get('page')
+    updateGET = request.GET.copy()
+    if page:
+        updateGET.pop('page')
+        request.GET = updateGET
     access._qs = paginator.get_page(page)
     page_range = range(1, paginator.num_pages + 1)
     page_list = list(page_range)

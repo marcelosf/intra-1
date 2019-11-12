@@ -5,7 +5,6 @@
 <div class="container">
 
     <h4>Lista de acessos</h4>
-    <h5>{{ request.GET.urlencode }}</h5>
 
     <form action="" method="get">
         <div class="row">
@@ -79,17 +78,17 @@
 
     <ul class="pagination">
         <li class="{% if not list.qs.has_previous %}disabled{% endif %}">
-            <a href="{% if list.qs.has_previous %}?{{ request.GET.urlencode }}page={{ list.qs.previous_page_number }}{% else %}#{% endif %}">
+            <a href="{% if list.qs.has_previous %}?{{ request.GET.urlencode }}&page={{ list.qs.previous_page_number }}{% else %}#{% endif %}">
                 <i class="material-icons">chevron_left</i>
             </a>
         </li>
         {% for item in page_list %}
             <li class="{% if forloop.counter == list.qs.number %}active{% else %}waves-effect{% endif %}">
-                <a href="?{{ request.GET.urlencode }}page={{ forloop.counter }}">{{ item }}</a>
+                <a href="?{{ request.GET.urlencode }}&page={{ forloop.counter }}">{{ item }}</a>
             </li>
         {% endfor %}
         <li class="{% if not list.qs.has_next %}disabled{% endif %}">
-            <a href="{% if list.qs.has_next %}?{{ request.GET.urlencode }}page={{ list.qs.next_page_number }}{% else %}#{% endif %}">
+            <a href="{% if list.qs.has_next %}?{{ request.GET.urlencode }}&page={{ list.qs.next_page_number }}{% else %}#{% endif %}">
                 <i class="material-icons">chevron_right</i>
             </a>
         </li>
