@@ -35,7 +35,7 @@ class AccessListViewTest(TestCase):
         self.assertEqual(200, self.resp.status_code)
 
     def test_template(self):
-        self.assertTemplateUsed(self.resp, 'access/report_list.html')
+        self.assertTemplateUsed(self.resp, 'access/access_list.html')
 
     def test_html(self):
         content = ['Nome', 'Instituição', 'Período', 'Autorização', 'Detalhar']
@@ -79,5 +79,6 @@ class AccessListViewTest(TestCase):
             with self.subTest():
                 self.assertContains(self.resp, expected, count)
 
-        
+    def test_include_pagination(self):
+        self.assertTemplateUsed(self.resp, 'pagination.html')
     
