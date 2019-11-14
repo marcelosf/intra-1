@@ -5,7 +5,7 @@ from intranet.access.models import Access
 from intranet.accounts.models import User
 
 
-class DetailViewTest(TestCase):
+class DetailViewLoggedInTest(TestCase):
     def setUp(self):
         user = User.objects.create_user('Marc','marc@email.com', 'marcpass')
         self.client.force_login(user)
@@ -33,6 +33,14 @@ class DetailViewTest(TestCase):
         for expected in content:
             with self.subTest():
                 self.assertContains(self.response, expected)
+
+    def test_theme(self):
+        """Template must be loaded"""
+        self.assertTemplateUsed(self.response, 'base.html')
+
+    def test_title(self):
+        """It must show the title"""
+        self.assertContains(self.response, 'Detalhes do acesso')
 
     def test_context(self):
         access = self.response.context['access']
@@ -63,6 +71,3 @@ class DetailViewTestLoggedOut(TestCase):
     def test_url(self):
         """User must be loged in to access details"""
         self.assertEqual(302, self.response.status_code)
-
-    
-
