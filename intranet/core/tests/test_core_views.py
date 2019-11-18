@@ -21,5 +21,10 @@ class TestCoreViews(TestCase):
     def test_has_nav_bar(self):
         """It must contain a nav bar"""
         self.assertContains(self.resp, '<nav')
+    
+    def test_access_link(self):
+        """It must contain a link to /access/"""
+        link = ('<a href="%s">' % r('access:access_list'))
+        self.assertContains(self.resp, link)
 
 
