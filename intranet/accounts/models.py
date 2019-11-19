@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseU
 from django.utils.translation import ugettext_lazy as _
 from intranet.accounts.managers import UserManager
 from django.core.mail import send_mail
+from django.conf import settings
+import json
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -19,8 +21,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(_("is active"))
     date_joined = models.DateTimeField(_("date joined"), auto_now_add=True)
 
+
     USERNAME_FIELD = 'login'
     REQUIRED_FIELDS = ['name', 'type', 'main_email']
+    ALLOWED_UNIDADES = settings.ALLOWED_UNIDADES
 
     class Meta:
         verbose_name = _('user')
@@ -37,3 +41,27 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def email_user(self, subject, message, from_email=None):
         send_mail(subject, message, from_email, [self.main_email])
+
+    def get_phone(self):
+        return self.formatted_phone
+
+    def is_servidor(self):
+        bound = self.get_bound()
+        for item in bound:
+            if item["tipoVinculo"] == 'SERVIDOR':
+                return True
+
+        return False
+
+    def unidade_is_allowed(self):
+        bound = self.get_bound()
+        for item in bound:
+            codigo_unidade = item["codigoUnidade"]
+            if codigo_unidade in self.ALLOWED_UNIDADES:
+                return True
+
+        return False
+
+    def get_bound(self):
+        bound = self.bound.replace("'", '"')
+        return json.loads(bound)

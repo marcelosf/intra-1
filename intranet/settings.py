@@ -32,6 +32,9 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default=[], cast=Csv())
 
 AUTH_USER_MODEL = 'accounts.User'
 
+"""Código das unidades que podem acessar o sistema"""
+ALLOWED_UNIDADES = config('ALLOWED_UNIDADES', default=[], cast=Csv())
+
 # OAuth Configuration
 
 oauth = OAuth()
