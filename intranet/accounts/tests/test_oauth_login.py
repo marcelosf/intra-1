@@ -8,11 +8,11 @@ import json
 
 
 class TestOauthLogin(TestCase):
-    # def test_url(self):
-    #     """It must return status code 302"""
-    #     resp = self.client.get(r('accounts:login'))
-    #     self.assertEqual(302, resp.status_code)
-
+    def test_unidade_not_allowed(self):
+        user = self.create_user()
+        resp = views.validate_allowed_unidade(user)
+        self.assertFalse(resp)
+    
     def test_authorize(self):
         """It must be called"""
         origin = views.authorize
@@ -22,15 +22,15 @@ class TestOauthLogin(TestCase):
         views.authorize = origin
 
     def create_user(self):
-        user_data = {
-            'login': '5554477',
-            'name': 'Thomas Fullstack Python',
-            'type': 'I',
-            'main_email': 'thomas@test.com',
-            'bond': "[{'tipoVinculo': 'SERVIDOR'}]"
-        }
-        
-        return user_data
+        user = User.objects.create_user(
+            login='5554477',
+            name='Thomas Fullstack Python',
+            type='I',
+            main_email='thomas@test.com'
+        )
+        user.bound="[{'tipoVinculo': 'SERVIDOR', 'codigoUnidade': 12}]"
+        return user
+
 
 class TestAccountsLoginHelpers(TestCase):
     def setUp(self):
