@@ -22,6 +22,8 @@ def authorize(request):
     profile = resp.json()
     data = data_transform(profile, mapper())
     user = persist_user(data)
+    if not validate_allowed_unidade(user):
+        pass
     log_user_in(request, user)
     path = path_redirect(request)
     return redirect(path)
@@ -35,6 +37,9 @@ def user(request):
         return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
     user = request.user
     return render(request, 'user.html', {'user': user})
+
+def validate_allowed_unidade(user):
+    return user.unidade_is_allowed()
 
 def get_client():
     client = getattr(settings, 'USP_CLIENT', None)
