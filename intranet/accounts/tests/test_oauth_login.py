@@ -21,6 +21,32 @@ class TestOauthLogin(TestCase):
         views.authorize.assert_called_with('request', key='value')
         views.authorize = origin
 
+    def test_update_user_if_alread_exists(self):
+        """User data must be updated if alread exists"""
+        user = dict(
+            login='5554477',
+            name='Thomas Fullstack Python', 
+            type='I', 
+            main_email='th@test.com'
+        )
+
+        self.create_user()
+        user, created = User.objects.update_or_create_user(**user)
+        self.assertFalse(created)
+
+    def test_update_user_if_not_exists(self):
+        """User must be creates if not exists"""
+        user = dict(
+            login='5554',
+            name='Thomas Fullstack Python', 
+            type='I', 
+            main_email='th@test.com'
+        )
+
+        self.create_user()
+        user, created = User.objects.update_or_create_user(**user)
+        self.assertTrue(created)    
+
     def create_user(self):
         user = User.objects.create_user(
             login='5554477',
@@ -30,7 +56,6 @@ class TestOauthLogin(TestCase):
         )
         user.bound="[{'tipoVinculo': 'SERVIDOR', 'codigoUnidade': 12}]"
         return user
-
 
 class TestAccountsLoginHelpers(TestCase):
     def setUp(self):
