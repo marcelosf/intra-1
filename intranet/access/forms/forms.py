@@ -5,6 +5,7 @@ from intranet.access.forms.form_choices import DOCS, ANSWERABLE, STATUS
 class AccessForm(forms.Form):
 
     enable = forms.BooleanField(label='Ativar', required=False)
+    status = forms.ChoiceField(label='status', choices=STATUS)
     period_to = forms.DateField(label='Data de término', widget=forms.TextInput(attrs={'type': 'date'}))
     period_from = forms.DateField(label='Data de início', widget=forms.TextInput(attrs={'type': 'date', 'class': 'validate'}))
     time_to = forms.TimeField(label='Horário de término', widget=forms.TimeInput(attrs={'type': 'time'}))

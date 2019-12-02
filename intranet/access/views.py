@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.core import mail
 from django.core.paginator import Paginator
 from django.conf import settings
 from django.template.loader import render_to_string
+from django.views.generic.edit import UpdateView
 from intranet.access.forms.forms import AccessForm
 from intranet.access.models import Access
 from intranet.access.filters import AccessFilter
@@ -34,6 +35,13 @@ def create(request):
 
     return empty_form(request)
 
+def access_edit(request, slug):
+    access = Access.objects.filter(uuid=slug).values()
+    form = AccessForm(access[0])
+    if not form.is_valid():
+        print('invalid form')
+    return render(request, 'access/access_edit.html', {'form': form})
+
 def detail(request, slug):
     if not request.user.is_authenticated:
         return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
@@ -57,4 +65,3 @@ def _send_email(context):
     to_email = 'intranet@mailinator.com'
     body = render_to_string('email/new_access.txt', context)
     mail.send_mail(subject, body, from_email, [to_email])
-

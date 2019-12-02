@@ -81,4 +81,3 @@ class AccessListViewTest(TestCase):
 
     def test_include_pagination(self):
         self.assertTemplateUsed(self.resp, 'pagination.html')
-    
