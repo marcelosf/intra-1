@@ -23,7 +23,6 @@ def new(request):
 
 def create(request):
     form = AccessForm(request.POST)
-
     if not form.is_valid():
         return render(request, 'access/access_form.html', {'form': form})
 
@@ -37,11 +36,9 @@ def create(request):
 
 def access_edit(request, slug):
     if request.method == 'POST':
-        _access_update(request)
+        return _access_update(request, slug)
     access = Access.objects.filter(uuid=slug).values()
     form = AccessForm(access[0])
-    if not form.is_valid():
-        print('invalid form')
     return render(request, 'access/access_edit.html', {'form': form})
 
 def detail(request, slug):
@@ -58,12 +55,21 @@ def access_list(request):
     context = {'list': pages['object_list'], 'page_list': pages['page_list']}
     return render(pages['request'], 'access/access_list.html', context)
 
-def _access_update(request):
+def _access_update(request, slug):
     form = AccessForm(request.POST)
     if not form.is_valid():
-        print('Invalid form')
-    access = Access(**form.cleaned_data)
+        return render(request, 'access/access_edit.html', {'form': form})
+    
+    access = Access.objects.get(uuid=slug)
+    access.period_from = form.cleaned_data['period_from']
+    access.period_to = form.cleaned_data['period_to']
+    access.time_from = form.cleaned_data['time_from']
+    access.time_to = form.cleaned_data['time_to']
+    access.status = form.cleaned_data['status']
+    access.enable = form.cleaned_data['enable']
+    
     access.save()
+    return render(request, 'access/access_edit.html', {'form': form})
 
 def empty_form(request):
     return render(request, 'access/access_form.html', {'form': AccessForm()})

@@ -8,7 +8,7 @@ from intranet.access.forms.forms import AccessForm
 class AccessViewEditGETTest(TestCase):
     def setUp(self):
         user = User.objects.create_user('Marc', 'marc@test.com', 'ktw123@777')
-        obj = Access(
+        self.obj = Access(
             enable=True,
             period_to='2019-12-12',
             period_from='2019-12-20',
@@ -25,9 +25,9 @@ class AccessViewEditGETTest(TestCase):
             observation='Observações',
             status='Para autorização',
         )
-        obj.save()
+        self.obj.save()
 
-        self.resp = self.client.get(r('access:access_edit', slug=obj.uuid))
+        self.resp = self.client.get(r('access:access_edit', slug=self.obj.uuid))
 
     def test_url(self):
         """Status code must be 200"""
@@ -43,6 +43,7 @@ class AccessViewEditGETTest(TestCase):
     
     def test_html(self):
         items = (
+            ('<form', 1),
             ('<select', 3),
             ('type="date"', 2),
             ('type="time"', 2),
@@ -87,18 +88,18 @@ class AccessViewEditGETTest(TestCase):
                 self.assertContains(self.resp, expected)
 
 
-class AccessViewEditUPDATETest(TestCase):
+class AccessViewEditValidPOSTTest(TestCase):
     def setUp(self):
         self.create_access()
         access = Access.objects.get(name='Marcelo')
         data = {
             'enable': True,
-            'period_to':'2019-12-12',
-            'period_from':'2019-12-20',
+            'period_to':'2019-12-30',
+            'period_from':'2019-12-12',
             'time_to':'13:13',
             'time_from':'20:20',
             'institution':'IAG',
-            'name':'Teslon',
+            'name':'Marcelo',
             'job':'Analista',
             'email':'marcelo@test.com',
             'phone':'11912345678',
@@ -110,14 +111,13 @@ class AccessViewEditUPDATETest(TestCase):
         }
 
         self.resp = self.client.post(r('access:access_edit', slug=str(access.uuid)), data)
-        self.access = Access.objects.first()
+        self.access = Access.objects.get(uuid=access.uuid)
 
     def test_update(self):
-        """Name must be Teslon"""
-        self.assertEqual('Teslon', self.access.name)
+        """Period To must be 2019-12-30"""
+        self.assertEqual('2019-12-30', self.access.period_to.strftime('%Y-%m-%d'))
 
     def create_access(self):
-        user = User.objects.create_user('Marc', 'marc@test.com', 'ktw123@777')
         obj = Access.objects.create(
             enable=True,
             period_to='2019-12-12',
@@ -135,4 +135,66 @@ class AccessViewEditUPDATETest(TestCase):
             observation='Observações',
             status='Para autorização',
         )
+
+
+class AccessViewEditInvalidPOSTTest(TestCase):
+    def setUp(self):
+        access = self.create_access()
+        self.resp = self.client.post(r('access:access_edit', slug=str(access.uuid)), {
+            'enable': True,
+            'period_to':'2019-12-30',
+            'period_from':'2019-12-12',
+            'time_to':'',
+            'time_from':'20:20',
+            'institution':'IAG',
+            'name':'Marcelo',
+            'job':'Analista',
+            'email':'marcelo@test.com',
+            'phone':'11912345678',
+            'doc_type':'RG',
+            'doc_number':'202000002',
+            'answerable':'Pessoa1',
+            'observation':'Observações',
+            'status':'Para autorização',
+        }
+    )
+    
+    def test_status_code(self):
+        """Status code must be 200"""
+        self.assertEqual(200, self.resp.status_code)
+
+    def test_errors(self):
+        """Form must has errors"""
+        form = self.resp.context['form']
+        self.assertGreater(len(form.errors.keys()), 0)
+
+    def test_show_errors(self):
+        """Form must show errors"""
+        form = self.resp.context['form']
+        errors = form.errors.values()
+
+        for expected in errors:
+            with self.subTest():
+                self.assertContains(self.resp, expected[0])
+
+    def create_access(self):
+        obj = Access.objects.create(
+            enable=True,
+            period_to='2019-12-12',
+            period_from='2019-12-20',
+            time_to='13:13',
+            time_from='20:20',
+            institution='IAG',
+            name='Marcelo',
+            job='Analista',
+            email='marcelo@test.com',
+            phone='11912345678',
+            doc_type='RG',
+            doc_number='202000002',
+            answerable='Pessoa1',
+            observation='Observações',
+            status='Para autorização',
+        )
+
+        return obj
 
