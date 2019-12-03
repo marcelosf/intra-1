@@ -23,4 +23,11 @@ class TestFormAccess(TestCase):
             'answerable',
             'observation',
         ]
-        self.assertEqual(fields, list(self.form.fields))
+
+        for expected in fields:
+            with self.subTest():
+                self.assertIn(expected, list(self.form.fields))
+
+    def test_status(self):
+        """Form must have status field"""
+        self.assertIn('status', list(self.form.fields))

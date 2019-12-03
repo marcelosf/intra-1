@@ -117,9 +117,16 @@ class TestAccessNewPostInvalid(TestCase):
         form = self.resp.context['form']
         self.assertTrue(form.errors)
 
+    def test_show_errors(self):
+        form = self.resp.context['form']
+        errors = form.errors.values()
+
+        for expected in errors:
+            with self.subTest():
+                self.assertContains(self.resp, expected[0])
+
     def test_dont_save_access(self):
         self.assertFalse(Access.objects.exists())
-
 
 class TestAccessNewAnonimous(TestCase):
     def setUp(self):
