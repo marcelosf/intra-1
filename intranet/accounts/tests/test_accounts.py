@@ -49,17 +49,17 @@ class TestAccount(TestCase):
         self.assertEqual('3334455', self.obj.get_phone())
     
     def test_is_servidor(self):
-        self.obj.bound = "[{'tipoVinculo': 'ALUNO'}, {'tipoVinculo': 'SERVIDOR'}]"
+        self.obj.bond = "[{'tipoVinculo': 'ALUNO'}, {'tipoVinculo': 'SERVIDOR'}]"
         self.assertTrue(self.obj.is_servidor())
 
     def test_is_servidor_not(self):
-        self.obj.bound = "[{'tipoVinculo': 'ALUNO'}, {'tipoVinculo': 'ALUNO'}]"
+        self.obj.bond = "[{'tipoVinculo': 'ALUNO'}, {'tipoVinculo': 'ALUNO'}]"
         self.assertFalse(self.obj.is_servidor())
 
     def test_unidade_is_allowed(self):
-        self.obj.bound = "[{'codigoUnidade': '12'}, {'codigoUnidade': '14', 'tipoVinculo': 'SERVIDOR'}]"
+        self.obj.bond = "[{'codigoUnidade': '12'}, {'codigoUnidade': '14', 'tipoVinculo': 'SERVIDOR'}]"
         self.assertTrue(self.obj.unidade_is_allowed())
 
     def test_unidade_is_allowed_not(self):
-        self.obj.bound = "[{'codigoUnidade': '12'}, {'codigoUnidade': '13', 'tipoVinculo': 'SERVIDOR'}]"
+        self.obj.bond = "[{'codigoUnidade': '12'}, {'codigoUnidade': '13', 'tipoVinculo': 'SERVIDOR'}]"
         self.assertFalse(self.obj.unidade_is_allowed())
