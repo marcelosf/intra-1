@@ -5,7 +5,7 @@ from intranet.accounts.models import User
 from intranet.access.forms.forms import AccessForm
 
 
-class AccessViewEditTest(TestCase):
+class AccessViewEditGETTest(TestCase):
     def setUp(self):
         user = User.objects.create_user('Marc', 'marc@test.com', 'ktw123@777')
         obj = Access(
@@ -85,3 +85,54 @@ class AccessViewEditTest(TestCase):
         for expected in items:
             with self.subTest():
                 self.assertContains(self.resp, expected)
+
+
+class AccessViewEditUPDATETest(TestCase):
+    def setUp(self):
+        self.create_access()
+        access = Access.objects.get(name='Marcelo')
+        data = {
+            'enable': True,
+            'period_to':'2019-12-12',
+            'period_from':'2019-12-20',
+            'time_to':'13:13',
+            'time_from':'20:20',
+            'institution':'IAG',
+            'name':'Teslon',
+            'job':'Analista',
+            'email':'marcelo@test.com',
+            'phone':'11912345678',
+            'doc_type':'RG',
+            'doc_number':'202000002',
+            'answerable':'Pessoa1',
+            'observation':'Observações',
+            'status':'Para autorização',
+        }
+
+        self.resp = self.client.post(r('access:access_edit', slug=str(access.uuid)), data)
+        self.access = Access.objects.first()
+
+    def test_update(self):
+        """Name must be Teslon"""
+        self.assertEqual('Teslon', self.access.name)
+
+    def create_access(self):
+        user = User.objects.create_user('Marc', 'marc@test.com', 'ktw123@777')
+        obj = Access.objects.create(
+            enable=True,
+            period_to='2019-12-12',
+            period_from='2019-12-20',
+            time_to='13:13',
+            time_from='20:20',
+            institution='IAG',
+            name='Marcelo',
+            job='Analista',
+            email='marcelo@test.com',
+            phone='11912345678',
+            doc_type='RG',
+            doc_number='202000002',
+            answerable='Pessoa1',
+            observation='Observações',
+            status='Para autorização',
+        )
+

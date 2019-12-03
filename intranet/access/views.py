@@ -36,6 +36,8 @@ def create(request):
     return empty_form(request)
 
 def access_edit(request, slug):
+    if request.method == 'POST':
+        _access_update(request)
     access = Access.objects.filter(uuid=slug).values()
     form = AccessForm(access[0])
     if not form.is_valid():
@@ -55,6 +57,13 @@ def access_list(request):
     pages = paginator.get_paginator()
     context = {'list': pages['object_list'], 'page_list': pages['page_list']}
     return render(pages['request'], 'access/access_list.html', context)
+
+def _access_update(request):
+    form = AccessForm(request.POST)
+    if not form.is_valid():
+        print('Invalid form')
+    access = Access(**form.cleaned_data)
+    access.save()
 
 def empty_form(request):
     return render(request, 'access/access_form.html', {'form': AccessForm()})
