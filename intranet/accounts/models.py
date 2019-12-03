@@ -63,5 +63,5 @@ class User(AbstractBaseUser, PermissionsMixin):
         return False
 
     def get_bound(self):
-        bound = self.bound.replace("'", '"')
+        bound = self.bond.replace("'", '"')
         return json.loads(bound)

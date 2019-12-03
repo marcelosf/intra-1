@@ -54,7 +54,7 @@ class TestOauthLogin(TestCase):
             type='I',
             main_email='thomas@test.com'
         )
-        user.bound="[{'tipoVinculo': 'SERVIDOR', 'codigoUnidade': 12}]"
+        user.bond="[{'tipoVinculo': 'SERVIDOR', 'codigoUnidade': 12}]"
         return user
 
 class TestAccountsLoginHelpers(TestCase):
