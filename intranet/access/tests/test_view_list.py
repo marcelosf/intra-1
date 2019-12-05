@@ -1,7 +1,9 @@
 from django.test import TestCase
 from django.contrib.auth.models import Group
+from django.conf import settings
 from intranet.access.models import Access
 from intranet.access.filters import PERPAGE
+from intranet.access.forms import form_choices
 from django.core.paginator import Page
 from django.shortcuts import resolve_url as r
 from intranet.accounts.models import User
@@ -111,16 +113,20 @@ class AccessListPortariaTest(TestCase):
             )
 
         user = User.objects.create_user(login='444', name='Tail', type='I', main_email='tail@test.com')
-        group = Group.objects.create(name='portaria')
+        group = Group.objects.create(name=settings.PORTARIA_GROUP_NAME)
         user.groups.add(group)
         self.client.force_login(user)   
         self.resp = self.client.get(r('access:access_list'))
 
     def test_portaria_list_view(self):
         """Portaria group must view only authorized access"""
-        restricted_status = ['>Para autorização\n', '>Não autorizado\n']
+        wating = ('>%s\n' % form_choices.WAITING)
+        not_authorized = ('>%s\n' % form_choices.NOT_ATHORIZED)
+        authorized = ('>%s\n' % form_choices.AUTHORIZED)
+
+        restricted_status = [wating, not_authorized]
 
         for status in restricted_status:
             with self.subTest():
                 self.assertNotContains(self.resp, status)
-                self.assertContains(self.resp, '>Autorizado\n')
+                self.assertContains(self.resp, authorized)
