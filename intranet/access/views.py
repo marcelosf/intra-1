@@ -1,21 +1,20 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core import mail
 from django.core.paginator import Paginator
 from django.conf import settings
 from django.template.loader import render_to_string
-from django.views.generic.edit import UpdateView
+from django.contrib.auth.decorators import login_required
 from intranet.access.forms.forms import AccessForm
+from intranet.access.forms import form_choices
 from intranet.access.models import Access
 from intranet.access.filters import AccessFilter
 from intranet.access.filters import PERPAGE
 from django_filters.views import FilterView
 from intranet.core.mixins import PaginatorMixin
 
-
+@login_required(login_url=settings.LOGIN_URL)
 def new(request):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
     if request.method == 'POST':
         return create(request)
 
@@ -41,15 +40,16 @@ def access_edit(request, slug):
     form = AccessForm(access[0])
     return render(request, 'access/access_edit.html', {'form': form})
 
+@login_required(login_url=settings.LOGIN_URL)
 def detail(request, slug):
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
     access = Access.objects.get(uuid=slug)
     context = {'access': access}
     return render(request, 'access/access_detail.html', context)
-            
+
+@login_required(login_url=settings.LOGIN_URL)
 def access_list(request):
-    paginator = PaginatorMixin(model=Access, filterset=AccessFilter, request=request)
+    queryset = _select_queryset(request)
+    paginator = PaginatorMixin(queryset=queryset, filterset=AccessFilter, request=request)
     paginator.set_per_page(PERPAGE)
     pages = paginator.get_paginator()
     context = {'list': pages['object_list'], 'page_list': pages['page_list']}
@@ -71,6 +71,12 @@ def _access_update(request, slug):
     access.save()
     return render(request, 'access/access_edit.html', {'form': form})
 
+def _select_queryset(request):
+    in_group = request.user.groups.filter(name=settings.PORTARIA_GROUP_NAME).exists()
+    if in_group:
+        return Access.objects.filter(status=form_choices.AUTHORIZED)
+    return Access.objects.all()
+
 def empty_form(request):
     return render(request, 'access/access_form.html', {'form': AccessForm()})
 
@@ -80,3 +86,4 @@ def _send_email(context):
     to_email = 'intranet@mailinator.com'
     body = render_to_string('email/new_access.txt', context)
     mail.send_mail(subject, body, from_email, [to_email])
+

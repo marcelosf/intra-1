@@ -70,13 +70,12 @@
                     <td>{{ row.period_from|date:'d/m/Y' }} - {{ row.period_to|date:'d/m/Y' }}</td>
                     <td>
                         {% if row.status == 'Autorizado' %}
-                            <i class="material-icons teal-text text-accent-4 left">check_circle</i>
+                            <i class="material-icons teal-text text-accent-4 left">check_circle</i>{{ row.status }}
                         {% elif row.status == 'Para autorização' %}
-                            <i class="material-icons yellow-text left">access_time</i>
+                            <i class="material-icons yellow-text left">access_time</i>{{ row.status }}
                         {% elif row.status == 'Não autorizado' %}
-                            <i class="material-icons red-text left">not_interested</i>
+                            <i class="material-icons red-text left">not_interested</i>{{ row.status }}
                         {% endif %}
-                        {{ row.status }}
                     </td>
                     <td>
                         <a class="btn btn-flat waves-effect" href="{{ row.get_absolute_url }}">

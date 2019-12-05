@@ -1,6 +1,9 @@
 from django.test import TestCase
+from django.contrib.auth.models import Group
+from django.conf import settings
 from intranet.access.models import Access
 from intranet.access.filters import PERPAGE
+from intranet.access.forms import form_choices
 from django.core.paginator import Page
 from django.shortcuts import resolve_url as r
 from intranet.accounts.models import User
@@ -9,6 +12,7 @@ from intranet.accounts.models import User
 class AccessListViewTest(TestCase):
     def setUp(self):
         user = User.objects.create_user('Marc', 'marc@test.com', 'ktw123@777')
+        self.client.force_login(user)
         for i in range(40):
             self.obj = Access.objects.create(
                 enable=True,
@@ -81,3 +85,48 @@ class AccessListViewTest(TestCase):
 
     def test_include_pagination(self):
         self.assertTemplateUsed(self.resp, 'pagination.html')
+
+
+
+class AccessListPortariaTest(TestCase):
+    def setUp(self):
+        status_list = ['Para autorização', 'Não autorizado', 'Autorizado']
+        user = User.objects.create_user(login='333', name='Tail', type='I', main_email='tail@test.com')
+        for status in status_list:
+            Access.objects.create(
+                enable=True,
+                period_to='2019-12-12',
+                period_from='2019-12-20',
+                time_to='13:13',
+                time_from='20:20',
+                institution='IAG',
+                name='Marcelo',
+                job='Analista',
+                email='marcelo@test.com',
+                phone='11912345678',
+                doc_type='RG',
+                doc_number='202000002',
+                answerable='Pessoa1',
+                observation='Observações',
+                status=status,
+                created_by=user
+            )
+
+        user = User.objects.create_user(login='444', name='Tail', type='I', main_email='tail@test.com')
+        group = Group.objects.create(name=settings.PORTARIA_GROUP_NAME)
+        user.groups.add(group)
+        self.client.force_login(user)   
+        self.resp = self.client.get(r('access:access_list'))
+
+    def test_portaria_list_view(self):
+        """Portaria group must view only authorized access"""
+        wating = ('>%s\n' % form_choices.WAITING)
+        not_authorized = ('>%s\n' % form_choices.NOT_ATHORIZED)
+        authorized = ('>%s\n' % form_choices.AUTHORIZED)
+
+        restricted_status = [wating, not_authorized]
+
+        for status in restricted_status:
+            with self.subTest():
+                self.assertNotContains(self.resp, status)
+                self.assertContains(self.resp, authorized)

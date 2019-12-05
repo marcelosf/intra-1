@@ -2,14 +2,14 @@ from django.core.paginator import Paginator
 
 
 class PaginatorMixin():
-    model = None
+    queryset = None
     per_page = None
     filterset = None
     request = None
 
-    def __init__(self, model, filterset, request):
+    def __init__(self, queryset, filterset, request):
         """Initialization"""
-        self.model = model
+        self.queryset = queryset
         self.filterset = filterset
         self.request = request
 
@@ -19,7 +19,7 @@ class PaginatorMixin():
 
     def get_queryset(self):
         """Get the filtered queryset"""
-        return self.filterset(self.request.GET, queryset=self.model.objects.all())
+        return self.filterset(self.request.GET, queryset=self.queryset)
 
     def get_page(self):
         """Get the page number from request and remove the page
