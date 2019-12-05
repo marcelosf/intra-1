@@ -32,7 +32,8 @@ def create(request):
     messages.success(request, 'Solicitação enviada com sucesso.')
 
     return empty_form(request)
-
+    
+@login_required(login_url=settings.LOGIN_URL)
 def access_edit(request, slug):
     if request.method == 'POST':
         return _access_update(request, slug)
