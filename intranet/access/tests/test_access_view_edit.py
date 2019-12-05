@@ -8,6 +8,7 @@ from intranet.access.forms.forms import AccessForm
 class AccessViewEditGETTest(TestCase):
     def setUp(self):
         user = User.objects.create_user('Marc', 'marc@test.com', 'ktw123@777')
+        self.client.force_login(user)
         self.obj = Access(
             enable=True,
             period_to='2019-12-12',
@@ -88,8 +89,37 @@ class AccessViewEditGETTest(TestCase):
                 self.assertContains(self.resp, expected)
 
 
+class AccessViewEditGETAnonimousTest(TestCase):
+    def setUp(self):
+        user = User.objects.create_user('Marc', 'marc@test.com', 'ktw123@777')
+        self.obj = Access(
+            enable=True,
+            period_to='2019-12-12',
+            period_from='2019-12-20',
+            time_to='13:13',
+            time_from='20:20',
+            institution='IAG',
+            name='Marcelo',
+            job='Analista',
+            email='marcelo@test.com',
+            phone='11912345678',
+            doc_type='RG',
+            doc_number='202000002',
+            answerable='Pessoa1',
+            observation='Observações',
+            status='Para autorização',
+        )
+        self.obj.save()
+        self.resp = self.client.get(r('access:access_edit', slug=self.obj.uuid))
+
+    def test_status_code(self):
+        """Status code must be 302"""
+        self.assertEqual(302, self.resp.status_code)
+
 class AccessViewEditValidPOSTTest(TestCase):
     def setUp(self):
+        user = User.objects.create_user('Marc', 'marc@test.com', 'ktw123@777')
+        self.client.force_login(user)
         self.create_access()
         access = Access.objects.get(name='Marcelo')
         data = {
@@ -139,6 +169,8 @@ class AccessViewEditValidPOSTTest(TestCase):
 
 class AccessViewEditInvalidPOSTTest(TestCase):
     def setUp(self):
+        user = User.objects.create_user('Marc', 'marc@test.com', 'ktw123@777')
+        self.client.force_login(user)
         access = self.create_access()
         self.resp = self.client.post(r('access:access_edit', slug=str(access.uuid)), {
             'enable': True,
