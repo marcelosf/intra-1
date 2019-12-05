@@ -1,10 +1,9 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core import mail
 from django.core.paginator import Paginator
 from django.conf import settings
 from django.template.loader import render_to_string
-from django.views.generic.edit import UpdateView
 from intranet.access.forms.forms import AccessForm
 from intranet.access.models import Access
 from intranet.access.filters import AccessFilter
@@ -47,9 +46,12 @@ def detail(request, slug):
     access = Access.objects.get(uuid=slug)
     context = {'access': access}
     return render(request, 'access/access_detail.html', context)
-            
+
 def access_list(request):
-    paginator = PaginatorMixin(model=Access, filterset=AccessFilter, request=request)
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+    queryset = _select_queryset(request)
+    paginator = PaginatorMixin(queryset=queryset, filterset=AccessFilter, request=request)
     paginator.set_per_page(PERPAGE)
     pages = paginator.get_paginator()
     context = {'list': pages['object_list'], 'page_list': pages['page_list']}
@@ -71,6 +73,12 @@ def _access_update(request, slug):
     access.save()
     return render(request, 'access/access_edit.html', {'form': form})
 
+def _select_queryset(request):
+    in_group = request.user.groups.filter(name='portaria').exists()
+    if in_group:
+        return Access.objects.filter(status='Autorizado')
+    return Access.objects.all()
+
 def empty_form(request):
     return render(request, 'access/access_form.html', {'form': AccessForm()})
 
@@ -80,3 +88,4 @@ def _send_email(context):
     to_email = 'intranet@mailinator.com'
     body = render_to_string('email/new_access.txt', context)
     mail.send_mail(subject, body, from_email, [to_email])
+

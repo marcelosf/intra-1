@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.db.models.query import QuerySet
 from intranet.core.mixins import PaginatorMixin
 from intranet.access.models import Access
 from intranet.access.filters import AccessFilter
@@ -8,11 +9,11 @@ from django.core.paginator import Page
 
 class CorePaginatorMixinsDefaultsTest(TestCase):
     def setUp(self):
-        self.paginator = PaginatorMixin(model=Access, filterset=AccessFilter, request=HttpRequest())
+        self.paginator = PaginatorMixin(queryset=Access.objects.all(), filterset=AccessFilter, request=HttpRequest())
 
     def test_set_model(self):
         """It must set the model"""
-        self.assertEqual(self.paginator.model, Access)
+        self.assertIsInstance(self.paginator.queryset, QuerySet)
 
     def test_per_page(self):
         """It must set the per_page attribute"""
@@ -20,11 +21,11 @@ class CorePaginatorMixinsDefaultsTest(TestCase):
         self.assertEqual(10, self.paginator.per_page)
 
     def test_filterset(self):
-        """It must an django_filter.FilteSet class"""
+        """It must be an django_filter.FilteSet class"""
         self.assertEqual(AccessFilter, self.paginator.filterset)
 
     def test_request(self):
-        """It must an instance of HttpRequest"""
+        """It must be an instance of HttpRequest"""
         self.assertIsInstance(self.paginator.request, HttpRequest)
 
     def test_get_queryset(self):
