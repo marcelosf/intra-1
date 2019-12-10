@@ -1,58 +1,65 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load widget_tweaks %}
 
 {% block content %}
 <div class="container">
 
     <h4>Lista de acessos</h4>
     
-    <a class="modal-trigger btn waves-effect" href="#search-form">
-        <i class="material-icons left">search</i>
-        Buscar
-    </a>
-    <div class="divider"></div>
-    <div class="modal" id="search-form">
-        <div class="modal-content">
-            <form action="" method="get">
-                <div class="row">
-                    <div class="col s12 m12">
-                        <div class="input-field">
-                            {{ list.form.status.erros }}
-                            {{ list.form.status }}
-                            <label>{{ list.form.status.label }}</label>
-                        </div>
-                    </div>
-                    <div class="col s12 m12">
-                        <div class="input-field">
-                            {{ list.form.name.erros }}
-                            {{ list.form.name }}
-                            {{ list.form.name.label_tag }}
-                        </div>
-                    </div>    
-                    <div class="col s12 m12">
-                        <div class="input-field">
-                            {{ list.form.period_from.erros }}
-                            {{ list.form.period_from }}
-                            {{ list.form.period_from.label_tag }}
-                        </div>
-                    </div>
-                    <div class="col s12 m12">
-                        <div class="input-field">
-                            {{ list.form.period_to.erros }}
-                            {{ list.form.period_to }}
-                            {{ list.form.period_to.label_tag }}
-                        </div>
-                    </div>
+    <button type="button" class="btn btn-primary btn-link text-light" data-toggle="modal" data-target="#search-form">
+        <i class="fas fa-search"></i> Buscar
+    </button>
+    
+    <div id="search-form" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="search-form" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pesquisar acesso</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-                <div class="modal-footer">
-                    <button class="btn waves-effect" type="submit">Enviar</button>
-                </div>
-            </form>
+                <form action="" method="get">
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12">
+                                    <div class="form-group">
+                                        {{ list.form.status.label }}
+                                        {{ list.form.status|add_class:"form-control" }}
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-12">
+                                    <div class="form-group">
+                                        {{ list.form.name.label_tag }}
+                                        {{ list.form.name|add_class:"form-control" }}
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="form-group">
+                                        {{ list.form.period_from.label_tag }}
+                                        {{ list.form.period_from|add_class:"form-control" }}
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="form-group">
+                                        {{ list.form.period_to.label_tag }}
+                                        {{ list.form.period_to|add_class:"form-control" }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="light-text btn btn-primary" type="submit">Enviar</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
-
-    <table class="highlight">
+    <table class="table table-hover">
         <thead>
             <tr>
                 <th>Nome</th>
@@ -70,16 +77,16 @@
                     <td>{{ row.period_from|date:'d/m/Y' }} - {{ row.period_to|date:'d/m/Y' }}</td>
                     <td>
                         {% if row.status == 'Autorizado' %}
-                            <i class="material-icons teal-text text-accent-4 left">check_circle</i>{{ row.status }}
+                            <span class="btn btn-link btn-success text-light btn-sm">{{ row.status }}</span>
                         {% elif row.status == 'Para autorização' %}
-                            <i class="material-icons yellow-text left">access_time</i>{{ row.status }}
+                            <span class="btn btn-link btn-warning text-light btn-sm">{{ row.status }}</span>
                         {% elif row.status == 'Não autorizado' %}
-                            <i class="material-icons red-text left">not_interested</i>{{ row.status }}
+                            <span class="btn btn-link btn-danger text-light btn-sm">{{ row.status }}</span>
                         {% endif %}
                     </td>
                     <td>
-                        <a class="btn btn-flat waves-effect" href="{{ row.get_absolute_url }}">
-                            <i class="small material-icons">search</i>
+                        <a class="btn btn-sm btn-primary" href="{{ row.get_absolute_url }}">
+                            <i class="fas fa-info-circle"></i> Detalhar
                         </a>
                     </td>
                 </tr>
@@ -91,7 +98,4 @@
 
 </div>
 
-<!--JavaScript at end of body for optimized loading-->
-<script type="text/javascript" src="{% static 'js/select.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/modal.js' %}"></script>
 {% endblock content %}

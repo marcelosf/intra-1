@@ -28,7 +28,7 @@ class TestAccessNewLoggedInGet(TestCase):
             ('type="time"', 2),
             ('type="text"', 5),
             ('type="email"', 1),
-            ('<select', 2),
+            ('<select', 3),
             ('<textarea', 1),
             ('type="checkbox"', 1),
             ('type="submit"', 1),

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load widget_tweaks %}
 
     {% block content %}
         <div class="container">
@@ -10,113 +11,116 @@
                 {% endfor %}
             {% endif %}
 
-                <form action="./new" novalidate method="post">
+                <form action="." novalidate method="post">
                     {% csrf_token %}
                     <div class="row">
-                        <div class="col s12 m12">
-                            <p>
-                            <label>
-                                {{ form.enable }}
-                                <span>{{ form.enable.label }}</span>
-                            </label>
-                            </p>
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-check">
+                                {{ form.enable|add_class:'form-check-input' }}
+                                {{ form.enable.label_tag }}
+                            </div>
                         </div>
-                        <div class="col s12 m6">
-                            <div class="input-field col s12">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group">
+                                {{ form.status.errors }}
+                                {{ form.status.label_tag }}                        
+                                {{ form.status|add_class:'form-control' }}
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group">
                                 {{ form.period_from.errors }}
-                                {{ form.period_from }}
                                 {{ form.period_from.label_tag }}
+                                {{ form.period_from|add_class:'form-control' }}
                             </div>
+                            
                         </div>
-                        <div class="col s12 m6">
-                            <div class="input-field col s12">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group">
                                 {{ form.time_from.errors }}
-                                {{ form.time_from }}
                                 {{ form.time_from.label_tag }}
+                                {{ form.time_from|add_class:'form-control' }}
                             </div>
                         </div>
-                        <div class="col s12 m6">
-                            <div class="input-field col s12">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group">
                                 {{ form.period_to.errors }}
-                                {{ form.period_to }}
                                 {{ form.period_to.label_tag }}
+                                {{ form.period_to|add_class:'form-control' }}
                             </div>
                         </div>
-                        <div class="col s12 m6">
-                            <div class="input-field col s12">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group">
                                 {{ form.time_to.errors }}
-                                {{ form.time_to }}
                                 {{ form.time_to.label_tag }}
+                                {{ form.time_to|add_class:'form-control' }}
                             </div>
                         </div>
-                        <div class="col s12 m6">
-                            <div class="input-field col s12">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group">
                                 {{ form.name.errors }}
-                                {{ form.name }}
                                 {{ form.name.label_tag }}
+                                {{ form.name|add_class:'form-control' }}
                             </div>
                         </div>
-                        <div class="col s12 m6">
-                            <div class="input-field col s12">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group">
                                 {{ form.job.errors }}
-                                {{ form.job }}
                                 {{ form.job.label_tag }}
+                                {{ form.job|add_class:'form-control' }}
                             </div>
                         </div>
-                        <div class="col s12 m6">
-                            <div class="input-field col s12">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group">
                                 {{ form.email.errors }}
-                                {{ form.email }}
                                 {{ form.email.label_tag }}
+                                {{ form.email|add_class:'form-control' }}
                             </div>
                         </div>
-                        <div class="col s12 m6">
-                            <div class="input-field col s12">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group">
                                 {{ form.phone.errors }}
-                                {{ form.phone }}
                                 {{ form.phone.label_tag }}
+                                {{ form.phone|add_class:'form-control' }}
                             </div>
                         </div>
-                        <div class="col s12 m6">
-                            <div class="input-field col s12">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group">
                                 {{ form.institution.errors }}
-                                {{ form.institution }}
                                 {{ form.institution.label_tag }}
+                                {{ form.institution|add_class:'form-control' }}
                             </div>
                         </div>
-                        <div class="col s12 m6">
-                            <div class="input-field col s12">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group">
                                 {{ form.answerable.errors }}
-                                {{ form.answerable }}
                                 {{ form.answerable.label_tag }}                        
+                                {{ form.answerable|add_class:'form-control' }}
                             </div>
                         </div>
-                        <div class="col s12 m6">
-                            <div class="input-field col s12">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group">
                                 {{ form.doc_type.errors }}
-                                {{ form.doc_type }}
                                 {{ form.doc_type.label_tag }}                        
+                                {{ form.doc_type|add_class:'form-control' }}
                             </div>
                         </div>
-                        <div class="col s12 m6">
-                            <div class="input-field col s12">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group">
                                 {{ form.doc_number.errors }}
-                                {{ form.doc_number }}
                                 {{ form.doc_number.label_tag }}
+                                {{ form.doc_number|add_class:'form-control' }}
                             </div>
                         </div>
-                        <div class="col s12">
-                            <div class="input-field col s12">
+                        <div class="col-sm-12 col-md-12">
+                            <div class="form-group">
                                 {{ form.observation.errors }}
-                                {{ form.observation }}
                                 {{ form.observation.label_tag }}                        
+                                {{ form.observation|add_class:'form-control' }}
                             </div>
                         </div>
-                        <button type="submit" class="btn waves-light waves-effect">Enviar</button>
+                        <button type="submit" class="btn btn-primary">Enviar</button>
                     </div>
                 </form>
         </div>
-
-      <!--JavaScript at end of body for optimized loading-->
-      <script type="text/javascript" src="{% static 'js/select.js' %}"></script>
 {% endblock content %}

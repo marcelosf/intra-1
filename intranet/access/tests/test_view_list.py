@@ -75,8 +75,8 @@ class AccessListViewTest(TestCase):
     def test_paginator_html(self):
         num_of_pages = 40//PERPAGE
         content = (
-            ('<li class="waves-effect"', num_of_pages - 1),
-            ('<li class="active"', 1)
+            ('<li class', num_of_pages + 2),
+            ('page-item active', 1)
         )
            
         for expected , count in content:
@@ -120,9 +120,9 @@ class AccessListPortariaTest(TestCase):
 
     def test_portaria_list_view(self):
         """Portaria group must view only authorized access"""
-        wating = ('>%s\n' % form_choices.WAITING)
-        not_authorized = ('>%s\n' % form_choices.NOT_ATHORIZED)
-        authorized = ('>%s\n' % form_choices.AUTHORIZED)
+        wating = 'btn-info'
+        not_authorized = 'btn-danger'
+        authorized = 'btn-success'
 
         restricted_status = [wating, not_authorized]
 

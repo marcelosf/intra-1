@@ -70,6 +70,8 @@ INSTALLED_APPS = [
     'django_extensions',
     'test_without_migrations',
     'django_filters',
+    'widget_tweaks',
+    'django_static_fontawesome',
     'intranet.core',
     'intranet.accounts',
     'intranet.locals',
