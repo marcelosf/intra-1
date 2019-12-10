@@ -13,14 +13,14 @@ ANSWERABLE = (
 
 AUTHORIZED = 'Autorizado'
 WAITING = 'Para autorização'
-NOT_ATHORIZED = 'Não authorizado'
+NOT_AUTHORIZED = 'Não autorizado'
 
 AUTHORIZED_ICON = 'check_circle'
 WAITING_ICON = 'access_time'
-NOT_ATHORIZED_ICON = 'not_interested'
+NOT_AUTHORIZED_ICON = 'not_interested'
 
 STATUS = (
     (AUTHORIZED, AUTHORIZED),
     (WAITING, WAITING),
-    (NOT_ATHORIZED, NOT_ATHORIZED)
+    (NOT_AUTHORIZED, NOT_AUTHORIZED)
 )

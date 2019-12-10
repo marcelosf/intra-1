@@ -8,8 +8,8 @@ PERPAGE = 10
 
 class AccessFilter(django_filters.FilterSet):
     name = django_filters.CharFilter(lookup_expr='icontains', label='Nome')
-    period_to = django_filters.DateFilter(widget=forms.TextInput(attrs={'type': 'date', 'class': 'validate'}))
-    period_from = django_filters.DateFilter(widget=forms.TextInput(attrs={'type': 'date', 'class': 'validate'}))
+    period_to = django_filters.DateFilter(widget=forms.TextInput(attrs={'type': 'date'}))
+    period_from = django_filters.DateFilter(widget=forms.TextInput(attrs={'type': 'date'}))
     status = django_filters.ChoiceFilter(label='status', choices=STATUS)
     class Meta:
         model = Access

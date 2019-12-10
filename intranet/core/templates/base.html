@@ -2,25 +2,28 @@
 <!DOCTYPE html>
   <html>
     <head>
-      <!--Import Google Icon Font-->
-      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-      <!--Import materialize.css-->
+      
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
       <link type="text/css" rel="stylesheet" href="{% static 'css/app.css' %}"  media="screen,projection"/>
+      <link rel="stylesheet" type="text/css" href="{% static "fontawesome/css/all.min.css" %}" />
+
 
       <!--Let browser know website is optimized for mobile-->
       <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <title>Intranet</title>
     </head>
 
     <body>
 
-        <nav>
-            <div class="nav-wrapper container">
-                <a href="#" class="brand-logo">Intranet</a>
-            </div>
-        </nav>
+    <nav class="navbar navbar-dark navbar-expand-lg bg-primary mb-5">
+        <a href="/" class="navbar-brand">
+          <h2>Intranet</h2>
+        </a>
+    </nav>
        
+    <div class="container">
        {% block content %}{% endblock content%}
-
+    </div>
       <!--JavaScript at end of body for optimized loading-->
       <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
     </body>

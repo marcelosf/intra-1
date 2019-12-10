@@ -7,47 +7,44 @@
     <h4>Detalhes do acesso</h4>
 
     <div class="row">
-        <div class="col s12 m12">
+        <div class="col-sm-12 col-md-12">
             <div class="card">
-                <div class="card-content">
-                    <span class="card-title"><b>Autorização</b></span>
+                <div class="card-body">
+                    <h5 class="card-title">Autorização</h5>
                     <div class="row">
-                        <div class="col s6 m6">
-                            <blockquote>
-                                <span><b>Ativo:</b></span>
+                        <div class="col-sm-6 col-md-6">
+                            <blockquote class="blockquote">
+                                Ativo: 
                                 {% if access.enable %}
-                                    <button class="btn btn-flat">
-                                        Solicitação Ativa
-                                        <i class="material-icons teal-text text-accent-4 left">check_circle</i>
-                                    </button>
+                                    <span class="text-success">
+                                        <i class="fas fa-user-check"></i>
+                                    </span>
                                 {% else %}
-                                    <button class="btn btn-flat">
-                                        Solicitação Desativada
-                                        <i class="material-icons red-text left">not_interested</i>
-                                    </button>
+                                    <span class="text-danger">
+                                        Solicitação Desativada <i class="fas fa-user-times"></i>
+                                    </span>
                                 {% endif %}
                             </blockquote>
-                            <blockquote>
-                                <span><b>Status: </b></span>
+                            <blockquote class="blockquote">
                                 {% if access.status == 'Autorizado' %}
-                                    <button class="btn btn-flat">
-                                        {{ access.status }}
-                                        <i class="material-icons teal-text text-accent-4 left">check_circle</i>
-                                    </button>
+                                    Status:
+                                    <span class="text-success">
+                                        {{ access.status }} <i class="fas fa-user-check"></i>
+                                    </span>
                                 {% elif access.status == 'Para autorização' %}
-                                    <button class="btn btn-flat">
-                                        <i class="material-icons yellow-text left">access_time</i>
-                                        {{ access.status }}
-                                    </button>
-                                {% elif access.status == 'Não autorizado' %}
-                                    <button class="btn btn-flat">
-                                        <i class="material-icons red-text left">not_interested</i>
-                                        {{ access.status }}
-                                    </button>
+                                    Status:
+                                    <span class="text-warning">
+                                        {{ access.status }} <i class="far fa-clock"></i>
+                                    </span>
+                                {% else %}
+                                    Status:
+                                    <span class="text-danger">
+                                        {{ access.status }} <i class="fas fa-user-times"></i>
+                                    </span>
                                 {% endif %}
                             </blockquote>
                         </div>
-                        <div class="col s6 m6">
+                        <div class="col-sm-6 col-md-6">
                             <blockquote>
                                     <b>Responsável: </b>{{ access.answerable }}
                             </blockquote>
@@ -57,46 +54,44 @@
                         </div>
                     </div>
                 </div>
-            </div>    
+            </div>
         </div>
-        <div class="col s12 m6">
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
             <div class="card">
-                <div class="card-content">
-                    <span class="card-title"><b>Período</b></span>
-                    <blockquote>
-                        <b>Data inicial: </b>{{ access.period_from|date:'d/m/Y' }}
-                    </blockquote>
-                    <blockquote>
-                        <b>Data final: </b>{{ access.period_to|date:'d/m/Y' }}
-                    </blockquote>
+                <div class="card-body">
+                    <h5 class="card-title">Período</h5>
+                    <p><i class="fas fa-calendar"></i> Data inicial: {{ access.period_from|date:'d/m/Y' }}</p>
+                    <p><i class="fas fa-calendar"></i> Data final: {{ access.period_to|date:'d/m/Y' }}</p>
                 </div>
             </div>
         </div>
-        <div class="col s12 m6">
+        <div class="col-sm-12 col-md-6">
             <div class="card">
-                <div class="card-content">
-                    <span class="card-title"><b>Horário</b></span>
-                    <blockquote>
-                        <b>De: </b>{{ access.time_from|date:'H:i' }}
-                    </blockquote>
-                    <blockquote>
-                        <b>Até: </b>{{ access.time_to|date:'H:i' }}
-                    </blockquote>
+                <div class="card-body">
+                    <h5 class="card-title">Horário</h5>
+                    <p><i class="far fa-clock"></i> Hora Inicial: {{ access.time_from|date:'H:i' }}</p>
+                    <p><i class="far fa-clock"></i> Hora Final: {{ access.time_to|date:'H:i' }}</p>
                 </div>
             </div>
         </div>
-        <div class="col s12 m12">
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
             <div class="card">
-                <div class="card-content">
-                    <span class="card-title"><b>Dados do visitante</b></span>
+                <div class="card-body">
+                    <h5 class="card-title">Dados do visitante</h5>
                     <div class="row">
-                        <div class="col s6 m6">
+                        <div class="col-sm-6 col-md-6">
                             <blockquote><b>Instituição: </b> {{ access.institution }}</blockquote>
                             <blockquote><b>Nome: </b> {{ access.name }}</blockquote>
                             <blockquote><b>Cargo: </b> {{ access.job }}</blockquote>
                             <blockquote><b>Email: </b> {{ access.email }}</blockquote>
                         </div>
-                        <div class="col s6 m6">
+                        <div class="col-sm-6 col-md-6">
                             <blockquote><b>Telefone: </b> {{ access.phone }} </blockquote>
                             <blockquote><b>Tipo de documento: </b> {{ access.doc_type }} </blockquote>
                             <blockquote><b>Número do documento: </b> {{ access.doc_number }} </blockquote>
@@ -106,10 +101,13 @@
                 </div>
             </div>
         </div>
-        <div class="col s12 m12">
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
             <div class="card">
-                <div class="card-content">
-                    <span class="card-title"><b>Observação</b></span>
+                <div class="card-body">
+                    <h5 class="card-title">Observação</h5>
                     <blockquote>{{ access.observation }}</blockquote>
                 </div>
             </div>
