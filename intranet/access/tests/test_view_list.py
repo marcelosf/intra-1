@@ -75,7 +75,7 @@ class AccessListViewTest(TestCase):
     def test_paginator_html(self):
         num_of_pages = 40//PERPAGE
         content = (
-            ('<li class', num_of_pages + 2),
+            ('page-item', num_of_pages + 2),
             ('page-item active', 1)
         )
            
