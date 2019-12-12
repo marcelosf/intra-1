@@ -15,10 +15,30 @@
 
     <body>
 
-    <nav class="navbar fixed-top navbar-dark navbar-expand-lg bg-primary mb-5">
-        <a href="/" class="navbar-brand">
-          <h2>Intranet</h2>
-        </a>
+    <nav class="navbar justify-content-between fixed-top navbar-dark navbar-expand-lg bg-primary mb-5">
+        <a href="/" class="navbar-brand"><h2>Intranet</h2></a>
+        <ul class="navbar-nav">
+          {% if request.user.is_authenticated %}
+          <li class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" id="account" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-user"></i> {{ request.user.get_full_name }}
+            </a>
+            <div class="dropdown-menu p-4" aria-labelledby="account">
+                <a class="btn btn-link dropdown-item" href="{% url 'accounts:logout' %}">
+                  <i class="fas fa-sign-out-alt"></i>
+                  Logout
+                </a>
+            </div>
+          </li>
+          {% endif %}
+          {% if not request.user.is_authenticated %}
+          <li class="na-item">
+            <a href="{% url 'accounts:login' %}" class="btn btn-link btn-light">
+              <i class="fas fa-user"></i> Login
+            </a>
+          </li>
+          {% endif %}
+        </ul>
     </nav>
        
     <div class="container">
