@@ -23,6 +23,7 @@ def new(request):
 def create(request):
     form = AccessForm(request.POST)
     if not form.is_valid():
+        messages.error(request, 'Alguns campos não foram preenchidos corretamente.')
         return render(request, 'access/access_form.html', {'form': form})
 
     access = Access.objects.create(**form.cleaned_data)

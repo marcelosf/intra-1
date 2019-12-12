@@ -97,6 +97,11 @@ class TestAccessNewPostValid(TestCase):
         """Must show status message"""
         self.assertContains(self.resp, 'Solicitação enviada com sucesso.')
 
+    def test_alert_status(self):
+        """It must show an alert status"""
+        expected = 'alert alert-success'
+        self.assertContains(self.resp, expected)
+
     def test_relation(self):
         expected = Access.objects.get(pk=1)
         self.assertEqual(expected.created_by.login, 'Marc')
@@ -124,6 +129,10 @@ class TestAccessNewPostInvalid(TestCase):
         for expected in errors:
             with self.subTest():
                 self.assertContains(self.resp, expected[0])
+
+    def test_show_error_message(self):
+        expected = 'alert alert-danger'
+        self.assertContains(self.resp, expected)
 
     def test_dont_save_access(self):
         self.assertFalse(Access.objects.exists())
