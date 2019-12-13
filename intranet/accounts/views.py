@@ -10,7 +10,9 @@ import json
 def login(request):
     if(request.user.is_authenticated):
         return redirect(r('accounts:user'))
-    request.session['next'] = request.GET['next']
+    request.session['next'] = '/'
+    if 'next' in request.GET:
+       request.session['next'] = request.GET['next']
     usp = get_client()
     redirect_uri = request.build_absolute_uri(r('accounts:authorize'))
     return usp.authorize_redirect(request, redirect_uri)
