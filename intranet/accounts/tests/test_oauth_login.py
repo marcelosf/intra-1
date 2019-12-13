@@ -102,3 +102,11 @@ class TestAccountsLoginHelpers(TestCase):
         views.persist_user(user_data)
         views.persist_user(user_data)
         self.assertTrue(User.objects.exists())
+
+class TestAccountsLogin(TestCase):
+    def setUp(self):
+        self.resp = self.client.get(r('accounts:login'))
+
+    def test_login_url(self):
+        """It must redirect to login page"""
+        self.assertEqual(302, self.resp.status_code)
