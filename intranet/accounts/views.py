@@ -32,7 +32,7 @@ def authorize(request):
 
 def logout_view(request):
     logout(request)
-    return HttpResponse()
+    return redirect('/')
 
 def user(request):
     if not (request.user.is_authenticated):
