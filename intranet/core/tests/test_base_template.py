@@ -32,7 +32,7 @@ class BaseTemplateLoggedInTest(TestCase):
 
     def test_has_no_login_button(self):
         self.assertNotContains(self.resp, 'Login')
-        
+
 
 class BaseTemplateLoggedOutTest(TestCase):
     def setUp(self):
