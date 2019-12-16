@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.shortcuts import resolve_url as r
 from django.http import HttpRequest
+from django.conf import settings
 from intranet.accounts import views
 from intranet.accounts.models import User
 from unittest.mock import MagicMock
@@ -105,6 +106,7 @@ class TestAccountsLoginHelpers(TestCase):
 
 class TestAccountsLogin(TestCase):
     def setUp(self):
+        settings.LOGIN_URL = '/'
         self.resp = self.client.get(r('accounts:login'))
 
     def test_login_url(self):
