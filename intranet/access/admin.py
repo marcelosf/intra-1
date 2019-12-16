@@ -37,5 +37,7 @@ class AccessAdmin(admin.ModelAdmin):
     authorized.boolean = True
     make_authorized.short_description = 'Autorizar'
 
+    list_per_page=15
+
 
 admin.site.register(Access, AccessAdmin)
