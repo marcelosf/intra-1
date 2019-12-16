@@ -1,10 +1,10 @@
 from django.test import TestCase
 from django.shortcuts import resolve_url as r
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 from django.conf import settings
 from intranet.accounts import views
 from intranet.accounts.models import User
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 import json
 
 
@@ -106,8 +106,11 @@ class TestAccountsLoginHelpers(TestCase):
 
 class TestAccountsLogin(TestCase):
     def setUp(self):
-        settings.LOGIN_URL = '/'
-        self.resp = self.client.get(r('accounts:login'))
+        origin = views.login
+        views.login = MagicMock(return_value=HttpResponse(status=302))
+        views.login('request', key='value')
+        self.resp = views.login('request', key='value')
+        views.login = origin
 
     def test_login_url(self):
         """It must redirect to login page"""
