@@ -60,6 +60,7 @@ def access_list(request):
 def _access_update(request, slug):
     form = AccessForm(request.POST)
     if not form.is_valid():
+        messages.error(request, 'Alguns campos não foram preenchidos corretamente')
         return render(request, 'access/access_edit.html', {'form': form})
     
     access = Access.objects.get(uuid=slug)
@@ -71,6 +72,7 @@ def _access_update(request, slug):
     access.enable = form.cleaned_data['enable']
     
     access.save()
+    messages.success(request, message='Acesso atualizado com sucesso')
     return render(request, 'access/access_edit.html', {'form': form})
 
 def _select_queryset(request):
