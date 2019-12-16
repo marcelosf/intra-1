@@ -147,6 +147,11 @@ class AccessViewEditValidPOSTTest(TestCase):
         """Period To must be 2019-12-30"""
         self.assertEqual('2019-12-30', self.access.period_to.strftime('%Y-%m-%d'))
 
+    def test_success_message(self):
+        """It must show a success message"""
+        expected = 'Acesso atualizado com sucesso'
+        self.assertContains(self.resp, expected)
+
     def create_access(self):
         obj = Access.objects.create(
             enable=True,
@@ -200,7 +205,7 @@ class AccessViewEditInvalidPOSTTest(TestCase):
         form = self.resp.context['form']
         self.assertGreater(len(form.errors.keys()), 0)
 
-    def test_show_errors(self):
+    def test_show_field_errors(self):
         """Form must show errors"""
         form = self.resp.context['form']
         errors = form.errors.values()
@@ -208,6 +213,11 @@ class AccessViewEditInvalidPOSTTest(TestCase):
         for expected in errors:
             with self.subTest():
                 self.assertContains(self.resp, expected[0])
+
+    def test_show_no_field_errors(self):
+        """It must show non field errors"""
+        expected = 'Alguns campos não foram preenchidos corretamente'
+        self.assertContains(self.resp, expected)
 
     def create_access(self):
         obj = Access.objects.create(
