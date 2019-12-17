@@ -29,3 +29,8 @@ class AccessForm(forms.Form):
             raise ValidationError('A Data de início deve ser menor do que a Data de término')
         return self.cleaned_data
 
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        words = [w.capitalize() for w in name.split()]
+        return ' '.join(words)
+

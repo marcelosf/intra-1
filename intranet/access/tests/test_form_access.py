@@ -57,7 +57,12 @@ class AccessFormValidationTest(TestCase):
        form = self.make_form()
        errors = form.errors.as_data()
        self.assertListEqual(['__all__'], list(errors))
-        
+
+    def test_name_captalized(self):
+        """Name must be captalized"""
+        form = self.make_form(name='mArc FROLDER')
+        data = form.cleaned_data
+        self.assertEqual('Marc Frolder', data['name'])
 
     def make_form(self, **kwargs):
         data = dict(self.data, **kwargs)
