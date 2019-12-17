@@ -63,8 +63,8 @@ class TestAccessNewPostValid(TestCase):
         self.client.force_login(user)
         self.data = {
             'enable': True,
-            'period_to': '2019-12-12',
-            'period_from': '2019-12-20',
+            'period_to': '2019-12-20',
+            'period_from': '2019-12-12',
             'time_to': '13:13',
             'time_from': '20:20',
             'institution': 'IAG',
@@ -134,8 +134,39 @@ class TestAccessNewPostInvalid(TestCase):
         expected = 'alert alert-danger'
         self.assertContains(self.resp, expected)
 
+    def test_show_non_field_errors(self):
+        """It must contain non field errors"""
+        data = self.make_data(**{'period_from': '2019-02-10', 'period_to': '2019-01-10'})
+        resp = self.make_request(data)
+        self.assertContains(resp, 'A Data de início deve ser menor do que a Data de término')
+
     def test_dont_save_access(self):
         self.assertFalse(Access.objects.exists())
+
+    def make_request(self, data):
+        return self.client.post(r('access:new'), data)
+
+    def make_data(self, **kwargs):
+        access = {
+            'enable': True,
+            'period_to': '2019-12-20',
+            'period_from': '2019-12-12',
+            'time_to': '13:13',
+            'time_from': '20:20',
+            'institution': 'IAG',
+            'name': 'Marcelo',
+            'job': 'Analista',
+            'email': 'marcelo@test.com',
+            'phone': '11912345678',
+            'doc_type': 'RG',
+            'doc_number': '202000002',
+            'answerable': 'Pessoa1',
+            'observation': 'Observações',
+            'status': 'Para autorização',
+        }
+
+        return dict(access, **kwargs)
+        
 
 class TestAccessNewAnonimous(TestCase):
     def setUp(self):

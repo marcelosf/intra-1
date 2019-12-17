@@ -10,8 +10,8 @@ class TestReportEmail(TestCase):
         self.client.force_login(user)
         data = {
             'enable': True,
-            'period_to': '2019-12-12',
-            'period_from': '2019-12-20',
+            'period_to': '2019-12-20',
+            'period_from': '2019-12-12',
             'time_to': '13:13',
             'time_from': '20:20',
             'institution': 'IAG',
