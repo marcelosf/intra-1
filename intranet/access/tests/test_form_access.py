@@ -58,11 +58,33 @@ class AccessFormValidationTest(TestCase):
        errors = form.errors.as_data()
        self.assertListEqual(['__all__'], list(errors))
 
-    def test_name_captalized(self):
+    def test_name_must_be_captalized(self):
         """Name must be captalized"""
         form = self.make_form(name='mArc FROLDER')
         data = form.cleaned_data
         self.assertEqual('Marc Frolder', data['name'])
+
+    def test_job_must_be_captalized(self):
+        """Job must be captalized"""
+        form = self.make_form(job='ANALISTA')
+        data = form.cleaned_data
+        self.assertEqual('Analista', data['job'])
+
+    def test_phone_must_contain_only_numbers(self):
+        """Phone must contain only numbers"""
+        form = self.make_form(phone='abcd12345')
+        errors = form.errors.as_data()
+        error_list = errors['phone']
+        exception = error_list[0]
+        self.assertEqual('digits', exception.code)
+
+    def test_phone_length(self):
+        """Phone must be smaller or equal than 11 digits"""
+        form = self.make_form(phone='111111111111')
+        errors = form.errors.as_data()
+        error_list = errors['phone']
+        exception = error_list[0]
+        self.assertEqual('length', exception.code)
 
     def make_form(self, **kwargs):
         data = dict(self.data, **kwargs)
