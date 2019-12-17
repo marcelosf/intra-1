@@ -177,24 +177,8 @@ class AccessViewEditInvalidPOSTTest(TestCase):
         user = User.objects.create_user('Marc', 'marc@test.com', 'ktw123@777')
         self.client.force_login(user)
         access = self.create_access()
-        self.resp = self.client.post(r('access:access_edit', slug=str(access.uuid)), {
-            'enable': True,
-            'period_to':'2019-12-30',
-            'period_from':'2019-12-12',
-            'time_to':'',
-            'time_from':'20:20',
-            'institution':'IAG',
-            'name':'Marcelo',
-            'job':'Analista',
-            'email':'marcelo@test.com',
-            'phone':'11912345678',
-            'doc_type':'RG',
-            'doc_number':'202000002',
-            'answerable':'Pessoa1',
-            'observation':'Observações',
-            'status':'Para autorização',
-        }
-    )
+        data = self.make_data(period_from='2019-12-30', period_to='2019-12-12')
+        self.resp = self.client.post(r('access:access_edit', slug=str(access.uuid)), data)
     
     def test_status_code(self):
         """Status code must be 200"""
@@ -220,7 +204,12 @@ class AccessViewEditInvalidPOSTTest(TestCase):
         self.assertContains(self.resp, expected)
 
     def create_access(self):
-        obj = Access.objects.create(
+        data = self.make_data()
+        obj = Access.objects.create(**data)
+        return obj
+
+    def make_data(self, **kwargs):
+        default_data = dict(
             enable=True,
             period_to='2019-12-12',
             period_from='2019-12-20',
@@ -238,5 +227,6 @@ class AccessViewEditInvalidPOSTTest(TestCase):
             status='Para autorização',
         )
 
-        return obj
+        data = dict(default_data, **kwargs)
+        return data
 

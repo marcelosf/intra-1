@@ -20,6 +20,11 @@
                     {% endfor %}
                 {% endif %}
 
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </div>
+                {% endfor %}
                 <form action="." novalidate method="post" class="needs-validation">
                     {% csrf_token %}
                     <div class="form-row">
