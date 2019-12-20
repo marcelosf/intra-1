@@ -57,6 +57,17 @@ class DetailViewLoggedInTest(TestCase):
             with self.subTest():
                 self.assertContains(self.response, expected)
 
+    def test_actions_menu(self):
+        """Check if actions menu exists"""
+        items = (
+            ('Listar', 1),
+            ('Adicionar', 1),
+            ('Editar', 1),
+        )
+
+        for expected, count in items:
+            with self.subTest():
+                self.assertContains(self.response, expected, count)
 
 class DetailViewTestLoggedOut(TestCase):
     def setUp(self):

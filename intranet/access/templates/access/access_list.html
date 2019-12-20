@@ -11,9 +11,11 @@
             <button type="button" class="btn btn-primary btn-sm btn-link text-light" data-toggle="modal" data-target="#search-form">
                 <i class="fas fa-search"></i> Buscar
             </button>
+            {% if perms.access.add_access %}
             <a class="btn btn-primary btn-sm btn-link text-light" href="{% url 'access:new' %}" role="button">
                 <i class="fas fa-plus-circle"></i> Adicionar
             </a>
+            {% endif %}
         </div>
     </div>
 

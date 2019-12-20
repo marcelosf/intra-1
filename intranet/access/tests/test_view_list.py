@@ -1,5 +1,5 @@
 from django.test import TestCase
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, Permission
 from django.conf import settings
 from intranet.access.models import Access
 from intranet.access.filters import PERPAGE
@@ -12,6 +12,8 @@ from intranet.accounts.models import User
 class AccessListViewTest(TestCase):
     def setUp(self):
         user = User.objects.create_user('Marc', 'marc@test.com', 'ktw123@777')
+        can_add_access_perm = Permission.objects.get(name='Can add acesso') 
+        user.user_permissions.add(can_add_access_perm)
         self.client.force_login(user)
         for i in range(40):
             self.obj = Access.objects.create(
@@ -140,3 +142,7 @@ class AccessListPortariaTest(TestCase):
             with self.subTest():
                 self.assertNotContains(self.resp, status)
                 self.assertContains(self.resp, authorized)
+
+    def test_actions_menu(self):
+        """Add button can not be showed"""
+        self.assertNotContains(self.resp, 'Adicionar')

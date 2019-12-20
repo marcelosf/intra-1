@@ -5,159 +5,171 @@
     {% block content %}
         <div class="container">
             <h3>Acesso</h3>
-                {% if messages %}
-                    {% for message in messages %}
-                        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-                        <div class="alert alert-success" role="alert">
-                                {{ message }}
-                        </div>
-                        {% endif %}
-                        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            <div class="card">
+                <div class="card-body">            
+                    <a class="btn btn-primary btn-sm btn-link text-light" href="{% url 'access:access_list' %}" role="button">
+                        <i class="fas fa-list"></i> Listar
+                    </a>
+                </div>
+            </div>
+            <br>
+            <div class="card">
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                            <div class="alert alert-success" role="alert">
+                                    {{ message }}
+                            </div>
+                            {% endif %}
+                            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                            <div class="alert alert-danger" role="alert">
+                                    {{ message }}
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    
+                    {% for error in form.non_field_errors %}
                         <div class="alert alert-danger" role="alert">
-                                {{ message }}
+                            {{ error }}
                         </div>
-                        {% endif %}
                     {% endfor %}
-                {% endif %}
-                
-                {% for error in form.non_field_errors %}
-                    <div class="alert alert-danger" role="alert">
-                        {{ error }}
-                    </div>
-                {% endfor %}
-
-                <form action="./new" novalidate method="post" class="needs-validation">
-                    {% csrf_token %}
-                    <div class="form-row">
-                        <div class="col-sm-12 col-md-6">
-                            <div class="form-check">
-                                {{ form.enable|add_class:'form-check-input' }}
-                                {{ form.enable.label_tag }}
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <div class="form-group">
-                                {{ form.status.label_tag }}                        
-                                {{ form.status|add_class:'form-control' }}
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
-                                {{ form.period_from.label_tag }}
-                                {{ form.period_from|add_class:'form-control'|add_error_class:'is-invalid' }}
-                                <div class="invalid-feedback">
-                                    {{ form.period_from.errors.as_text }}
+    
+                    <form action="./new" novalidate method="post" class="needs-validation">
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-check">
+                                    {{ form.enable|add_class:'form-check-input' }}
+                                    {{ form.enable.label_tag }}
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
-                                {{ form.time_from.label_tag }}
-                                {{ form.time_from|add_class:'form-control'|add_error_class:'is-invalid' }}
-                                <div class="invalid-feedback">
-                                    {{ form.time_from.errors.as_text }}
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group">
+                                    {{ form.status.label_tag }}                        
+                                    {{ form.status|add_class:'form-control' }}
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
-                                {{ form.period_to.label_tag }}
-                                {{ form.period_to|add_class:'form-control'|add_error_class:'is-invalid' }}
-                                <div class="invalid-feedback">
-                                    {{ form.period_to.errors.as_text }}
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
+                                    {{ form.period_from.label_tag }}
+                                    {{ form.period_from|add_class:'form-control'|add_error_class:'is-invalid' }}
+                                    <div class="invalid-feedback">
+                                        {{ form.period_from.errors.as_text }}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
-                                {{ form.time_to.label_tag }}
-                                {{ form.time_to|add_class:'form-control'|add_error_class:'is-invalid' }}
-                                <div class="invalid-feedback">
-                                    {{ form.time_to.errors.as_text }}
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
+                                    {{ form.time_from.label_tag }}
+                                    {{ form.time_from|add_class:'form-control'|add_error_class:'is-invalid' }}
+                                    <div class="invalid-feedback">
+                                        {{ form.time_from.errors.as_text }}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
-                                {{ form.name.label_tag }}
-                                {{ form.name|add_class:'form-control'|add_error_class:'is-invalid' }}
-                                <div class="invalid-feedback">
-                                    {{ form.name.errors.as_text }}
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
+                                    {{ form.period_to.label_tag }}
+                                    {{ form.period_to|add_class:'form-control'|add_error_class:'is-invalid' }}
+                                    <div class="invalid-feedback">
+                                        {{ form.period_to.errors.as_text }}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
-                                {{ form.job.label_tag }}
-                                {{ form.job|add_class:'form-control'|add_error_class:'is-invalid' }}
-                                <div class="invalid-feedback">
-                                    {{ form.job.errors.as_text }}
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
+                                    {{ form.time_to.label_tag }}
+                                    {{ form.time_to|add_class:'form-control'|add_error_class:'is-invalid' }}
+                                    <div class="invalid-feedback">
+                                        {{ form.time_to.errors.as_text }}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
-                                {{ form.email.label_tag }}
-                                {{ form.email|add_class:'form-control'|add_error_class:'is-invalid' }}
-                                <div class="invalid-feedback">
-                                    {{ form.email.errors.as_text }}
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
+                                    {{ form.name.label_tag }}
+                                    {{ form.name|add_class:'form-control'|add_error_class:'is-invalid' }}
+                                    <div class="invalid-feedback">
+                                        {{ form.name.errors.as_text }}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
-                                {{ form.phone.label_tag }}
-                                {{ form.phone|add_class:'form-control'|add_error_class:'is-invalid' }}
-                                <div class="invalid-feedback">
-                                    {{ form.phone.errors.as_text }}
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
+                                    {{ form.job.label_tag }}
+                                    {{ form.job|add_class:'form-control'|add_error_class:'is-invalid' }}
+                                    <div class="invalid-feedback">
+                                        {{ form.job.errors.as_text }}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
-                                {{ form.institution.label_tag }}
-                                {{ form.institution|add_class:'form-control'|add_error_class:'is-invalid' }}
-                                {{ form.institution.errors.as_text }}
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
-                                {{ form.answerable.label_tag }}                        
-                                {{ form.answerable|add_class:'form-control'|add_error_class:'is-invalid' }}
-                                <div class="invalid-feedback">
-                                    {{ form.answerable.errors.as_text }}
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
+                                    {{ form.email.label_tag }}
+                                    {{ form.email|add_class:'form-control'|add_error_class:'is-invalid' }}
+                                    <div class="invalid-feedback">
+                                        {{ form.email.errors.as_text }}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
-                                {{ form.doc_type.label_tag }}                        
-                                {{ form.doc_type|add_class:'form-control'|add_error_class:'is-invalid' }}
-                                <div class="invalid-feedback">
-                                    {{ form.doc_type.errors.as_text }}
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
+                                    {{ form.phone.label_tag }}
+                                    {{ form.phone|add_class:'form-control'|add_error_class:'is-invalid' }}
+                                    <div class="invalid-feedback">
+                                        {{ form.phone.errors.as_text }}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
-                                {{ form.doc_number.label_tag }}
-                                {{ form.doc_number|add_class:'form-control'|add_error_class:'is-invalid' }}
-                                <div class="invalid-feedback">
-                                    {{ form.doc_number.errors.as_text }}
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
+                                    {{ form.institution.label_tag }}
+                                    {{ form.institution|add_class:'form-control'|add_error_class:'is-invalid' }}
+                                    {{ form.institution.errors.as_text }}
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-sm-12 col-md-12">
-                            <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
-                                {{ form.observation.label_tag }}                        
-                                {{ form.observation|add_class:'form-control'|add_error_class:'is-invalid' }}
-                                <div class="invalid-feedback">
-                                    {{ form.observation.errors.as_text }}
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
+                                    {{ form.answerable.label_tag }}                        
+                                    {{ form.answerable|add_class:'form-control'|add_error_class:'is-invalid' }}
+                                    <div class="invalid-feedback">
+                                        {{ form.answerable.errors.as_text }}
+                                    </div>
                                 </div>
                             </div>
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
+                                    {{ form.doc_type.label_tag }}                        
+                                    {{ form.doc_type|add_class:'form-control'|add_error_class:'is-invalid' }}
+                                    <div class="invalid-feedback">
+                                        {{ form.doc_type.errors.as_text }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
+                                    {{ form.doc_number.label_tag }}
+                                    {{ form.doc_number|add_class:'form-control'|add_error_class:'is-invalid' }}
+                                    <div class="invalid-feedback">
+                                        {{ form.doc_number.errors.as_text }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-12">
+                                <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
+                                    {{ form.observation.label_tag }}                        
+                                    {{ form.observation|add_class:'form-control'|add_error_class:'is-invalid' }}
+                                    <div class="invalid-feedback">
+                                        {{ form.observation.errors.as_text }}
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Enviar</button>
                         </div>
-                        <button type="submit" class="btn btn-primary">Enviar</button>
-                    </div>
-                </form>
+                    </form>
+                </div>
+            </div>
         </div>
 {% endblock content %}
