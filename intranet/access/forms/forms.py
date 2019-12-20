@@ -1,4 +1,6 @@
 from django import forms
+from django.core.exceptions import ValidationError
+from intranet.access import validators
 from intranet.access.forms.form_choices import DOCS, ANSWERABLE, STATUS
 
 
@@ -14,8 +16,25 @@ class AccessForm(forms.Form):
     name = forms.CharField(label='Nome')
     job = forms.CharField(label='Cargo')
     email = forms.EmailField(label='E-mail')
-    phone = forms.CharField(label='Telefone')
+    phone = forms.CharField(label='Telefone', validators=[validators.validate_phone])
     doc_type = forms.ChoiceField(label='Documento', choices=DOCS)
     doc_number = forms.CharField(label='Número do documento')
     answerable = forms.ChoiceField(label='Responsável', choices=ANSWERABLE)
     observation = forms.CharField(label='Observação', widget=forms.Textarea(attrs={'class': 'materialize-textarea'}))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        validators.validate_period(cleaned_data.get('period_from'), cleaned_data.get('period_to'))
+        validators.validate_doc_number(self, cleaned_data.get('doc_type'), cleaned_data.get('doc_number'))
+        return self.cleaned_data
+
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        words = [w.capitalize() for w in name.split()]
+        return ' '.join(words)
+
+    def clean_job(self):
+        job = self.cleaned_data['job']
+        words = [w.capitalize() for w in job.split()]
+        return ' '.join(words)
+

@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'test_without_migrations',
     'django_filters',
     'widget_tweaks',
+    'validate_docbr',
     'django_static_fontawesome',
     'intranet.core',
     'intranet.accounts',
