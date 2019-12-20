@@ -6,11 +6,17 @@
 <div class="container">
 
     <h4>Lista de acessos</h4>
-    
-    <button type="button" class="btn btn-primary btn-link text-light" data-toggle="modal" data-target="#search-form">
-        <i class="fas fa-search"></i> Buscar
-    </button>
-    
+    <div class="card">
+        <div class="card-body">            
+            <button type="button" class="btn btn-primary btn-sm btn-link text-light" data-toggle="modal" data-target="#search-form">
+                <i class="fas fa-search"></i> Buscar
+            </button>
+            <a class="btn btn-primary btn-sm btn-link text-light" href="{% url 'access:new' %}" role="button">
+                <i class="fas fa-plus-circle"></i> Adicionar
+            </a>
+        </div>
+    </div>
+
     <div id="search-form" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="search-form" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -58,43 +64,48 @@
             </div>
         </div>
     </div>
+    <br>
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Instituição</th>
+                        <th>Período</th>
+                        <th>Autorização</th>
+                        <th>Detalhar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in list.qs %}
+                        <tr>
+                            <td>{{ row.name }}</td>
+                            <td>{{ row.institution }}</td>
+                            <td>{{ row.period_from|date:'d/m/Y' }} - {{ row.period_to|date:'d/m/Y' }}</td>
+                            <td>
+                                {% if row.status == 'Autorizado' %}
+                                    <span class="btn btn-link btn-success text-light btn-sm">{{ row.status }}</span>
+                                {% elif row.status == 'Para autorização' %}
+                                    <span class="btn btn-link btn-warning text-light btn-sm">{{ row.status }}</span>
+                                {% elif row.status == 'Não autorizado' %}
+                                    <span class="btn btn-link btn-danger text-light btn-sm">{{ row.status }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a class="btn btn-sm btn-primary" href="{{ row.get_absolute_url }}">
+                                    <i class="fas fa-info-circle"></i> Detalhar
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% include 'pagination.html' %}
+        </div>
+    </div>
 
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Instituição</th>
-                <th>Período</th>
-                <th>Autorização</th>
-                <th>Detalhar</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in list.qs %}
-                <tr>
-                    <td>{{ row.name }}</td>
-                    <td>{{ row.institution }}</td>
-                    <td>{{ row.period_from|date:'d/m/Y' }} - {{ row.period_to|date:'d/m/Y' }}</td>
-                    <td>
-                        {% if row.status == 'Autorizado' %}
-                            <span class="btn btn-link btn-success text-light btn-sm">{{ row.status }}</span>
-                        {% elif row.status == 'Para autorização' %}
-                            <span class="btn btn-link btn-warning text-light btn-sm">{{ row.status }}</span>
-                        {% elif row.status == 'Não autorizado' %}
-                            <span class="btn btn-link btn-danger text-light btn-sm">{{ row.status }}</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <a class="btn btn-sm btn-primary" href="{{ row.get_absolute_url }}">
-                            <i class="fas fa-info-circle"></i> Detalhar
-                        </a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
 
-    {% include 'pagination.html' %}
 
 </div>
 

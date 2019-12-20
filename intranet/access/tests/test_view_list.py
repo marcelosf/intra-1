@@ -86,6 +86,16 @@ class AccessListViewTest(TestCase):
     def test_include_pagination(self):
         self.assertTemplateUsed(self.resp, 'pagination.html')
 
+    def test_actions_menu(self):
+        """Check if actions menu exists"""
+        items = (
+            ('Buscar', 1),
+            ('Adicionar', 1),
+        )
+
+        for expected, count in items:
+            with self.subTest():
+                self.assertContains(self.resp, expected, count)
 
 
 class AccessListPortariaTest(TestCase):
