@@ -6,6 +6,20 @@
 
     <h4>Detalhes do acesso</h4>
 
+    <div class="card">
+        <div class="card-body">
+            <a class="btn btn-primary btn-sm btn-link text-light" href="{% url 'access:new' %}" role="button">
+                <i class="fas fa-plus-circle"></i> Adicionar
+            </a>
+            <a class="btn btn-primary btn-sm btn-link text-light" href="{% url 'access:access_edit' access.uuid %}" role="button">
+                <i class="fas fa-edit"></i> Editar
+            </a>
+            <a class="btn btn-primary btn-sm btn-link text-light" href="{% url 'access:access_list' %}" role="button">
+                <i class="fas fa-list"></i> Listar
+            </a>    
+        </div>
+    </div>
+    <br>
     <div class="row">
         <div class="col-sm-12 col-md-12">
             <div class="card">

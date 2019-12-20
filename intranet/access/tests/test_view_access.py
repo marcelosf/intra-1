@@ -47,6 +47,16 @@ class TestAccessNewLoggedInGet(TestCase):
         form = self.resp.context['form']
         self.assertIsInstance(form, AccessForm)
 
+    def test_actions_menu(self):
+        """Check if actions menu exists"""
+        items = (
+            ('Listar', 1),
+        )
+
+        for expected, count in items:
+            with self.subTest():
+                self.assertContains(self.resp, expected, count)
+
 
 class TestAccessNewAnonymousGet(TestCase):
     def setUp(self):

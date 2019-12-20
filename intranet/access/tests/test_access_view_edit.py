@@ -88,6 +88,17 @@ class AccessViewEditGETTest(TestCase):
             with self.subTest():
                 self.assertContains(self.resp, expected)
 
+    def test_actions_menu_exists(self):
+        """Check if actions menu items exists"""
+        items = (
+            ('Listar', 1),
+            ('Adicionar', 1),
+        )
+
+        for expected, count in items:
+            with self.subTest():
+                self.assertContains(self.resp, expected, count)
+
 
 class AccessViewEditGETAnonimousTest(TestCase):
     def setUp(self):
