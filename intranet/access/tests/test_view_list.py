@@ -3,7 +3,7 @@ from django.contrib.auth.models import Group, Permission
 from django.conf import settings
 from intranet.access.models import Access
 from intranet.access.filters import PERPAGE
-from intranet.access.forms import form_choices
+from intranet.access.forms import form_choices, forms
 from django.core.paginator import Page
 from django.shortcuts import resolve_url as r
 from intranet.accounts.models import User
@@ -98,6 +98,33 @@ class AccessListViewTest(TestCase):
         for expected, count in items:
             with self.subTest():
                 self.assertContains(self.resp, expected, count)
+
+    def test_context_has_actions_form(self):
+        """Context should have an actions_form"""
+        self.assertIn('actions_form', self.resp.context)
+
+    def test_select_checkbox(self):
+        """List item should have a checkbox"""
+        count = PERPAGE + 1
+        self.assertContains(self.resp, 'type="checkbox"', count)
+
+    def test_html_actions_form(self):
+        """Template should have actions field"""
+        content = (
+            'Atualizar data de início', 
+            'Atualizar data de término',
+            'name="value"', 
+            '<form',
+            '>OK<'
+        )
+
+        for expected in content:
+            with self.subTest():
+                self.assertContains(self.resp, expected)
+
+    def test_csrf(self):
+        """Html must contain csrf"""
+        self.assertContains(self.resp, 'csrfmiddlewaretoken')
 
 
 class AccessListPortariaTest(TestCase):

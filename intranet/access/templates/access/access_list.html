@@ -6,19 +6,31 @@
 <div class="container">
 
     <h4>Lista de acessos</h4>
-    <div class="card">
-        <div class="card-body">            
-            <button type="button" class="btn btn-primary btn-sm btn-link text-light" data-toggle="modal" data-target="#search-form">
-                <i class="fas fa-search"></i> Buscar
-            </button>
-            {% if perms.access.add_access %}
-            <a class="btn btn-primary btn-sm btn-link text-light" href="{% url 'access:new' %}" role="button">
-                <i class="fas fa-plus-circle"></i> Adicionar
-            </a>
-            {% endif %}
+    <form action="#" novalidate method="post">
+        {% csrf_token %}
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-12 col-md-6">
+                        <button type="button" class="btn btn-primary btn-sm btn-link text-light" data-toggle="modal" data-target="#search-form">
+                            <i class="fas fa-search"></i> Buscar
+                        </button>
+                        {% if perms.access.add_access %}
+                        <a class="btn btn-primary btn-sm btn-link text-light" href="{% url 'access:new' %}" role="button">
+                            <i class="fas fa-plus-circle"></i> Adicionar
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% if perms.access.add_access %}
+                    <div class="col-sm-12 col-md-6">
+                        {{ actions_form.action|add_class:"form-control" }}
+                        {{ actions_form.value|add_class:"form-control" }}
+                    </div>
+                    <button class="btn btn-primary" type="submit">OK</button>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-    </div>
-
     <div id="search-form" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="search-form" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -72,6 +84,7 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
+                        <th><input type="checkbox" name="access-list-select-all" id="access-list-select-all"></th>
                         <th>Nome</th>
                         <th>Instituição</th>
                         <th>Período</th>
@@ -82,6 +95,9 @@
                 <tbody>
                     {% for row in list.qs %}
                         <tr>
+                            <td>
+                                <input type="checkbox" name="{{ row.pk }}" id="list-item-{{ row.pk }}">
+                            </td>
                             <td>{{ row.name }}</td>
                             <td>{{ row.institution }}</td>
                             <td>{{ row.period_from|date:'d/m/Y' }} - {{ row.period_to|date:'d/m/Y' }}</td>
@@ -103,11 +119,10 @@
                     {% endfor %}
                 </tbody>
             </table>
+    </form>
             {% include 'pagination.html' %}
         </div>
     </div>
-
-
 
 </div>
 
