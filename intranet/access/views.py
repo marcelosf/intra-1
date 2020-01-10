@@ -57,7 +57,9 @@ def detail(request, slug):
 def access_list(request):
     actions_form = actions_formset(queryset=Access.objects.all())
     if request.method == 'POST':
-        _bulk_actions(request, actions_form)
+        is_valid, form = _bulk_actions(request, actions_form)
+        if not is_valid:
+            actions_form = form
     queryset = _select_queryset(request)
     paginator = PaginatorMixin(queryset=queryset, filterset=AccessFilter, request=request)
     paginator.set_per_page(PERPAGE)
@@ -68,16 +70,17 @@ def access_list(request):
 
 def _bulk_actions(request, actions_form):
     form = actions_form(request.POST)
-    if form.is_valid():
-        access = form.cleaned_data['access']
-        data = form.cleaned_data
-        data = dict((k, v) for k, v in data.items() if v != None)
-        del data['access']
-        data['status'] = form_choices.WAITING
-        access.update(**data)
-        keys = list(data.keys())
-        Access.objects.bulk_update(access, keys, batch_size=30)
-        return True
+    if not form.is_valid():
+        return (False, form)
+    access = form.cleaned_data['access']
+    data = form.cleaned_data
+    data = dict((k, v) for k, v in data.items() if v != None)
+    del data['access']
+    data['status'] = form_choices.WAITING
+    access.update(**data)
+    keys = list(data.keys())
+    Access.objects.bulk_update(access, keys, batch_size=30)
+    return (True, form)
         
 
 def _access_update(request, slug):

@@ -49,4 +49,9 @@ def actions_formset(queryset):
         time_to = forms.TimeField(label='Hora de término', widget=forms.TimeInput(), required=False)
         observation = forms.CharField(label='Observação', widget=forms.Textarea(), required=False)
 
+        def clean(self):
+            cleaned_data = super().clean()
+            validators.validate_period(cleaned_data.get('period_from'), cleaned_data.get('period_to'))
+            return self.cleaned_data
+
     return _ActionsForm

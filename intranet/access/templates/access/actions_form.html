@@ -10,11 +10,11 @@
     </div>
     <div class="col">
         {{ actions_form.period_from.label_tag }}
-        {{ actions_form.period_from|add_class:"form-control" }}
+        {{ actions_form.period_from|add_class:"form-control"|add_error_class:"is-invalid" }}
     </div>
     <div class="col">
         {{ actions_form.period_to.label_tag }}
-        {{ actions_form.period_to|add_class:"form-control" }}
+        {{ actions_form.period_to|add_class:"form-control"|add_error_class:"is-invalid" }}
     </div>
     <div class="col">
         {{ actions_form.time_from.label_tag }}

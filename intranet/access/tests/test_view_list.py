@@ -168,8 +168,24 @@ class AccessListPostTest(TestCase):
 
     def test_bulk_update(self):
         """Period to should be 10/10/2020"""
+        self.make_request()
+        self.assertContains(self.resp, '10/10/2020', 2)
+
+    def test_form_errors(self):
+        """Form must contain errors"""
+        self.make_request(period_from='10/20/2020')
+        form = self.resp.context['actions_form']
+        self.assertGreater(len(form.errors.keys()), 0)
+    
+    def test_non_fields_error_message(self):
+        """It must contain the error message"""
+        self.make_request(period_from='10/20/2020')
+        expected = 'A Data de início deve ser menor do que a Data de término'
+        self.assertContains(self.resp, expected)
+
+    def make_request(self, **kwargs):
         access = Access.objects.all()
-        data = {
+        default = {
             'access': [access[0].pk, access[1].pk], 
             'period_from': '01/01/2019',
             'period_to': '10/10/2020',
@@ -179,8 +195,9 @@ class AccessListPostTest(TestCase):
             'observation': 'Observação'
         }
 
-        resp = self.client.post(r('access:access_list'), data)
-        self.assertContains(resp, '10/10/2020', 2)
+        data = dict(default, **kwargs)
+        self.resp = self.client.post(r('access:access_list'), data)
+
         
 
 class AccessListPortariaTest(TestCase):
