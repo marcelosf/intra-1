@@ -2,8 +2,11 @@
 
 <div class="form-row mb-5">
     <div class="col">
-        {{ actions_form.enable.label_tag }}
-        {{ actions_form.enable|add_class:"form-control" }}
+        <div class="custom-control custom-checkbox">
+            {{ actions_form.enable|add_class:"custom-control-input" }}
+            <label for="{{ actions_form.enable.id_for_label }}" class="custom-control-label">{{ actions_form.enable.label }}</label>
+            {{ actions_form.enable.label_tag }}
+        </div>
     </div>
     <div class="col">
         {{ actions_form.period_from.label_tag }}
@@ -23,7 +26,7 @@
     </div>
     <div class="col">
         {{ actions_form.observation.label_tag }}
-        {{ actions_form.observation|add_class:"form-control" }}
+        {{ actions_form.observation|add_class:"form-control"|attr:"rows:1" }}
     </div>
     <div class="col">
         <button class="btn btn-primary btn-sm mt-5" type="submit">OK</button>
