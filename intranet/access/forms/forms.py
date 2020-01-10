@@ -42,7 +42,11 @@ class AccessForm(forms.Form):
 def actions_formset(queryset):
     class _ActionsForm(forms.Form):
         access = forms.ModelMultipleChoiceField(queryset=queryset, widget=forms.CheckboxSelectMultiple)
-        action = forms.ChoiceField(choices=ACTIONS_CHOICES)
-        value = forms.CharField(max_length=128)
+        enable = forms.BooleanField(label='Ativo', required=False)
+        period_from = forms.DateField(label='Data de início', widget=forms.TextInput(attrs={'type': 'date'}), required=False)
+        period_to = forms.DateField(label='Data de término', widget=forms.TextInput(attrs={'type': 'date'}), required=False)
+        time_from = forms.TimeField(label='Hora de início', widget=forms.TimeInput(), required=False)
+        time_to = forms.TimeField(label='Hora de término', widget=forms.TimeInput(), required=False)
+        observation = forms.CharField(label='Observação', widget=forms.Textarea(), required=False)
 
     return _ActionsForm

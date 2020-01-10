@@ -6,8 +6,6 @@
 <div class="container">
 
     <h4>Lista de acessos</h4>
-    <form action="#" novalidate method="post">
-        {% csrf_token %}
         <div class="card">
             <div class="card-body">
                 <div class="row">
@@ -19,15 +17,17 @@
                         <a class="btn btn-primary btn-sm btn-link text-light" href="{% url 'access:new' %}" role="button">
                             <i class="fas fa-plus-circle"></i> Adicionar
                         </a>
+                        <button 
+                            class="btn btn-primary btn-sm btn-link text-light" 
+                            data-toggle="collapse" 
+                            data-target="#action-form"
+                            aria-expanded="false"
+                            aria-controls="action-form"
+                        >
+                            <i class="fas fa-plus-circle"></i> Operações em lote
+                        </button>    
                         {% endif %}
                     </div>
-                    {% if perms.access.add_access %}
-                    <div class="col-sm-12 col-md-6">
-                        {{ actions_form.action|add_class:"form-control" }}
-                        {{ actions_form.value|add_class:"form-control" }}
-                    </div>
-                    <button class="btn btn-primary" type="submit">OK</button>
-                    {% endif %}
                 </div>
             </div>
         </div>
@@ -81,45 +81,50 @@
     <br>
     <div class="card">
         <div class="card-body">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th><input type="checkbox" name="access-list-select-all" id="access-list-select-all"></th>
-                        <th>Nome</th>
-                        <th>Instituição</th>
-                        <th>Período</th>
-                        <th>Autorização</th>
-                        <th>Detalhar</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in list.qs %}
+            <form action="{% url 'access:access_list' %}" novalidate method="post">
+                {% csrf_token %}
+                <div class="collapse" id="action-form">
+                    {% include 'access/actions_form.html' %}
+                </div>
+                <table class="table table-hover">
+                    <thead>
                         <tr>
-                            <td>
-                                <input type="checkbox" name="{{ row.pk }}" id="list-item-{{ row.pk }}">
-                            </td>
-                            <td>{{ row.name }}</td>
-                            <td>{{ row.institution }}</td>
-                            <td>{{ row.period_from|date:'d/m/Y' }} - {{ row.period_to|date:'d/m/Y' }}</td>
-                            <td>
-                                {% if row.status == 'Autorizado' %}
-                                    <span class="btn btn-link btn-success text-light btn-sm">{{ row.status }}</span>
-                                {% elif row.status == 'Para autorização' %}
-                                    <span class="btn btn-link btn-warning text-light btn-sm">{{ row.status }}</span>
-                                {% elif row.status == 'Não autorizado' %}
-                                    <span class="btn btn-link btn-danger text-light btn-sm">{{ row.status }}</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <a class="btn btn-sm btn-primary" href="{{ row.get_absolute_url }}">
-                                    <i class="fas fa-info-circle"></i> Detalhar
-                                </a>
-                            </td>
+                            <th><input type="checkbox" name="access-list-select-all" id="access-list-select-all"></th>
+                            <th>Nome</th>
+                            <th>Instituição</th>
+                            <th>Período</th>
+                            <th>Autorização</th>
+                            <th>Detalhar</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-    </form>
+                    </thead>
+                    <tbody>
+                        {% for row in list.qs %}
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="access" value="{{ row.pk }}" id="list-item-{{ row.pk }}">
+                                </td>
+                                <td>{{ row.name }}</td>
+                                <td>{{ row.institution }}</td>
+                                <td>{{ row.period_from|date:'d/m/Y' }} - {{ row.period_to|date:'d/m/Y' }}</td>
+                                <td>
+                                    {% if row.status == 'Autorizado' %}
+                                        <span class="btn btn-link btn-success text-light btn-sm">{{ row.status }}</span>
+                                    {% elif row.status == 'Para autorização' %}
+                                        <span class="btn btn-link btn-warning text-light btn-sm">{{ row.status }}</span>
+                                    {% elif row.status == 'Não autorizado' %}
+                                        <span class="btn btn-link btn-danger text-light btn-sm">{{ row.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a class="btn btn-sm btn-primary" href="{{ row.get_absolute_url }}">
+                                        <i class="fas fa-info-circle"></i> Detalhar
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </form>
             {% include 'pagination.html' %}
         </div>
     </div>

@@ -70,14 +70,15 @@ def _bulk_actions(request, actions_form):
     form = actions_form(request.POST)
     if form.is_valid():
         access = form.cleaned_data['access']
-        action = form.cleaned_data['action']
-        value = form.cleaned_data['value']
-
-        for item in access:
-            setattr(item, action, value)
-            item.status = form_choices.WAITING
-        Access.objects.bulk_update(access, [action, 'status'], batch_size=30)
-
+        data = form.cleaned_data
+        data = dict((k, v) for k, v in data.items() if v != None)
+        del data['access']
+        data['status'] = form_choices.WAITING
+        access.update(**data)
+        keys = list(data.keys())
+        Access.objects.bulk_update(access, keys, batch_size=30)
+        return True
+        
 
 def _access_update(request, slug):
     form = AccessForm(request.POST)

@@ -1,0 +1,32 @@
+{% load widget_tweaks %}
+
+<div class="form-row mb-5">
+    <div class="col">
+        {{ actions_form.enable.label_tag }}
+        {{ actions_form.enable|add_class:"form-control" }}
+    </div>
+    <div class="col">
+        {{ actions_form.period_from.label_tag }}
+        {{ actions_form.period_from|add_class:"form-control" }}
+    </div>
+    <div class="col">
+        {{ actions_form.period_to.label_tag }}
+        {{ actions_form.period_to|add_class:"form-control" }}
+    </div>
+    <div class="col">
+        {{ actions_form.time_from.label_tag }}
+        {{ actions_form.time_from|add_class:"form-control" }}
+    </div>
+    <div class="col">
+        {{ actions_form.time_to.label_tag }}
+        {{ actions_form.time_to|add_class:"form-control" }}
+    </div>
+    <div class="col">
+        {{ actions_form.observation.label_tag }}
+        {{ actions_form.observation|add_class:"form-control" }}
+    </div>
+    <div class="col">
+        <button class="btn btn-primary btn-sm mt-5" type="submit">OK</button>
+    </div>
+</div>
+

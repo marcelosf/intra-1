@@ -8,7 +8,15 @@ class ActionsFormTest(TestCase):
         self.form = forms.actions_formset(queryset=Access.objects.all())
 
     def test_form_fields(self):
-        fields = ('access', 'action', 'value')
+        fields = (
+            'access',
+            'period_from',
+            'period_to',
+            'time_from',
+            'time_to',
+            'observation',
+            'enable'
+        )
 
         for field in fields:
             with self.subTest():

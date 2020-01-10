@@ -104,17 +104,19 @@ class AccessListViewTest(TestCase):
         self.assertIn('actions_form', self.resp.context)
 
     def test_select_checkbox(self):
-        """List item should have a checkbox"""
-        count = PERPAGE + 1
+        """List item should have checkbox"""
+        count = PERPAGE + 2
         self.assertContains(self.resp, 'type="checkbox"', count)
 
     def test_html_actions_form(self):
         """Template should have actions field"""
         content = (
-            'Atualizar data de início', 
-            'Atualizar data de término',
-            'name="value"', 
-            '<form',
+            'Ativo',
+            'Data de início', 
+            'Data de término',
+            'Hora de início', 
+            'Hora de término',
+            'Observação',
             '>OK<'
         )
 
@@ -126,6 +128,59 @@ class AccessListViewTest(TestCase):
         """Html must contain csrf"""
         self.assertContains(self.resp, 'csrfmiddlewaretoken')
 
+    def test_form_no_validate(self):
+        """Don't validate data on form"""
+        self.assertContains(self.resp, 'novalidate')
+
+class AccessListPostTest(TestCase):
+    def setUp(self):
+        user = User.objects.create_user(login='333', name='Tail', type='I', main_email='tail@test.com')
+        can_add_access_perm = Permission.objects.get(name='Can add acesso') 
+        user.user_permissions.add(can_add_access_perm)
+        self.client.force_login(user)
+        data = {
+            'enable': True,
+            'period_to': '2020-12-12',
+            'period_from': '2019-12-20',
+            'time_to': '13:13',
+            'time_from': '20:20',
+            'institution': 'IAG',
+            'name': 'Marcelo',
+            'job': 'Analista',
+            'email': 'marcelo@test.com',
+            'phone': '11912345678',
+            'doc_type': 'RG',
+            'doc_number': '202000002',
+            'answerable': 'Pessoa1',
+            'observation': 'Observações',
+            'status': 'Autorizado',
+            'created_by': user
+        }
+
+        data_2 = data.copy()
+        Access.objects.create(**data)
+        Access.objects.create(**data_2)
+    
+    def test_access_created(self):
+        """Access must be created"""
+        self.assertEqual(2, Access.objects.count())
+
+    def test_bulk_update(self):
+        """Period to should be 10/10/2020"""
+        access = Access.objects.all()
+        data = {
+            'access': [access[0].pk, access[1].pk], 
+            'period_from': '01/01/2019',
+            'period_to': '10/10/2020',
+            'time_from': '10:10',
+            'time_to': '20:00',
+            'enable': True,
+            'observation': 'Observação'
+        }
+
+        resp = self.client.post(r('access:access_list'), data)
+        self.assertContains(resp, '10/10/2020', 2)
+        
 
 class AccessListPortariaTest(TestCase):
     def setUp(self):

@@ -40,33 +40,52 @@ class AccessBulkOprationsTest(TestCase):
         self.assertEqual(2, Access.objects.count())
 
     def test_access_form_action_period_to(self):
-        """Period to must be 2020-01-01"""
-        self.assertBulk(value='2020-01-10', action='period_to')
+        """Period to must be 2020-01-05"""
+        self.make_data()
+        self.assertBulk(value='2020-01-05', field='period_to')
 
     def test_access_form_action_period_from(self):
-        """Period from must be 2019-12-25"""
-        self.assertBulk(value='2019-12-25', action='period_from')
+        """Period from must be 2019-01-01"""
+        self.make_data()
+        self.assertBulk(value='2019-01-01', field='period_from')
 
     def test_access_form_action_time_to(self):
         """Time to must be 10:10"""
-        self.assertBulk(value='10:10:00', action='time_to')
+        self.make_data(time_to='10:10')
+        self.assertBulk(value='10:10:00', field='time_to')
 
     def test_access_form_action_time_from(self):
         """Time to must be 10:10"""
-        self.assertBulk(value='10:10:00', action='time_from')
+        self.make_data(time_from='10:10')
+        self.assertBulk(value='10:10:00', field='time_from')
+
+    def test_access_form_action_incompleted(self):
+        """It must update data with provided fields"""
+        self.make_data(period_to='', period_from='', observation='obs')
+        self.assertBulk('observation', 'obs')
         
-    def assertBulk(self, value, action):
+    def assertBulk(self, field, value):
         """Test bulk operations"""
-        self.make_data(value=value, action=action)
         obj = Access.objects.all()
         for item in obj:
-            attr = getattr(item, action)
+            attr = getattr(item, field)
             with self.subTest():
                 self.assertEqual(value, str(attr))
             with self.subTest():
                 self.assertEqual(form_choices.WAITING, item.status)
-                
-    def make_data(self, value, action='period_to'):
+
+    def make_data(self, **kwargs):
         obj = Access.objects.all()
-        data = {'action': action, 'access': [obj[0].pk, obj[1].pk], 'value': value}
+        default = {
+            'access': [obj[0].pk, obj[1].pk], 
+            'period_from': '01/01/2019',
+            'period_to': '01/05/2020',
+            'time_from': '10:10',
+            'time_to': '20:00',
+            'enable': True,
+            'observation': 'Observação'
+        }
+
+        data = dict(default, **kwargs)
         self.resp = self.client.post(r('access:access_list'), data=data)
+
