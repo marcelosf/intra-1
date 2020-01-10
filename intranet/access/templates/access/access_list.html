@@ -14,18 +14,20 @@
                             <i class="fas fa-search"></i> Buscar
                         </button>
                         {% if perms.access.add_access %}
-                        <a class="btn btn-primary btn-sm btn-link text-light" href="{% url 'access:new' %}" role="button">
-                            <i class="fas fa-plus-circle"></i> Adicionar
-                        </a>
-                        <button 
-                            class="btn btn-primary btn-sm btn-link text-light" 
-                            data-toggle="collapse" 
-                            data-target="#action-form"
-                            aria-expanded="false"
-                            aria-controls="action-form"
-                        >
-                            <i class="fas fa-plus-circle"></i> Operações em lote
-                        </button>    
+                            <a class="btn btn-primary btn-sm btn-link text-light" href="{% url 'access:new' %}" role="button">
+                                <i class="fas fa-plus-circle"></i> Adicionar
+                            </a>
+                        {% endif %}
+                        {% if perms.access.add_access %}
+                            <button 
+                                class="btn btn-primary btn-sm btn-link text-light" 
+                                data-toggle="collapse" 
+                                data-target="#action-form"
+                                aria-expanded="false"
+                                aria-controls="action-form"
+                            >
+                                <i class="fas fa-plus-circle"></i> Operações em lote
+                            </button>    
                         {% endif %}
                     </div>
                 </div>
@@ -84,12 +86,18 @@
             <form action="{% url 'access:access_list' %}" novalidate method="post">
                 {% csrf_token %}
                 <div class="collapse" id="action-form">
-                    {% include 'access/actions_form.html' %}
+                    {% if perms.access.change_access %}
+                        {% include 'access/actions_form.html' %}
+                    {% endif %}
                 </div>
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th><input type="checkbox" name="access-list-select-all" id="access-list-select-all"></th>
+                            <th>
+                                {% if perms.access.change_access %}
+                                <input type="checkbox" name="access-list-select-all" id="access-list-select-all">
+                                {% endif %}
+                            </th>
                             <th>Nome</th>
                             <th>Instituição</th>
                             <th>Período</th>
@@ -101,7 +109,9 @@
                         {% for row in list.qs %}
                             <tr>
                                 <td>
+                                    {% if perms.access.change_access %}
                                     <input type="checkbox" name="access" value="{{ row.pk }}" id="list-item-{{ row.pk }}">
+                                    {% endif %}
                                 </td>
                                 <td>{{ row.name }}</td>
                                 <td>{{ row.institution }}</td>

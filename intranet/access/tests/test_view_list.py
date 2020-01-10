@@ -12,8 +12,9 @@ from intranet.accounts.models import User
 class AccessListViewTest(TestCase):
     def setUp(self):
         user = User.objects.create_user('Marc', 'marc@test.com', 'ktw123@777')
-        can_add_access_perm = Permission.objects.get(name='Can add acesso') 
-        user.user_permissions.add(can_add_access_perm)
+        can_add_access_perm = Permission.objects.get(name='Can add acesso')
+        can_change_access_perm = Permission.objects.get(name='Can change acesso')
+        user.user_permissions.set([can_add_access_perm, can_change_access_perm])
         self.client.force_login(user)
         for i in range(40):
             self.obj = Access.objects.create(
@@ -135,8 +136,8 @@ class AccessListViewTest(TestCase):
 class AccessListPostTest(TestCase):
     def setUp(self):
         user = User.objects.create_user(login='333', name='Tail', type='I', main_email='tail@test.com')
-        can_add_access_perm = Permission.objects.get(name='Can add acesso') 
-        user.user_permissions.add(can_add_access_perm)
+        can_change_access_perm = Permission.objects.get(name='Can change acesso') 
+        user.user_permissions.add(can_change_access_perm)
         self.client.force_login(user)
         data = {
             'enable': True,
@@ -228,3 +229,7 @@ class AccessListPortariaTest(TestCase):
     def test_actions_menu(self):
         """Add button can not be showed"""
         self.assertNotContains(self.resp, 'Adicionar')
+
+    def test_not_see_checkbox_list_item(self):
+        """Portaria group do not see checkbox items"""
+        self.assertNotContains(self.resp, 'type="checkbox"')

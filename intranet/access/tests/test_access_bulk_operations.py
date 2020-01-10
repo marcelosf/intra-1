@@ -9,7 +9,7 @@ from intranet.access.forms import form_choices
 class AccessBulkOprationsTest(TestCase):
     def setUp(self):
         user = User.objects.create_user(login='333', name='Tail', type='I', main_email='tail@test.com')
-        can_add_access_perm = Permission.objects.get(name='Can add acesso') 
+        can_add_access_perm = Permission.objects.get(name='Can change acesso') 
         user.user_permissions.add(can_add_access_perm)
         self.client.force_login(user)
         data = {
