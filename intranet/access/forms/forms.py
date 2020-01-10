@@ -1,11 +1,11 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from intranet.access import validators
-from intranet.access.forms.form_choices import DOCS, ANSWERABLE, STATUS
+from intranet.access.forms.form_choices import DOCS, ANSWERABLE, STATUS, ACTIONS_CHOICES
+from intranet.access.models import Access
 
 
 class AccessForm(forms.Form):
-
     enable = forms.BooleanField(label='Ativar', required=False)
     status = forms.ChoiceField(label='status', choices=STATUS)
     period_to = forms.DateField(label='Data de término', widget=forms.TextInput(attrs={'type': 'date'}))
@@ -38,3 +38,20 @@ class AccessForm(forms.Form):
         words = [w.capitalize() for w in job.split()]
         return ' '.join(words)
 
+
+def actions_formset(queryset):
+    class _ActionsForm(forms.Form):
+        access = forms.ModelMultipleChoiceField(queryset=queryset, widget=forms.CheckboxSelectMultiple)
+        enable = forms.BooleanField(label='Ativo', required=False)
+        period_from = forms.DateField(label='Data de início', widget=forms.TextInput(attrs={'type': 'date'}), required=False)
+        period_to = forms.DateField(label='Data de término', widget=forms.TextInput(attrs={'type': 'date'}), required=False)
+        time_from = forms.TimeField(label='Hora de início', widget=forms.TimeInput(), required=False)
+        time_to = forms.TimeField(label='Hora de término', widget=forms.TimeInput(), required=False)
+        observation = forms.CharField(label='Observação', widget=forms.Textarea(), required=False)
+
+        def clean(self):
+            cleaned_data = super().clean()
+            validators.validate_period(cleaned_data.get('period_from'), cleaned_data.get('period_to'))
+            return self.cleaned_data
+
+    return _ActionsForm

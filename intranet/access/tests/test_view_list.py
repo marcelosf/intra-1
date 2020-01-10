@@ -3,7 +3,7 @@ from django.contrib.auth.models import Group, Permission
 from django.conf import settings
 from intranet.access.models import Access
 from intranet.access.filters import PERPAGE
-from intranet.access.forms import form_choices
+from intranet.access.forms import form_choices, forms
 from django.core.paginator import Page
 from django.shortcuts import resolve_url as r
 from intranet.accounts.models import User
@@ -12,8 +12,9 @@ from intranet.accounts.models import User
 class AccessListViewTest(TestCase):
     def setUp(self):
         user = User.objects.create_user('Marc', 'marc@test.com', 'ktw123@777')
-        can_add_access_perm = Permission.objects.get(name='Can add acesso') 
-        user.user_permissions.add(can_add_access_perm)
+        can_add_access_perm = Permission.objects.get(name='Can add acesso')
+        can_change_access_perm = Permission.objects.get(name='Can change acesso')
+        user.user_permissions.set([can_add_access_perm, can_change_access_perm])
         self.client.force_login(user)
         for i in range(40):
             self.obj = Access.objects.create(
@@ -99,6 +100,105 @@ class AccessListViewTest(TestCase):
             with self.subTest():
                 self.assertContains(self.resp, expected, count)
 
+    def test_context_has_actions_form(self):
+        """Context should have an actions_form"""
+        self.assertIn('actions_form', self.resp.context)
+
+    def test_select_checkbox(self):
+        """List item should have checkbox"""
+        count = PERPAGE + 2
+        self.assertContains(self.resp, 'type="checkbox"', count)
+
+    def test_html_actions_form(self):
+        """Template should have actions field"""
+        content = (
+            'Ativo',
+            'Data de início', 
+            'Data de término',
+            'Hora de início', 
+            'Hora de término',
+            'Observação',
+            '>OK<'
+        )
+
+        for expected in content:
+            with self.subTest():
+                self.assertContains(self.resp, expected)
+
+    def test_csrf(self):
+        """Html must contain csrf"""
+        self.assertContains(self.resp, 'csrfmiddlewaretoken')
+
+    def test_form_no_validate(self):
+        """Don't validate data on form"""
+        self.assertContains(self.resp, 'novalidate')
+
+class AccessListPostTest(TestCase):
+    def setUp(self):
+        user = User.objects.create_user(login='333', name='Tail', type='I', main_email='tail@test.com')
+        can_change_access_perm = Permission.objects.get(name='Can change acesso') 
+        user.user_permissions.add(can_change_access_perm)
+        self.client.force_login(user)
+        data = {
+            'enable': True,
+            'period_to': '2020-12-12',
+            'period_from': '2019-12-20',
+            'time_to': '13:13',
+            'time_from': '20:20',
+            'institution': 'IAG',
+            'name': 'Marcelo',
+            'job': 'Analista',
+            'email': 'marcelo@test.com',
+            'phone': '11912345678',
+            'doc_type': 'RG',
+            'doc_number': '202000002',
+            'answerable': 'Pessoa1',
+            'observation': 'Observações',
+            'status': 'Autorizado',
+            'created_by': user
+        }
+
+        data_2 = data.copy()
+        Access.objects.create(**data)
+        Access.objects.create(**data_2)
+    
+    def test_access_created(self):
+        """Access must be created"""
+        self.assertEqual(2, Access.objects.count())
+
+    def test_bulk_update(self):
+        """Period to should be 10/10/2020"""
+        self.make_request()
+        self.assertContains(self.resp, '10/10/2020', 2)
+
+    def test_form_errors(self):
+        """Form must contain errors"""
+        self.make_request(period_from='10/20/2020')
+        form = self.resp.context['actions_form']
+        self.assertGreater(len(form.errors.keys()), 0)
+    
+    def test_non_fields_error_message(self):
+        """It must contain the error message"""
+        self.make_request(period_from='10/20/2020')
+        expected = 'A Data de início deve ser menor do que a Data de término'
+        self.assertContains(self.resp, expected)
+
+    def make_request(self, **kwargs):
+        access = Access.objects.all()
+        default = {
+            'access': [access[0].pk, access[1].pk], 
+            'period_from': '01/01/2019',
+            'period_to': '10/10/2020',
+            'time_from': '10:10',
+            'time_to': '20:00',
+            'enable': True,
+            'observation': 'Observação'
+        }
+
+        data = dict(default, **kwargs)
+        self.resp = self.client.post(r('access:access_list'), data)
+
+        
 
 class AccessListPortariaTest(TestCase):
     def setUp(self):
@@ -146,3 +246,7 @@ class AccessListPortariaTest(TestCase):
     def test_actions_menu(self):
         """Add button can not be showed"""
         self.assertNotContains(self.resp, 'Adicionar')
+
+    def test_not_see_checkbox_list_item(self):
+        """Portaria group do not see checkbox items"""
+        self.assertNotContains(self.resp, 'type="checkbox"')

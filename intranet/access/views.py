@@ -5,7 +5,7 @@ from django.core.paginator import Paginator
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
-from intranet.access.forms.forms import AccessForm
+from intranet.access.forms.forms import AccessForm, actions_formset
 from intranet.access.forms import form_choices
 from intranet.access.models import Access
 from intranet.access.filters import AccessFilter
@@ -13,12 +13,14 @@ from intranet.access.filters import PERPAGE
 from django_filters.views import FilterView
 from intranet.core.mixins import PaginatorMixin
 
+
 @login_required(login_url=settings.LOGIN_URL)
 def new(request):
     if request.method == 'POST':
         return create(request)
 
     return empty_form(request)
+
 
 def create(request):
     form = AccessForm(request.POST)
@@ -33,7 +35,8 @@ def create(request):
     messages.success(request, 'Solicitação enviada com sucesso.')
 
     return empty_form(request)
-    
+
+
 @login_required(login_url=settings.LOGIN_URL)
 def access_edit(request, slug):
     if request.method == 'POST':
@@ -42,20 +45,43 @@ def access_edit(request, slug):
     form = AccessForm(access[0])
     return render(request, 'access/access_edit.html', {'form': form})
 
+
 @login_required(login_url=settings.LOGIN_URL)
 def detail(request, slug):
     access = Access.objects.get(uuid=slug)
     context = {'access': access}
     return render(request, 'access/access_detail.html', context)
 
+
 @login_required(login_url=settings.LOGIN_URL)
 def access_list(request):
+    actions_form = actions_formset(queryset=Access.objects.all())
+    if request.method == 'POST':
+        is_valid, form = _bulk_actions(request, actions_form)
+        if not is_valid:
+            actions_form = form
     queryset = _select_queryset(request)
     paginator = PaginatorMixin(queryset=queryset, filterset=AccessFilter, request=request)
     paginator.set_per_page(PERPAGE)
     pages = paginator.get_paginator()
-    context = {'list': pages['object_list'], 'page_list': pages['page_list']}
+    context = {'list': pages['object_list'], 'page_list': pages['page_list'], 'actions_form': actions_form}
     return render(pages['request'], 'access/access_list.html', context)
+
+
+def _bulk_actions(request, actions_form):
+    form = actions_form(request.POST)
+    if not form.is_valid():
+        return (False, form)
+    access = form.cleaned_data['access']
+    data = form.cleaned_data
+    data = dict((k, v) for k, v in data.items() if v != None)
+    del data['access']
+    data['status'] = form_choices.WAITING
+    access.update(**data)
+    keys = list(data.keys())
+    Access.objects.bulk_update(access, keys, batch_size=30)
+    return (True, form)
+        
 
 def _access_update(request, slug):
     form = AccessForm(request.POST)
@@ -75,14 +101,17 @@ def _access_update(request, slug):
     messages.success(request, message='Acesso atualizado com sucesso')
     return render(request, 'access/access_edit.html', {'form': form})
 
+
 def _select_queryset(request):
     in_group = request.user.groups.filter(name=settings.PORTARIA_GROUP_NAME).exists()
     if in_group:
         return Access.objects.filter(status=form_choices.AUTHORIZED)
     return Access.objects.all()
 
+
 def empty_form(request):
     return render(request, 'access/access_form.html', {'form': AccessForm()})
+
 
 def _send_email(context):
     subject = '[IAG-INTRANET] Solicitação de acesso'
@@ -90,4 +119,3 @@ def _send_email(context):
     to_email = 'intranet@mailinator.com'
     body = render_to_string('email/new_access.txt', context)
     mail.send_mail(subject, body, from_email, [to_email])
-

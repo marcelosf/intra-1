@@ -10,6 +10,13 @@ ANSWERABLE = (
     ('Pessoa2', 'Pessoa2'),
 )
 
+ACTIONS_CHOICES = (
+    ('period_from', 'Atualizar data de início'),
+    ('period_to', 'Atualizar data de término'),
+    ('time_from', 'Atualizar hora de início'),
+    ('time_to', 'Atualizar hora de término')
+)
+
 
 AUTHORIZED = 'Autorizado'
 WAITING = 'Para autorização'
