@@ -36,3 +36,10 @@ API_BASE_URL=https://yourapibaseurl.com/api
 #######################
 PORTARIA_GROUP_NAME=portaria
 
+
+#######################
+#Resources
+#######################
+SET_REPLICADO=False
+ANSWERABLE_RESOURCE=http://relpicado.url.com/pessoa.json
+

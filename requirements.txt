@@ -24,6 +24,7 @@ django-test-without-migrations==0.6
 django-widget-tweaks==1.4.5
 entrypoints==0.3
 get==2019.4.13
+httpretty==0.9.7
 idna==2.8
 importlib-metadata==0.23
 ipykernel==5.1.2
