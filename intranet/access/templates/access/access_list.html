@@ -100,7 +100,7 @@
                         <tr>
                             <th>
                                 {% if perms.access.change_access %}
-                                <input type="checkbox" name="access-list-select-all" id="access-list-select-all">
+                                <input type="checkbox" name="access-list-select-all" id="checkall" onclick="window.checkall(this);">
                                 {% endif %}
                             </th>
                             <th>Nome</th>
