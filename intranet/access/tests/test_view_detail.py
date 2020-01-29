@@ -9,12 +9,8 @@ class DetailViewLoggedInTest(TestCase):
     def setUp(self):
         user = User.objects.create_user('Marc','marc@email.com', 'marcpass')
         self.client.force_login(user)
-        access = Access.objects.create(enable=True, period_to='2019-12-12', period_from='2019-12-01',
-                                            time_to='15:00', time_from='12:12', institution='IAG',
-                                            name='Thomas Helperson', job='Analista', email='th@ia.com',
-                                            phone='988889922', doc_type='RG', doc_number='3939393993', 
-                                            answerable='Paul Gerdeson', observation='Observation', 
-                                            status='Para autorização')
+        data = self.make_data()
+        access = Access.objects.create(**data)
         self.response = self.client.get(r('access:access_detail', slug=access.uuid))
     
     def test_view(self):
@@ -68,6 +64,30 @@ class DetailViewLoggedInTest(TestCase):
         for expected, count in items:
             with self.subTest():
                 self.assertContains(self.response, expected, count)
+
+    def test_weekdays_html(self):
+        self.assertContains(self.response, 'Dias da semana')
+
+    def test_weekdays_content(self):
+        data = self.make_data(weekdays=['0', '3'])
+        access = Access.objects.create(**data)
+        response = self.client.get(r('access:access_detail', slug=access.uuid))
+        content = ['Segunda', 'Quinta']
+        for expected in content:
+            with self.subTest():
+                self.assertContains(response, expected) 
+
+    def make_data(self, **kwargs):
+        default = dict(enable=True, period_to='2019-12-12', period_from='2019-12-01',
+                                            time_to='15:00', time_from='12:12', institution='IAG',
+                                            name='Thomas Helperson', job='Analista', email='th@ia.com',
+                                            phone='988889922', doc_type='RG', doc_number='3939393993', 
+                                            answerable='Paul Gerdeson', observation='Observation', 
+                                            status='Para autorização')
+        data = dict(default, **kwargs)
+        return data
+
+    
 
 class DetailViewTestLoggedOut(TestCase):
     def setUp(self):

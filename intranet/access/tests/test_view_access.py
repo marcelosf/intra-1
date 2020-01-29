@@ -30,7 +30,7 @@ class TestAccessNewLoggedInGet(TestCase):
             ('type="email"', 1),
             ('<select', 3),
             ('<textarea', 1),
-            ('type="checkbox"', 1),
+            ('type="checkbox"', 8),
             ('type="submit"', 1),
         )
 
@@ -71,25 +71,7 @@ class TestAccessNewPostValid(TestCase):
     def setUp(self):
         user = User.objects.create_user('Marc','marc@email.com', 'marcpass')
         self.client.force_login(user)
-        self.data = {
-            'enable': True,
-            'period_to': '2019-12-20',
-            'period_from': '2019-12-12',
-            'time_to': '13:13',
-            'time_from': '20:20',
-            'institution': 'IAG',
-            'name': 'Marcelo',
-            'job': 'Analista',
-            'email': 'marcelo@test.com',
-            'phone': '11912345678',
-            'doc_type': 'RG',
-            'doc_number': '202000002',
-            'answerable': 'Pessoa1',
-            'observation': 'Observações',
-            'status': 'Para autorização',
-        }
-
-        self.resp = self.client.post(r('access:new'), self.data)
+        self.resp = self.send_post()
 
     def test_post(self):
         """Post response status code must be 200"""
@@ -115,6 +97,25 @@ class TestAccessNewPostValid(TestCase):
     def test_relation(self):
         expected = Access.objects.get(pk=1)
         self.assertEqual(expected.created_by.login, 'Marc')
+
+    def test_weekdays_in_form_context(self):
+        """Context should have weekdays"""
+        self.send_post(weekdays=[0,2])
+        count = Access.objects.filter(weekdays="['0', '2']").count()
+        self.assertEqual(1, count)
+
+    def send_post(self, **kwargs):
+        default_data = {'enable': True, 'period_to': '2019-12-20', 'period_from': '2019-12-12',
+                        'time_to': '13:13', 'time_from': '20:20', 'institution': 'IAG',
+                        'name': 'Marcelo', 'job': 'Analista', 'email': 'marcelo@test.com',
+                        'phone': '11912345678', 'doc_type': 'RG', 'doc_number': '202000002',
+                        'answerable': 'Pessoa1', 'observation': 'Observações', 
+                        'status': 'Para autorização'}
+        
+        data = dict(default_data, **kwargs)
+        resp = self.client.post(r('access:new'), data)
+
+        return resp
 
 
 class TestAccessNewPostInvalid(TestCase):

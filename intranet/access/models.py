@@ -1,10 +1,16 @@
+import uuid
+import ast
+from datetime import datetime
+
 from django.db import models
 from django.shortcuts import resolve_url as r
-from intranet.accounts.models import User
+from django.utils.translation import ugettext as _
+
 from intranet.access.forms import form_choices
-import uuid
+from intranet.accounts.models import User
 
-
+WEEKDAYS={'0': 'Segunda', '1': 'Terça', '2': 'Quarta', '3': 'Quinta',
+            '4': 'Sexta', '5': 'Sábado', '6': 'Domingo'}
 
 class Access(models.Model):
     DOCS = form_choices.DOCS
@@ -15,6 +21,7 @@ class Access(models.Model):
     enable = models.BooleanField('ativar', default=False)
     period_to = models.DateField('data de término')
     period_from = models.DateField('data de início')
+    weekdays = models.CharField('dia da semana', max_length=20, null=True, choices=form_choices.WEEKDAYS_CHOICES)
     time_to = models.TimeField('hora de termino')
     time_from = models.TimeField('hora de início')
     institution = models.CharField('instituição', max_length=128)
@@ -32,7 +39,19 @@ class Access(models.Model):
 
     def get_absolute_url(self):
         return r('access:access_detail', slug=self.uuid)
-    
+
+    def get_week_name(self):
+        weekdays = []
+        if self.weekdays != None:
+            for item in self.weekdays:
+                if item in WEEKDAYS.keys():
+                    weekdays.append(WEEKDAYS[item])
+        return weekdays
+
+    def get_weekdays(self):
+        if self.weekdays:
+            return ast.literal_eval(self.weekdays)
+        return None
 
     class Meta:
         verbose_name_plural = 'acessos'

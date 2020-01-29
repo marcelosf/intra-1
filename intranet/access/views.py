@@ -42,7 +42,9 @@ def access_edit(request, slug):
     if request.method == 'POST':
         return _access_update(request, slug)
     access = Access.objects.filter(uuid=slug).values()
-    form = AccessForm(access[0])
+    obj = Access.objects.get(uuid=slug)
+    data = dict(access[0], **{'weekdays': obj.get_weekdays()})
+    form = AccessForm(data)
     return render(request, 'access/access_edit.html', {'form': form})
 
 
@@ -93,6 +95,7 @@ def _access_update(request, slug):
     access.period_from = form.cleaned_data['period_from']
     access.period_to = form.cleaned_data['period_to']
     access.time_from = form.cleaned_data['time_from']
+    access.weekdays = form.cleaned_data['weekdays']
     access.time_to = form.cleaned_data['time_to']
     access.status = form.cleaned_data['status']
     access.enable = form.cleaned_data['enable']
