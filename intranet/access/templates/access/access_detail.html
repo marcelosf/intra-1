@@ -73,7 +73,7 @@
     </div>
     <br>
     <div class="row">
-        <div class="col-sm-12 col-md-6">
+        <div class="col-sm-12 col-md-4">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Período</h5>
@@ -82,12 +82,24 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-12 col-md-6">
+        <div class="col-sm-12 col-md-4">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Horário</h5>
                     <p><i class="far fa-clock"></i> Hora Inicial: {{ access.time_from|date:'H:i' }}</p>
                     <p><i class="far fa-clock"></i> Hora Final: {{ access.time_to|date:'H:i' }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Dias da semana</h5>
+                    {% for d in access.get_week_name %}
+                        <span class="btn btn-link btn-sm btn-primary text-white">
+                            {{ d }}
+                        </span>
+                    {% endfor %}
                 </div>
             </div>
         </div>

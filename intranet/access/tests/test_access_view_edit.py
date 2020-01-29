@@ -50,7 +50,7 @@ class AccessViewEditGETTest(TestCase):
             ('type="time"', 2),
             ('type="text"', 5),
             ('type="email"', 1),
-            ('type="checkbox"', 1),
+            ('type="checkbox"', 8),
             ('<textarea', 1)
         )
 
@@ -131,27 +131,10 @@ class AccessViewEditValidPOSTTest(TestCase):
     def setUp(self):
         user = User.objects.create_user('Marc', 'marc@test.com', 'ktw123@777')
         self.client.force_login(user)
-        self.create_access()
-        access = Access.objects.get(name='Marcelo')
-        data = {
-            'enable': True,
-            'period_to':'2019-12-30',
-            'period_from':'2019-12-12',
-            'time_to':'13:13',
-            'time_from':'20:20',
-            'institution':'IAG',
-            'name':'Marcelo',
-            'job':'Analista',
-            'email':'marcelo@test.com',
-            'phone':'11912345678',
-            'doc_type':'RG',
-            'doc_number':'202000002',
-            'answerable':'Pessoa1',
-            'observation':'Observações',
-            'status':'Para autorização',
-        }
-
-        self.resp = self.client.post(r('access:access_edit', slug=str(access.uuid)), data)
+        data = self.make_data()
+        access = Access.objects.create(**data)
+        data_update = self.make_data(period_to='2019-12-30')
+        self.resp = self.client.post(r('access:access_edit', slug=str(access.uuid)), data_update)
         self.access = Access.objects.get(uuid=access.uuid)
 
     def test_update(self):
@@ -163,12 +146,20 @@ class AccessViewEditValidPOSTTest(TestCase):
         expected = 'Acesso atualizado com sucesso'
         self.assertContains(self.resp, expected)
 
-    def create_access(self):
-        obj = Access.objects.create(
+    def test_weekdays_update(self):
+        """Weekdays should be updated"""
+        data = self.make_data(weekdays=[0,2])
+        self.client.post(r('access:access_edit', slug=str(self.access.uuid)), data)
+        count = Access.objects.filter(weekdays="['0', '2']").count()
+        self.assertEqual(1, count)
+
+    def make_data(self, **kwargs):
+        default_data = dict(
             enable=True,
-            period_to='2019-12-12',
-            period_from='2019-12-20',
+            period_to='2019-12-20',
+            period_from='2018-12-12',
             time_to='13:13',
+            weekdays=[0, 1],
             time_from='20:20',
             institution='IAG',
             name='Marcelo',
@@ -181,7 +172,8 @@ class AccessViewEditValidPOSTTest(TestCase):
             observation='Observações',
             status='Para autorização',
         )
-
+        data = dict(default_data, **kwargs)
+        return data
 
 class AccessViewEditInvalidPOSTTest(TestCase):
     def setUp(self):

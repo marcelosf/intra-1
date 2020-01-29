@@ -22,6 +22,7 @@ class TestFormAccess(TestCase):
             'doc_number',
             'answerable',
             'observation',
+            'weekdays',
         ]
 
         for expected in fields:
