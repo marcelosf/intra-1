@@ -73,6 +73,12 @@ class TestAccessModel(TestCase):
         expected = [1,2]
         self.assertListEqual(expected, obj.get_weekdays())
 
+    def test_has_manage_access_status_permission(self):
+        """Model shoud have can_manage_access_status"""
+        expected = ('can_manage_access_status', 'Can manage access status')
+        permissions = self.obj._meta.permissions
+        self.assertIn(expected, permissions)
+
     def make_data(self, **kwargs):
         default_data = dict(enable=True, period_to='2019-12-12', period_from='2019-12-20',
                         time_to='13:13', time_from='20:20', institution='IAG', 

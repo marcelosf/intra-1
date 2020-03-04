@@ -57,3 +57,5 @@ class Access(models.Model):
         verbose_name_plural = 'acessos'
         verbose_name = 'acesso'
         ordering = ('-created_at',)
+
+        permissions = [('can_manage_access_status', 'Can manage access status')]

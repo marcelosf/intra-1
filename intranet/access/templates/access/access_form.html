@@ -55,12 +55,14 @@
                                     {{ form.enable.label_tag }}
                                 </div>
                             </div>
+                            {% if perms.access.can_manage_access_status %}
                             <div class="col-sm-12 col-md-6">
                                 <div class="form-group">
                                     {{ form.status.label_tag }}                        
                                     {{ form.status|add_class:'form-control' }}
                                 </div>
                             </div>
+                            {% endif %}
                             <div class="col-sm-12 col-md-6">
                                 <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
                                     {{ form.period_from.label_tag }}
