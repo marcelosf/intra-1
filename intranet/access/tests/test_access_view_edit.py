@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.shortcuts import resolve_url as r
+from django.contrib.auth.models import Permission
 from intranet.access.models import Access
 from intranet.accounts.models import User
 from intranet.access.forms.forms import AccessForm
@@ -8,6 +9,8 @@ from intranet.access.forms.forms import AccessForm
 class AccessViewEditGETTest(TestCase):
     def setUp(self):
         user = User.objects.create_user('Marc', 'marc@test.com', 'ktw123@777')
+        perms = Permission.objects.get(name='Can manage access status')
+        user.user_permissions.set([perms])
         self.client.force_login(user)
         self.obj = Access(
             enable=True,
@@ -233,3 +236,47 @@ class AccessViewEditInvalidPOSTTest(TestCase):
         data = dict(default_data, **kwargs)
         return data
 
+
+class TestAccessManager(TestCase):
+    def test_can_see_status_field(self):
+        """Status field should be present"""
+        expected = 'name="status"'
+        resp = self.make_request(can_manage_status=True)
+        self.assertContains(resp, expected)
+
+    def test_can_not_see_status_field(self):
+        """Status field should not be present"""
+        expected = 'name="status"'
+        resp = self.make_request()
+        self.assertNotContains(resp, expected)
+
+    def make_request(self, can_manage_status=False):
+        user = User.objects.create_user(login='Strato', name='Shembler', type='I')
+        if can_manage_status:
+            can_manage_access_status = Permission.objects.get(name='Can manage access status')
+            user.user_permissions.set([can_manage_access_status])
+        self.client.force_login(user)
+        data = self.make_data()
+        obj = Access.objects.create(**data)
+        return self.client.get(r('access:access_edit', slug=str(obj.uuid)))
+
+    def make_data(self, **kwargs):
+        default_data = dict(
+            enable=True,
+            period_to='2019-12-12',
+            period_from='2019-12-20',
+            time_to='13:13',
+            time_from='20:20',
+            institution='IAG',
+            name='Marcelo',
+            job='Analista',
+            email='marcelo@test.com',
+            phone='11912345678',
+            doc_type='RG',
+            doc_number='202000002',
+            answerable='Pessoa1',
+            observation='Observações',
+            status='Para autorização',
+        )
+        data = dict(default_data, **kwargs)
+        return data

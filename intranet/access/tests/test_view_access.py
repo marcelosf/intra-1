@@ -1,14 +1,18 @@
 
 from django.test import TestCase
+from django.contrib.auth.models import Permission
+from django.shortcuts import resolve_url as r
+from django.conf import settings
 from intranet.accounts.models import User
 from intranet.access.forms.forms import AccessForm
 from intranet.access.models import Access
-from django.shortcuts import resolve_url as r
 
 
 class TestAccessNewLoggedInGet(TestCase):
     def setUp(self):
         user = User.objects.create_user('Marc','marc@email.com', 'marcpass')
+        perm = Permission.objects.get(name='Can manage access status')
+        user.user_permissions.set([perm])
         self.client.force_login(user)
         self.resp = self.client.get(r('access:new'))
 
@@ -186,3 +190,26 @@ class TestAccessNewAnonimous(TestCase):
     def test_redirect(self):
         """Status code must be 302"""
         self.assertEqual(302, self.resp.status_code)
+
+
+class TestAccessManager(TestCase):
+    def test_can_see_status_field(self):
+        """Status field should be present"""
+        expected = 'name="status"'
+        resp = self.make_request(can_manage_status=True)
+        self.assertContains(resp, expected)
+
+    def test_can_not_see_status_field(self):
+        """Status field should not be present"""
+        expected = 'name="status"'
+        resp = self.make_request()
+        self.assertNotContains(resp, expected)
+
+    def make_request(self, can_manage_status=False):
+        user = User.objects.create_user('Marc','marc@email.com', 'marcpass')
+        if can_manage_status:
+            can_manage_access_status = Permission.objects.get(name='Can manage access status')
+            user.user_permissions.set([can_manage_access_status])
+        self.client.force_login(user)
+        return self.client.get(r('access:new'))
+
