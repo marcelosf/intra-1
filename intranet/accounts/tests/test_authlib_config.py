@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.conf import settings
-from authlib.django.client import OAuth
+from authlib.integrations.django_client import OAuth
 
 class TestAuthlibConfig(TestCase):
     def test_oauth(self):
