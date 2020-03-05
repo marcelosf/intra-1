@@ -70,6 +70,10 @@ def access_list(request):
     return render(pages['request'], 'access/access_list.html', context)
 
 
+def authorization_list(request):
+    return render(request, 'access/authorization_list.html')
+
+
 def _bulk_actions(request, actions_form):
     form = actions_form(request.POST)
     if not form.is_valid():

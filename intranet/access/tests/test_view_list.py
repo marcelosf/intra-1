@@ -250,3 +250,20 @@ class AccessListPortariaTest(TestCase):
     def test_not_see_checkbox_list_item(self):
         """Portaria group do not see checkbox items"""
         self.assertNotContains(self.resp, 'type="checkbox"')
+
+
+class AccessAuthorizationListTest(TestCase):
+    def setUp(self):
+        self.resp = self.client.get(r('access:authorization_list'))
+
+    def test_url(self):
+        """Status code should be 200"""
+        self.assertEqual(200, self.resp.status_code)
+
+    def test_template(self):
+        """It should render authorization_list.html"""
+        self.assertTemplateUsed(self.resp, 'access/authorization_list.html')
+
+    def test_main_template(self):
+        """It should render base template"""
+        self.assertTemplateUsed(self.resp, 'base.html')
