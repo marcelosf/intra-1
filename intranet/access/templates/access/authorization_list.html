@@ -1,1 +1,29 @@
 {% extends 'base.html' %}
+
+{% block content %}
+
+    <h4>Conceder Acesso</h4>
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Nº USP</th>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Atividade</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for aluno in auth_list %}
+                <tr>
+                    <td>{{ aluno.doc_num }}</td>
+                    <td>{{ aluno.nome }}</td>
+                    <td>{{ aluno.email }}</td>
+                    <td>{{ aluno.cargo }}</td>
+                    <td><button class="btn">Acesso</button></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock content %}

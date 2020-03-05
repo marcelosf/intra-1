@@ -7,6 +7,7 @@ from intranet.access.forms import form_choices, forms
 from django.core.paginator import Page
 from django.shortcuts import resolve_url as r
 from intranet.accounts.models import User
+import json
 
 
 class AccessListViewTest(TestCase):
@@ -267,3 +268,41 @@ class AccessAuthorizationListTest(TestCase):
     def test_main_template(self):
         """It should render base template"""
         self.assertTemplateUsed(self.resp, 'base.html')
+
+    def test_html_table_list(self):
+        """Template should render the list of alunos"""
+        headers = ['Nome', 'Atividade', 'E-mail', 'Nº USP', 'Ação']
+
+        for expected in headers:
+            with self.subTest():
+                self.assertContains(self.resp, expected)
+
+    def test_table_content(self):
+        """Context should have the table content"""
+        content = self.resp.context['auth_list']
+        expected = self.make_json()
+        self.assertListEqual(expected, content)
+
+    def test_html_table_content(self):
+        """Template should render the html table content"""
+        content = self.make_json()
+        indexes = ['nome', 'cargo', 'email', 'doc_num']
+        for key in indexes:
+            with self.subTest():
+                self.assertContains(self.resp, content[0][key])
+
+    def test_action_button(self):
+        """Template shoud render action button"""
+        self.assertContains(self.resp, '>Acesso</')
+
+    def make_json(self):
+        data = '[{"nome": "Capistrano", "cargo": "Aluno graduação", "email": "capis@usp.com",\
+                        "phone": "1112233", "doc": "usp", "doc_num": "456666", "answerable": "Shista",\
+                        "departament": "ACA" }, {"nome": "Tentaculous", "cargo": "Aluno graduação",\
+                        "email": "tents@usp.com", "phone": "187632433", "doc": "usp", "doc_num": "9823456",\
+                        "answerable": "sheba", "deoartament": "ACA"}, {"nome": "Zibauwe", "cargo": "Aluno graduação",\
+                        "email": "zin@usp.com", "phone": "1879999433", "doc": "usp", "doc_num": "9823333",\
+                        "answerable": "sheba", "departament": "AGG"}]'
+        json_data = json.loads(data)
+        return json_data
+       

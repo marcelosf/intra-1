@@ -8,10 +8,10 @@ from django.contrib.auth.decorators import login_required
 from intranet.access.forms.forms import AccessForm, actions_formset
 from intranet.access.forms import form_choices
 from intranet.access.models import Access
-from intranet.access.filters import AccessFilter
-from intranet.access.filters import PERPAGE
+from intranet.access.filters import AccessFilter, PERPAGE
 from django_filters.views import FilterView
 from intranet.core.mixins import PaginatorMixin
+from intranet.access import resources
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -71,7 +71,8 @@ def access_list(request):
 
 
 def authorization_list(request):
-    return render(request, 'access/authorization_list.html')
+    auth_list = resources.get_alunos()
+    return render(request, 'access/authorization_list.html', {'auth_list': auth_list.json()})
 
 
 def _bulk_actions(request, actions_form):

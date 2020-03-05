@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'test_without_migrations',
     'django_filters',
+    'rest_framework',
     'widget_tweaks',
     'validate_docbr',
     'django_static_fontawesome',
@@ -176,3 +177,4 @@ PORTARIA_GROUP_NAME = config('PORTARIA_GROUP_NAME')
 #RESOURCES
 SET_REPLICADO = config('SET_REPLICADO', default=False, cast=bool)
 ANSWERABLE_RESOURCE = config('ANSWERABLE_RESOURCE')
+ALUNOS_RESOURCES = config('ALUNOS_RESOURCES')
