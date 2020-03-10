@@ -307,6 +307,10 @@ class AccessAuthorizationListTest(TestCase):
         """Template shoud render action button"""
         self.assertContains(self.resp, '>Acesso</')
 
+    def test_template_has_buscar_button(self):
+        """Template should render buscar button"""
+        self.assertContains(self.resp, 'Buscar</')
+
     def make_json(self):
         data = '[{"nome": "Capistrano", "cargo": "Aluno graduação", "email": "capis@usp.com",\
                         "phone": "1112233", "doc": "usp", "doc_num": "456666", "answerable": "Shista",\
