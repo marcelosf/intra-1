@@ -1,5 +1,5 @@
 from django.test import TestCase
-from intranet.access.forms.forms import AccessForm
+from intranet.access.forms.forms import AccessForm, AlunoSearchForm
 
 
 class TestFormAccess(TestCase):
@@ -116,3 +116,14 @@ class AccessFormValidationTest(TestCase):
         return form
 
 
+class AlunoSearchFormTest(TestCase):
+    def setUp(self):
+        self.form = AlunoSearchForm()
+
+    def test_fields(self):
+        """Form should have fields"""
+        fields = ['num_doc', 'name']
+        
+        for expected in fields:
+            with self.subTest():
+                self.assertIn(expected, list(self.form.fields))
