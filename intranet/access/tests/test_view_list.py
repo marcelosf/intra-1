@@ -316,6 +316,14 @@ class AccessAuthorizationListTest(TestCase):
         form = self.resp.context['form']
         self.assertIsInstance(form, forms.AlunoSearchForm)
 
+    def test_template_has_aluno_search_form(self):
+        """Tempplate should render AlunoSearchForm"""
+        tags = ((1, '<form'), (2, 'type="text"'))
+
+        for count, expected in tags:
+            with self.subTest():
+                self.assertContains(self.resp, expected, count)
+
 
     def make_json(self):
         data = '[{"nome": "Capistrano", "cargo": "Aluno graduação", "email": "capis@usp.com",\
