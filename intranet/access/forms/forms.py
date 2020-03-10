@@ -56,3 +56,8 @@ def actions_formset(queryset):
             return self.cleaned_data
 
     return _ActionsForm
+
+
+class AlunoSearchForm(forms.Form):
+    name = forms.CharField(label='nome')
+    num_doc = forms.CharField(label='número usp')
