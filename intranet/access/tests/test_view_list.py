@@ -138,6 +138,10 @@ class AccessListViewTest(TestCase):
         """Template shold have Autorizar aluno field"""
         self.assertContains(self.resp, 'Autorizar aluno')
 
+    def test_autorizar_aluno_is_link(self):
+        """Autorizar aluno should be a link"""
+        self.assertContains(self.resp, 'Autorizar aluno</a')
+
 class AccessListPostTest(TestCase):
     def setUp(self):
         user = User.objects.create_user(login='333', name='Tail', type='I', main_email='tail@test.com')
