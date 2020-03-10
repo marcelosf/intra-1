@@ -59,5 +59,5 @@ def actions_formset(queryset):
 
 
 class AlunoSearchForm(forms.Form):
-    name = forms.CharField(label='nome')
-    num_doc = forms.CharField(label='número usp')
+    name = forms.CharField(label='nome', required=False)
+    num_doc = forms.CharField(label='número usp', required=False)
