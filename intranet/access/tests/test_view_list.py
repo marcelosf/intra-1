@@ -311,6 +311,12 @@ class AccessAuthorizationListTest(TestCase):
         """Template should render buscar button"""
         self.assertContains(self.resp, 'Buscar</')
 
+    def test_aluno_search_form_context(self):
+        """Context should have AlunoSearchForm instance"""
+        form = self.resp.context['form']
+        self.assertIsInstance(form, forms.AlunoSearchForm)
+
+
     def make_json(self):
         data = '[{"nome": "Capistrano", "cargo": "Aluno graduação", "email": "capis@usp.com",\
                         "phone": "1112233", "doc": "usp", "doc_num": "456666", "answerable": "Shista",\
