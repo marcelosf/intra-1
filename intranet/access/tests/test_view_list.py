@@ -142,6 +142,10 @@ class AccessListViewTest(TestCase):
         """Autorizar aluno should be a link"""
         self.assertContains(self.resp, 'Autorizar aluno</a')
 
+    def test_autorizar_aluno_href(self):
+        expected = 'href="%s"' % r('access:access_list')
+        self.assertContains(self.resp, expected)
+
 class AccessListPostTest(TestCase):
     def setUp(self):
         user = User.objects.create_user(login='333', name='Tail', type='I', main_email='tail@test.com')
