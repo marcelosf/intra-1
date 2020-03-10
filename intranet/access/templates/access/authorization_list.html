@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
 
 {% block content %}
 
@@ -11,7 +12,15 @@
         aria-expanded="false"
         aria-controls="action-form"
     >
-    <i class="fas fa-plus-circle"></i>Buscar</button>    
+    <i class="fas fa-plus-circle"></i>Buscar</button>
+
+    <form action="">
+        {{ form.name.label_tag }}
+        {{ form.name|add_class:"form-control" }}
+
+        {{ form.num_doc.label }}
+        {{ form.num_doc|add_class:"form-control" }}
+    </form>
 
     <table class="table table-hover">
         <thead>
