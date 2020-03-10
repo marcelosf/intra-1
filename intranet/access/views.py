@@ -5,7 +5,7 @@ from django.core.paginator import Paginator
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
-from intranet.access.forms.forms import AccessForm, actions_formset
+from intranet.access.forms.forms import AccessForm, actions_formset, AlunoSearchForm
 from intranet.access.forms import form_choices
 from intranet.access.models import Access
 from intranet.access.filters import AccessFilter, PERPAGE
@@ -72,7 +72,8 @@ def access_list(request):
 
 def authorization_list(request):
     auth_list = resources.get_alunos()
-    return render(request, 'access/authorization_list.html', {'auth_list': auth_list.json()})
+    context = {'auth_list': auth_list.json(), 'form': AlunoSearchForm()}
+    return render(request, 'access/authorization_list.html', context)
 
 
 def _bulk_actions(request, actions_form):
