@@ -143,7 +143,7 @@ class AccessListViewTest(TestCase):
         self.assertContains(self.resp, 'Autorizar aluno</a')
 
     def test_autorizar_aluno_href(self):
-        expected = 'href="%s"' % r('access:access_list')
+        expected = 'href="%s"' % r('access:authorization_list')
         self.assertContains(self.resp, expected)
 
 class AccessListPostTest(TestCase):
