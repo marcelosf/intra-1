@@ -134,6 +134,10 @@ class AccessListViewTest(TestCase):
         """Don't validate data on form"""
         self.assertContains(self.resp, 'novalidate')
 
+    def test_template_has_autorizar_aluno(self):
+        """Template shold have Autorizar aluno field"""
+        self.assertContains(self.resp, 'Autorizar aluno')
+
 class AccessListPostTest(TestCase):
     def setUp(self):
         user = User.objects.create_user(login='333', name='Tail', type='I', main_email='tail@test.com')
