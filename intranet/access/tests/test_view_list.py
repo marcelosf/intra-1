@@ -324,7 +324,6 @@ class AccessAuthorizationListTest(TestCase):
             with self.subTest():
                 self.assertContains(self.resp, expected, count)
 
-
     def make_json(self):
         data = '[{"nome": "Capistrano", "cargo": "Aluno graduação", "email": "capis@usp.com",\
                         "phone": "1112233", "doc": "usp", "doc_num": "456666", "answerable": "Shista",\
@@ -335,4 +334,28 @@ class AccessAuthorizationListTest(TestCase):
                         "answerable": "sheba", "departament": "AGG"}]'
         json_data = json.loads(data)
         return json_data
+
+
+class AlunoSearchFormTest(TestCase):
+    def setUp(self):
+        data = self.make_data()
+        self.resp = self.client.post(r('access:authorization_list'), data)
+
+    def test_status_code(self):
+        """Status code should be 200"""
+        self.assertEqual(200, self.resp.status_code)
+
+    def test_search_aluno(self):
+        """It should get the searched data"""
+        data = '[{"nome": "Capistrano", "cargo": "Aluno graduação", "email": "capis@usp.com",\
+                        "phone": "1112233", "doc": "usp", "doc_num": "456666", "answerable": "Shista",\
+                        "departament": "ACA" }]'
+        expected = json.loads(data)
+        searched_data = self.resp.context['auth_list']
+        self.assertEqual(expected, searched_data.json())
+
+    def make_data(self, **kwargs):
+        default = dict(name='Capistrano')
+        data = dict(default, **kwargs)
+        return data
        
