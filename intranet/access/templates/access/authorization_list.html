@@ -14,7 +14,7 @@
     >
     <i class="fas fa-plus-circle"></i>Buscar</button>
 
-    <form action="">
+    <form action="{% url 'access:authorization_list' %}">
         {{ form.name.label_tag }}
         {{ form.name|add_class:"form-control" }}
 
