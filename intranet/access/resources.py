@@ -4,8 +4,7 @@ import requests
 from urllib.parse import urljoin
 
 
-GET_ALUNOS_RESOURCE = {'replicated': 'students'}
-
+GET_ALUNOS_RESOURCE = settings.GET_ALUNOS_RESOURCE
 
 def get_alunos(query=None):
     url_base = settings.ALUNOS_RESOURCES
