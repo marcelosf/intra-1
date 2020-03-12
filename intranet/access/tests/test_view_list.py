@@ -324,6 +324,11 @@ class AccessAuthorizationListTest(TestCase):
             with self.subTest():
                 self.assertContains(self.resp, expected, count)
 
+    def test_form_action(self):
+        """Form action should be /access/auth-list/"""
+        expected = 'action="%s"' % r('access:authorization_list')
+        self.assertContains(self.resp, expected)
+
     def make_json(self):
         data = '[{"nome": "Capistrano", "cargo": "Aluno graduação", "email": "capis@usp.com",\
                         "phone": "1112233", "doc": "usp", "doc_num": "456666", "answerable": "Shista",\
