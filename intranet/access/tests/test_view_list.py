@@ -329,6 +329,14 @@ class AccessAuthorizationListTest(TestCase):
         expected = 'action="%s"' % r('access:authorization_list')
         self.assertContains(self.resp, expected)
 
+    def test_submit_button(self):
+        """Form should have a submit button"""
+        self.assertContains(self.resp, 'type="submit"')
+
+    def test_form_method(self):
+        """Form method should be POST"""
+        self.assertContains(self.resp, 'method="POST"')
+
     def make_json(self):
         data = '[{"nome": "Capistrano", "cargo": "Aluno graduação", "email": "capis@usp.com",\
                         "phone": "1112233", "doc": "usp", "doc_num": "456666", "answerable": "Shista",\
@@ -357,7 +365,7 @@ class AlunoSearchFormTest(TestCase):
                         "departament": "ACA" }]'
         expected = json.loads(data)
         searched_data = self.resp.context['auth_list']
-        self.assertEqual(expected, searched_data.json())
+        self.assertEqual(expected, searched_data)
 
     def make_data(self, **kwargs):
         default = dict(name='Capistrano')

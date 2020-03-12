@@ -75,7 +75,7 @@ def authorization_list(request):
         form = AlunoSearchForm(request.POST)
         if form.is_valid():
             auth_list = resources.get_alunos(query=form.cleaned_data)
-            return render(request, 'access/authorization_list.html', {'auth_list': auth_list})
+            return render(request, 'access/authorization_list.html', {'auth_list': auth_list.json()})
     auth_list = resources.get_alunos()
     context = {'auth_list': auth_list.json(), 'form': AlunoSearchForm()}
     return render(request, 'access/authorization_list.html', context)
