@@ -1,9 +1,13 @@
 language: python
 python:
-  - "3.7"
+  - "3.8"
 install:
   - cp contrib/env-example .env
   - pip install -q -r requirements.txt
+  - flask run
 script:
   - python manage.py migrate
   - python manage.py test
+env:
+  - FLASK_ENV=production
+  - FLASK_DEBUG=0

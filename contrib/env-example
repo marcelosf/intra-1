@@ -43,4 +43,6 @@ MANAGER_GROUP_NAME=gestor
 #######################
 SET_REPLICADO=False
 ANSWERABLE_RESOURCE=http://relpicado.url.com/pessoa.json
+ALUNOS_RESOURCES=http://127.0.0.1:5000/replicado/alunos
+GET_ALUNOS_RESOURCE={"replicado": "alunos"}
 

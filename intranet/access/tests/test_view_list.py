@@ -7,6 +7,7 @@ from intranet.access.forms import form_choices, forms
 from django.core.paginator import Page
 from django.shortcuts import resolve_url as r
 from intranet.accounts.models import User
+import json
 
 
 class AccessListViewTest(TestCase):
@@ -133,6 +134,18 @@ class AccessListViewTest(TestCase):
         """Don't validate data on form"""
         self.assertContains(self.resp, 'novalidate')
 
+    def test_template_has_autorizar_aluno(self):
+        """Template shold have Autorizar aluno field"""
+        self.assertContains(self.resp, 'Autorizar aluno')
+
+    def test_autorizar_aluno_is_link(self):
+        """Autorizar aluno should be a link"""
+        self.assertContains(self.resp, 'Autorizar aluno</a')
+
+    def test_autorizar_aluno_href(self):
+        expected = 'href="%s"' % r('access:authorization_list')
+        self.assertContains(self.resp, expected)
+
 class AccessListPostTest(TestCase):
     def setUp(self):
         user = User.objects.create_user(login='333', name='Tail', type='I', main_email='tail@test.com')
@@ -250,3 +263,116 @@ class AccessListPortariaTest(TestCase):
     def test_not_see_checkbox_list_item(self):
         """Portaria group do not see checkbox items"""
         self.assertNotContains(self.resp, 'type="checkbox"')
+
+
+class AccessAuthorizationListTest(TestCase):
+    def setUp(self):
+        self.resp = self.client.get(r('access:authorization_list'))
+
+    def test_url(self):
+        """Status code should be 200"""
+        self.assertEqual(200, self.resp.status_code)
+
+    def test_template(self):
+        """It should render authorization_list.html"""
+        self.assertTemplateUsed(self.resp, 'access/authorization_list.html')
+
+    def test_main_template(self):
+        """It should render base template"""
+        self.assertTemplateUsed(self.resp, 'base.html')
+
+    def test_html_table_list(self):
+        """Template should render the list of alunos"""
+        headers = ['Nome', 'Atividade', 'E-mail', 'Nº USP', 'Ação']
+
+        for expected in headers:
+            with self.subTest():
+                self.assertContains(self.resp, expected)
+
+    def test_table_content(self):
+        """Context should have the table content"""
+        content = self.resp.context['auth_list']
+        expected = self.make_json()
+        self.assertListEqual(expected, content)
+
+    def test_html_table_content(self):
+        """Template should render the html table content"""
+        content = self.make_json()
+        indexes = ['nome', 'cargo', 'email', 'doc_num']
+        for key in indexes:
+            with self.subTest():
+                self.assertContains(self.resp, content[0][key])
+
+    def test_action_button(self):
+        """Template shoud render action button"""
+        self.assertContains(self.resp, '>Acesso</')
+
+    def test_template_has_buscar_button(self):
+        """Template should render buscar button"""
+        self.assertContains(self.resp, 'Buscar</')
+
+    def test_aluno_search_form_context(self):
+        """Context should have AlunoSearchForm instance"""
+        form = self.resp.context['form']
+        self.assertIsInstance(form, forms.AlunoSearchForm)
+
+    def test_template_has_aluno_search_form(self):
+        """Tempplate should render AlunoSearchForm"""
+        tags = ((1, '<form'), (2, 'type="text"'))
+
+        for count, expected in tags:
+            with self.subTest():
+                self.assertContains(self.resp, expected, count)
+
+    def test_form_action(self):
+        """Form action should be /access/auth-list/"""
+        expected = 'action="%s"' % r('access:authorization_list')
+        self.assertContains(self.resp, expected)
+
+    def test_submit_button(self):
+        """Form should have a submit button"""
+        self.assertContains(self.resp, 'type="submit"')
+
+    def test_form_method(self):
+        """Form method should be POST"""
+        self.assertContains(self.resp, 'method="POST"')
+
+    def test_csrf(self):
+        """Template should render csrf"""
+        self.assertContains(self.resp, 'csrfmiddlewaretoken')
+
+    def make_json(self):
+        data = '[{"nome": "Capistrano", "cargo": "Aluno graduação", "email": "capis@usp.com",\
+                        "phone": "1112233", "doc": "usp", "doc_num": "456666", "answerable": "Shista",\
+                        "departament": "ACA" }, {"nome": "Tentaculous", "cargo": "Aluno graduação",\
+                        "email": "tents@usp.com", "phone": "187632433", "doc": "usp", "doc_num": "9823456",\
+                        "answerable": "sheba", "deoartament": "ACA"}, {"nome": "Zibauwe", "cargo": "Aluno graduação",\
+                        "email": "zin@usp.com", "phone": "1879999433", "doc": "usp", "doc_num": "9823333",\
+                        "answerable": "sheba", "departament": "AGG"}]'
+        json_data = json.loads(data)
+        return json_data
+
+
+class AlunoSearchFormTest(TestCase):
+    def setUp(self):
+        data = self.make_data()
+        self.resp = self.client.post(r('access:authorization_list'), data)
+
+    def test_status_code(self):
+        """Status code should be 200"""
+        self.assertEqual(200, self.resp.status_code)
+
+    def test_search_aluno(self):
+        """It should get the searched data"""
+        data = '[{"nome": "Capistrano", "cargo": "Aluno graduação", "email": "capis@usp.com",\
+                        "phone": "1112233", "doc": "usp", "doc_num": "456666", "answerable": "Shista",\
+                        "departament": "ACA" }]'
+        expected = json.loads(data)
+        searched_data = self.resp.context['auth_list']
+        self.assertEqual(expected, searched_data)
+
+    def make_data(self, **kwargs):
+        default = dict(name='Capistrano')
+        data = dict(default, **kwargs)
+        return data
+       

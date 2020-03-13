@@ -5,13 +5,13 @@ from django.core.paginator import Paginator
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
-from intranet.access.forms.forms import AccessForm, actions_formset
+from intranet.access.forms.forms import AccessForm, actions_formset, AlunoSearchForm
 from intranet.access.forms import form_choices
 from intranet.access.models import Access
-from intranet.access.filters import AccessFilter
-from intranet.access.filters import PERPAGE
+from intranet.access.filters import AccessFilter, PERPAGE
 from django_filters.views import FilterView
 from intranet.core.mixins import PaginatorMixin
+from intranet.access import resources
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -68,6 +68,17 @@ def access_list(request):
     pages = paginator.get_paginator()
     context = {'list': pages['object_list'], 'page_list': pages['page_list'], 'actions_form': actions_form}
     return render(pages['request'], 'access/access_list.html', context)
+
+
+def authorization_list(request):
+    if request.method == 'POST':
+        form = AlunoSearchForm(request.POST)
+        if form.is_valid():
+            auth_list = resources.get_alunos(query=form.cleaned_data)
+            return render(request, 'access/authorization_list.html', {'auth_list': auth_list.json()})
+    auth_list = resources.get_alunos()
+    context = {'auth_list': auth_list.json(), 'form': AlunoSearchForm()}
+    return render(request, 'access/authorization_list.html', context)
 
 
 def _bulk_actions(request, actions_form):

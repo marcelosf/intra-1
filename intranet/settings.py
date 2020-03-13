@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import json
 from decouple import config, Csv
 from dj_database_url import parse as dburl
 from authlib.integrations.django_client import OAuth
@@ -70,6 +71,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'test_without_migrations',
     'django_filters',
+    'rest_framework',
     'widget_tweaks',
     'validate_docbr',
     'django_static_fontawesome',
@@ -176,3 +178,5 @@ PORTARIA_GROUP_NAME = config('PORTARIA_GROUP_NAME')
 #RESOURCES
 SET_REPLICADO = config('SET_REPLICADO', default=False, cast=bool)
 ANSWERABLE_RESOURCE = config('ANSWERABLE_RESOURCE')
+ALUNOS_RESOURCES = config('ALUNOS_RESOURCES')
+GET_ALUNOS_RESOURCE = config('GET_ALUNOS_RESOURCE', cast=lambda v: json.loads(v) )
