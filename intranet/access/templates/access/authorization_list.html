@@ -15,6 +15,9 @@
     <i class="fas fa-plus-circle"></i>Buscar</button>
 
     <form action="{% url 'access:authorization_list' %}" method="POST">
+        
+        {% csrf_token %}
+
         {{ form.name.label_tag }}
         {{ form.name|add_class:"form-control" }}
 
