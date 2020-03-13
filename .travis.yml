@@ -1,6 +1,6 @@
 language: python
 python:
-  - "3.8"
+  - "3.7"
 install:
   - cp contrib/env-example .env
   - pip install -q -r requirements.txt
