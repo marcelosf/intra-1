@@ -337,6 +337,10 @@ class AccessAuthorizationListTest(TestCase):
         """Form method should be POST"""
         self.assertContains(self.resp, 'method="POST"')
 
+    def test_csrf(self):
+        """Template should render csrf"""
+        self.assertContains(self.resp, 'csrfmiddlewaretoken')
+
     def make_json(self):
         data = '[{"nome": "Capistrano", "cargo": "Aluno graduação", "email": "capis@usp.com",\
                         "phone": "1112233", "doc": "usp", "doc_num": "456666", "answerable": "Shista",\
