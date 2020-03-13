@@ -9,5 +9,6 @@ script:
   - python manage.py migrate
   - python manage.py test
 env:
-  - FLASK_ENV=production
+  - FLASK_APP=mock.replicado.mock_replicado
+  - FLASK_ENV=development
   - FLASK_DEBUG=0
