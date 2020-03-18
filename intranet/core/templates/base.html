@@ -1,50 +1,72 @@
 {% load static %}
+
+{# Load the tag library #}
+{% load bootstrap4 %}
+
 <!DOCTYPE html>
-  <html>
-    <head>
-      
-      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-      <link type="text/css" rel="stylesheet" href="{% static 'css/app.css' %}"  media="screen,projection"/>
-      <link rel="stylesheet" type="text/css" href="{% static "fontawesome/css/all.min.css" %}" />
+<html lang="pt-br">
 
+<head>
 
-      <!--Let browser know website is optimized for mobile-->
-      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-      <title>Intranet</title>
-    </head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-    <body>
+    <title>Intranet</title>
 
-    <nav class="navbar justify-content-between fixed-top navbar-dark navbar-expand-lg bg-primary mb-5">
-        <a href="/" class="navbar-brand"><h2>Intranet</h2></a>
-        <ul class="navbar-nav">
-          {% if request.user.is_authenticated %}
-          <li class="nav-item dropdown">
-            <a href="#" class="nav-link dropdown-toggle" id="account" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-user"></i> {{ request.user.get_full_name }}
-            </a>
-            <div class="dropdown-menu p-4" aria-labelledby="account">
-                <a class="btn btn-link dropdown-item" href="{% url 'accounts:logout' %}">
-                  <i class="fas fa-sign-out-alt"></i>
-                  Logout
-                </a>
+    <!-- Bootstrap core CSS -->
+    {% bootstrap_css %}
+
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" type="text/css" href="{% static "fontawesome/css/all.min.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "css/layout.css" %}" />
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar shadow navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><h1>Intranet IAG</h1></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                {% if request.user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" id="account" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-user"></i> {{ request.user.get_full_name }}
+                    </a>
+                    <div class="dropdown-menu p-4" aria-labelledby="account">
+                        <a class="btn btn-link dropdown-item" href="{% url 'accounts:logout' %}">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </a>
+                    </div>
+                </li>
+                {% endif %}
+                {% if not request.user.is_authenticated %}
+                    <li class="na-item">
+                        <a href="{% url 'accounts:login' %}" class="btn btn-link btn-light">
+                            <i class="fas fa-user"></i> Login
+                        </a>
+                    </li>
+                {% endif %}
+                </ul>
             </div>
-          </li>
-          {% endif %}
-          {% if not request.user.is_authenticated %}
-          <li class="na-item">
-            <a href="{% url 'accounts:login' %}" class="btn btn-link btn-light">
-              <i class="fas fa-user"></i> Login
-            </a>
-          </li>
-          {% endif %}
-        </ul>
+        </div>
     </nav>
-       
+
     <div class="container">
-       {% block content %}{% endblock content%}
+        {% block content %}{% endblock content%}
     </div>
-      <!--JavaScript at end of body for optimized loading-->
-      <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
-    </body>
-  </html>
+
+    <!-- Bootstrap core JavaScript -->
+    {% bootstrap_javascript jquery='full' %}
+
+</body>
+
+</html>

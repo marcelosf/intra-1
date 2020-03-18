@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'bootstrap4',
     'test_without_migrations',
     'django_filters',
     'rest_framework',
