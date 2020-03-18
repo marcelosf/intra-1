@@ -1,10 +1,21 @@
 {% load static %}
+
+{# Load the tag library #}
+{% load bootstrap4 %}
+
 <!DOCTYPE html>
   <html>
     <head>
       
+      {# Load CSS and JavaScript #}
+      {% bootstrap_css %}
+      {% bootstrap_javascript jquery='full' %}
+
+      {# Display django.contrib.messages as Bootstrap alerts #}
+      {% bootstrap_messages %}
+
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-      <link type="text/css" rel="stylesheet" href="{% static 'css/app.css' %}"  media="screen,projection"/>
+      <link type="text/css" rel="stylesheet" href="{% static 'css/layout.css' %}"  media="screen,projection"/>
       <link rel="stylesheet" type="text/css" href="{% static "fontawesome/css/all.min.css" %}" />
 
 
