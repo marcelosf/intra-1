@@ -8,6 +8,7 @@ from django.core.paginator import Page
 from django.shortcuts import resolve_url as r
 from intranet.accounts.models import User
 import json
+import httpretty
 
 
 class AccessListViewTest(TestCase):
@@ -355,8 +356,22 @@ class AccessAuthorizationListTest(TestCase):
 
 class AlunoSearchFormTest(TestCase):
     def setUp(self):
+        response = self.make_response()
+        httpretty.enable()
+        httpretty.register_uri(
+            method=httpretty.GET,
+            uri='http://api.iag.usp.br/replicado/alunos/name/Capistrano',
+            body=response,
+            content_type='application/json',
+            status=200
+        )
+
         data = self.make_data()
         self.resp = self.client.post(r('access:authorization_list'), data)
+
+    def tearDown(self):
+        return super().tearDown()
+        httpretty.disable()
 
     def test_status_code(self):
         """Status code should be 200"""
@@ -364,9 +379,7 @@ class AlunoSearchFormTest(TestCase):
 
     def test_search_aluno(self):
         """It should get the searched data"""
-        data = '[{"nome": "Capistrano", "cargo": "Aluno graduação", "email": "capis@usp.com",\
-                        "phone": "1112233", "doc": "usp", "doc_num": "456666", "answerable": "Shista",\
-                        "departament": "ACA" }]'
+        data = self.make_response()
         expected = json.loads(data)
         searched_data = self.resp.context['auth_list']
         self.assertEqual(expected, searched_data)
@@ -375,4 +388,9 @@ class AlunoSearchFormTest(TestCase):
         default = dict(name='Capistrano')
         data = dict(default, **kwargs)
         return data
-       
+
+    def make_response(self):
+        response = '[{"nome": "Capistrano", "cargo": "Aluno graduação", "email": "capis@usp.com",\
+                        "phone": "1112233", "doc": "usp", "doc_num": "456666", "answerable": "Shista",\
+                        "departament": "ACA" }]'
+        return response
