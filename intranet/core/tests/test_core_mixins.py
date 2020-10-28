@@ -48,10 +48,6 @@ class CorePaginatorMixinsDefaultsTest(TestCase):
         paginator = self.paginator.get_paginator()
         self.assertEqual([1], paginator['page_list'])
 
-    def test_request_without_page(self):
-        """request can not have the page querystring"""
-        self.assertRaises(KeyError, self.get_request())
-
     def get_request(self):
         self.paginator.set_per_page(10)
         self.paginator.request.GET.update({'page': 7})
