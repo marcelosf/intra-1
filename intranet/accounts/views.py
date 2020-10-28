@@ -83,3 +83,4 @@ def path_redirect(request):
     if (request.session['next']):
         return request.session.pop('next')
     return r('accounts:user')
+    
