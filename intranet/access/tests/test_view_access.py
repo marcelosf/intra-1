@@ -239,3 +239,24 @@ class TestGeTAccess(TestCase):
         data = {'access_slug': access.get_absolute_url()}
         expected = JsonResponse(data)
         self.assertEqual(expected.content, resp.content)
+
+
+class TestGetAccessUrl(TestCase):
+    def setUp(self):
+        self.data = mock.make_access()
+        user = user = User.objects.create_user(
+            'Marc', 'marc@email.com', 'marcpass')
+        self.client.force_login(user)
+        self.resp = self.client.post(r('access:get_access'), data=self.data)
+
+    def test_status_code(self):
+        self.assertEqual(200, self.resp.status_code)
+
+    def test_response(self):
+        access = Access.objects.get(doc_number=self.data.get('doc_number'))
+        self.assertEqual(access.get_absolute_url(), self.resp.json().get('access_slug'))
+
+    def test_redirectto_login(self):
+        self.client.logout()
+        resp = self.client.post(r('access:get_access'), self.data)
+        self.assertEqual(302, resp.status_code)
