@@ -12,6 +12,7 @@ from intranet.access.filters import AccessFilter, PERPAGE
 from django_filters.views import FilterView
 from intranet.core.mixins import PaginatorMixin
 from intranet.access import resources
+from django.http import JsonResponse
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -25,7 +26,8 @@ def new(request):
 def create(request):
     form = AccessForm(request.POST)
     if not form.is_valid():
-        messages.error(request, 'Alguns campos não foram preenchidos corretamente.')
+        messages.error(
+            request, 'Alguns campos não foram preenchidos corretamente.')
         return render(request, 'access/access_form.html', {'form': form})
 
     access = Access.objects.create(**form.cleaned_data)
@@ -63,11 +65,21 @@ def access_list(request):
         if not is_valid:
             actions_form = form
     queryset = _select_queryset(request)
-    paginator = PaginatorMixin(queryset=queryset, filterset=AccessFilter, request=request)
+    paginator = PaginatorMixin(
+        queryset=queryset, filterset=AccessFilter, request=request)
     paginator.set_per_page(PERPAGE)
     pages = paginator.get_paginator()
-    context = {'list': pages['object_list'], 'page_list': pages['page_list'], 'actions_form': actions_form}
+    context = {'list': pages['object_list'],
+               'page_list': pages['page_list'], 'actions_form': actions_form}
     return render(pages['request'], 'access/access_list.html', context)
+
+
+@login_required(login_url=settings.LOGIN_URL)
+def get_access(request):
+    doc_number = request.GET.get('doc_number')
+    access = Access.objects.get(doc_number=doc_number)
+    data = {'access_slug': access.get_absolute_url()}
+    return JsonResponse(data)
 
 
 def authorization_list(request):
@@ -94,14 +106,15 @@ def _bulk_actions(request, actions_form):
     keys = list(data.keys())
     Access.objects.bulk_update(access, keys, batch_size=30)
     return (True, form)
-        
+
 
 def _access_update(request, slug):
     form = AccessForm(request.POST)
     if not form.is_valid():
-        messages.error(request, 'Alguns campos não foram preenchidos corretamente')
+        messages.error(
+            request, 'Alguns campos não foram preenchidos corretamente')
         return render(request, 'access/access_edit.html', {'form': form})
-    
+
     access = Access.objects.get(uuid=slug)
     access.period_from = form.cleaned_data['period_from']
     access.period_to = form.cleaned_data['period_to']
@@ -110,14 +123,15 @@ def _access_update(request, slug):
     access.time_to = form.cleaned_data['time_to']
     access.status = form.cleaned_data['status']
     access.enable = form.cleaned_data['enable']
-    
+
     access.save()
     messages.success(request, message='Acesso atualizado com sucesso')
     return render(request, 'access/access_edit.html', {'form': form})
 
 
 def _select_queryset(request):
-    in_group = request.user.groups.filter(name=settings.PORTARIA_GROUP_NAME).exists()
+    in_group = request.user.groups.filter(
+        name=settings.PORTARIA_GROUP_NAME).exists()
     if in_group:
         return Access.objects.filter(status=form_choices.AUTHORIZED)
     return Access.objects.all()

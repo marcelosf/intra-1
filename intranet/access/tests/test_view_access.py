@@ -1,5 +1,5 @@
-
-from django.test import TestCase
+from django.http import HttpRequest, JsonResponse
+from django.test import TestCase, RequestFactory
 from django.contrib.auth.models import Permission
 from django.shortcuts import resolve_url as r
 from django.conf import settings
@@ -8,9 +8,13 @@ from intranet.access.forms.forms import AccessForm
 from intranet.access.models import Access
 
 
+from . import mock
+from .. import views
+
+
 class TestAccessNewLoggedInGet(TestCase):
     def setUp(self):
-        user = User.objects.create_user('Marc','marc@email.com', 'marcpass')
+        user = User.objects.create_user('Marc', 'marc@email.com', 'marcpass')
         perm = Permission.objects.get(name='Can manage access status')
         user.user_permissions.set([perm])
         self.client.force_login(user)
@@ -73,7 +77,7 @@ class TestAccessNewAnonymousGet(TestCase):
 
 class TestAccessNewPostValid(TestCase):
     def setUp(self):
-        user = User.objects.create_user('Marc','marc@email.com', 'marcpass')
+        user = User.objects.create_user('Marc', 'marc@email.com', 'marcpass')
         self.client.force_login(user)
         self.resp = self.send_post()
 
@@ -104,7 +108,7 @@ class TestAccessNewPostValid(TestCase):
 
     def test_weekdays_in_form_context(self):
         """Context should have weekdays"""
-        self.send_post(weekdays=[0,2])
+        self.send_post(weekdays=[0, 2])
         count = Access.objects.filter(weekdays="['0', '2']").count()
         self.assertEqual(1, count)
 
@@ -113,9 +117,9 @@ class TestAccessNewPostValid(TestCase):
                         'time_to': '13:13', 'time_from': '20:20', 'institution': 'IAG',
                         'name': 'Marcelo', 'job': 'Analista', 'email': 'marcelo@test.com',
                         'phone': '11912345678', 'doc_type': 'RG', 'doc_number': '202000002',
-                        'answerable': 'Pessoa1', 'observation': 'Observações', 
+                        'answerable': 'Pessoa1', 'observation': 'Observações',
                         'status': 'Para autorização'}
-        
+
         data = dict(default_data, **kwargs)
         resp = self.client.post(r('access:new'), data)
 
@@ -124,7 +128,7 @@ class TestAccessNewPostValid(TestCase):
 
 class TestAccessNewPostInvalid(TestCase):
     def setUp(self):
-        user = User.objects.create_user('Marc','marc@email.com', 'marcpass')
+        user = User.objects.create_user('Marc', 'marc@email.com', 'marcpass')
         self.client.force_login(user)
         self.resp = self.client.post(r('access:new'), {})
 
@@ -151,9 +155,11 @@ class TestAccessNewPostInvalid(TestCase):
 
     def test_show_non_field_errors(self):
         """It must contain non field errors"""
-        data = self.make_data(**{'period_from': '2019-02-10', 'period_to': '2019-01-10'})
+        data = self.make_data(
+            **{'period_from': '2019-02-10', 'period_to': '2019-01-10'})
         resp = self.make_request(data)
-        self.assertContains(resp, 'A Data de início deve ser menor do que a Data de término')
+        self.assertContains(
+            resp, 'A Data de início deve ser menor do que a Data de término')
 
     def test_dont_save_access(self):
         self.assertFalse(Access.objects.exists())
@@ -181,12 +187,12 @@ class TestAccessNewPostInvalid(TestCase):
         }
 
         return dict(access, **kwargs)
-        
+
 
 class TestAccessNewAnonimous(TestCase):
     def setUp(self):
         self.resp = self.client.get(r('access:new'))
-    
+
     def test_redirect(self):
         """Status code must be 302"""
         self.assertEqual(302, self.resp.status_code)
@@ -206,10 +212,30 @@ class TestAccessManager(TestCase):
         self.assertNotContains(resp, expected)
 
     def make_request(self, can_manage_status=False):
-        user = User.objects.create_user('Marc','marc@email.com', 'marcpass')
+        user = User.objects.create_user('Marc', 'marc@email.com', 'marcpass')
         if can_manage_status:
-            can_manage_access_status = Permission.objects.get(name='Can manage access status')
+            can_manage_access_status = Permission.objects.get(
+                name='Can manage access status')
             user.user_permissions.set([can_manage_access_status])
         self.client.force_login(user)
         return self.client.get(r('access:new'))
 
+
+class TestGetAccessAjax(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.user = user = User.objects.create_user(
+            'Marc', 'marc@email.com', 'marcpass')
+        self.access = mock.make_access()
+
+    def test_get_access(self):
+        doc_type = self.access.get('doc_type')
+        doc_number = self.access.get('doc_number')
+        request = self.factory.get(
+            '/access/get-access', {'doc_number': doc_number})
+        request.user = self.user
+        resp = views.get_access(request)
+        access = Access.objects.get(doc_number=doc_number)
+        data = {'access_slug': access.get_absolute_url()}
+        expected = JsonResponse(data)
+        self.assertEqual(expected.content, resp.content)
