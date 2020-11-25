@@ -221,7 +221,7 @@ class TestAccessManager(TestCase):
         return self.client.get(r('access:new'))
 
 
-class TestGetAccessAjax(TestCase):
+class TestGeTAccess(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
         self.user = user = User.objects.create_user(
@@ -231,7 +231,7 @@ class TestGetAccessAjax(TestCase):
     def test_get_access(self):
         doc_type = self.access.get('doc_type')
         doc_number = self.access.get('doc_number')
-        request = self.factory.get(
+        request = self.factory.post(
             '/access/get-access', {'doc_number': doc_number})
         request.user = self.user
         resp = views.get_access(request)
