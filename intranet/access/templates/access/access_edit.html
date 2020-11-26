@@ -39,6 +39,24 @@
                 <form action="." novalidate method="post" class="needs-validation">
                     {% csrf_token %}
                     <div class="form-row">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
+                                {{ form.doc_type.label_tag }}                        
+                                {{ form.doc_type|add_class:'form-control'|add_error_class:'is-invalid' }}
+                                <div class="invalid-feedback">
+                                    {{ form.doc_type.errors.as_text }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
+                                {{ form.doc_number.label_tag }}
+                                {{ form.doc_number|add_class:'form-control'|add_error_class:'is-invalid' }}
+                                <div class="invalid-feedback">
+                                    {{ form.doc_number.errors.as_text }}
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-sm-12 col-md-12 mb-5">
                             {{ form.weekdays.label_tag }}
                             <div class="form-check">
@@ -147,24 +165,6 @@
                                 {{ form.answerable|add_class:'form-control'|add_error_class:'is-invalid' }}
                                 <div class="invalid-feedback">
                                     {{ form.answerable.errors.as_text }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
-                                {{ form.doc_type.label_tag }}                        
-                                {{ form.doc_type|add_class:'form-control'|add_error_class:'is-invalid' }}
-                                <div class="invalid-feedback">
-                                    {{ form.doc_type.errors.as_text }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
-                                {{ form.doc_number.label_tag }}
-                                {{ form.doc_number|add_class:'form-control'|add_error_class:'is-invalid' }}
-                                <div class="invalid-feedback">
-                                    {{ form.doc_number.errors.as_text }}
                                 </div>
                             </div>
                         </div>

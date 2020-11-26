@@ -39,6 +39,28 @@
                     <form action="./new" novalidate method="post" class="needs-validation">
                         {% csrf_token %}
                         <div class="form-row">
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
+                                    {{ form.doc_type.label_tag }}                        
+                                    {{ form.doc_type|add_class:'form-control'|add_error_class:'is-invalid' }}
+                                    <div class="invalid-feedback">
+                                        {{ form.doc_type.errors.as_text }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
+                                    {{ form.doc_number.label_tag }}
+                                    {{ form.doc_number|add_class:'form-control'|add_error_class:'is-invalid' }}
+                                    <div class="invalid-feedback">
+                                        {{ form.doc_number.errors.as_text }}
+                                    </div>
+                                </div>
+                            </div>                        
+                        </div>
+                        <div id="complement-info">
+                        
+                        <div class="form-row">
                             <div class="col-sm-12 col-md-12 mb-5">
                                 {{ form.weekdays.label_tag }}
                                 <div class="form-check">
@@ -151,24 +173,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-12 col-md-6">
-                                <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
-                                    {{ form.doc_type.label_tag }}                        
-                                    {{ form.doc_type|add_class:'form-control'|add_error_class:'is-invalid' }}
-                                    <div class="invalid-feedback">
-                                        {{ form.doc_type.errors.as_text }}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-12 col-md-6">
-                                <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
-                                    {{ form.doc_number.label_tag }}
-                                    {{ form.doc_number|add_class:'form-control'|add_error_class:'is-invalid' }}
-                                    <div class="invalid-feedback">
-                                        {{ form.doc_number.errors.as_text }}
-                                    </div>
-                                </div>
-                            </div>
+
                             <div class="col-sm-12 col-md-12">
                                 <div class="form-group {% if form.email.errors %}has-danger{% endif %}">
                                     {{ form.observation.label_tag }}                        
@@ -180,6 +185,7 @@
                             </div>
                             <button type="submit" class="btn btn-primary">Enviar</button>
                         </div>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -188,6 +194,10 @@
 
 {% block script %}
     <script>
+        $(document).ready(function() {
+            $('#complement-info').hide();
+        });
+
         $('#id_doc_number').change(function() {
             const docNumber = $('#id_doc_number').val();
             const data = {'doc_number': docNumber}
@@ -207,6 +217,7 @@
                     const url = '/access/edit/' + dataParts[3];
                     window.location.href = url;
                 }
+                $('#complement-info').show();
             });
         });
     </script>
