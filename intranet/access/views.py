@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core import mail
@@ -76,7 +77,8 @@ def access_list(request):
 
 @login_required(login_url=settings.LOGIN_URL)
 def get_access(request):
-    doc_number = request.POST.get('doc_number')
+    data = json.load(request)
+    doc_number = data.get('doc_number')
     access = Access.objects.get(doc_number=doc_number)
     data = {'access_slug': access.get_absolute_url()}
     return JsonResponse(data)

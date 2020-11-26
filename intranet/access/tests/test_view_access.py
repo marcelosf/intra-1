@@ -1,3 +1,4 @@
+import json
 from django.http import HttpRequest, JsonResponse
 from django.test import TestCase, RequestFactory
 from django.contrib.auth.models import Permission
@@ -224,15 +225,16 @@ class TestAccessManager(TestCase):
 class TestGeTAccess(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
-        self.user = user = User.objects.create_user(
+        self.user = User.objects.create_user(
             'Marc', 'marc@email.com', 'marcpass')
         self.access = mock.make_access()
 
     def test_get_access(self):
         doc_type = self.access.get('doc_type')
         doc_number = self.access.get('doc_number')
+        data = json.dumps({"doc_number": doc_number})
         request = self.factory.post(
-            '/access/get-access', {'doc_number': doc_number})
+            '/access/get-access', data, content_type='application/json')
         request.user = self.user
         resp = views.get_access(request)
         access = Access.objects.get(doc_number=doc_number)
@@ -247,7 +249,8 @@ class TestGetAccessUrl(TestCase):
         user = user = User.objects.create_user(
             'Marc', 'marc@email.com', 'marcpass')
         self.client.force_login(user)
-        self.resp = self.client.post(r('access:get_access'), data=self.data)
+        self.resp = self.client.post(r('access:get_access'), data=self.data, 
+                                     content_type='application/json')
 
     def test_status_code(self):
         self.assertEqual(200, self.resp.status_code)
