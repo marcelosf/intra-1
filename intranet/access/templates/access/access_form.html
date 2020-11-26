@@ -194,6 +194,10 @@
 
 {% block script %}
     <script>
+        $(document).ready(function() {
+            $('#complement-info').hide();
+        });
+
         $('#id_doc_number').change(function() {
             const docNumber = $('#id_doc_number').val();
             const data = {'doc_number': docNumber}
@@ -213,6 +217,7 @@
                     const url = '/access/edit/' + dataParts[3];
                     window.location.href = url;
                 }
+                $('#complement-info').show();
             });
         });
     </script>
