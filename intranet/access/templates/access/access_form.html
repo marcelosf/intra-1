@@ -185,3 +185,27 @@
             </div>
         </div>
 {% endblock content %}
+
+{% block script %}
+    <script>
+        $('#id_doc_number').change(function() {
+            const docNumber = $('#id_doc_number').val();
+            const data = {'doc_number': docNumber}
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+            const request = new Request('/access/get-access/', {headers: {'X-CSRFToken': csrfToken}});
+
+            fetch(request, {
+                method: 'POST',
+                mode: 'same-origin',
+                body: JSON.stringify(data),
+            }).then(function(response) {
+                return response.json();
+            }).then(function(data) {
+                const dataParts = data.access_slug.split('/');
+                const url = '/access/edit/' + dataParts[3];
+                window.location.href = url;
+            });
+        });
+    </script>
+{% endblock script %}
