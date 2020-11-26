@@ -79,7 +79,9 @@ def access_list(request):
 def get_access(request):
     data = json.load(request)
     doc_number = data.get('doc_number')
-    access = Access.objects.get(doc_number=doc_number)
+    access = Access.objects.filter(doc_number=doc_number).first()
+    if not access:
+        return JsonResponse({'access_slug': None})
     data = {'access_slug': access.get_absolute_url()}
     return JsonResponse(data)
 

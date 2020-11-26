@@ -202,9 +202,11 @@
             }).then(function(response) {
                 return response.json();
             }).then(function(data) {
-                const dataParts = data.access_slug.split('/');
-                const url = '/access/edit/' + dataParts[3];
-                window.location.href = url;
+                if (data.access_slug) {
+                    const dataParts = data.access_slug.split('/');
+                    const url = '/access/edit/' + dataParts[3];
+                    window.location.href = url;
+                }
             });
         });
     </script>
