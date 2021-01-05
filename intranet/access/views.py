@@ -93,8 +93,9 @@ def authorization_list(request):
         if form.is_valid():
             auth_list = resources.get_alunos(query=form.cleaned_data)
             return render(request, 'access/authorization_list.html', {'auth_list': auth_list.json()})
-    auth_list = resources.get_alunos()
-    context = {'auth_list': auth_list.json(), 'form': AlunoSearchForm()}
+    auth_list = request_alunos()
+    context = {'auth_list': auth_list[0]
+               ['byTipvin'], 'form': AlunoSearchForm()}
     return render(request, 'access/authorization_list.html', context)
 
 

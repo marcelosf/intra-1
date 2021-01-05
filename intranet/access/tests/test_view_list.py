@@ -7,6 +7,7 @@ from intranet.access.forms import form_choices, forms
 from django.core.paginator import Page
 from django.shortcuts import resolve_url as r
 from intranet.accounts.models import User
+from .mock import mock_api, alunos_by_tipo_vinculo
 import json
 import httpretty
 
@@ -267,6 +268,7 @@ class AccessListPortariaTest(TestCase):
 
 
 class AccessAuthorizationListTest(TestCase):
+    @mock_api
     def setUp(self):
         self.resp = self.client.get(r('access:authorization_list'))
 
@@ -293,13 +295,13 @@ class AccessAuthorizationListTest(TestCase):
     def test_table_content(self):
         """Context should have the table content"""
         content = self.resp.context['auth_list']
-        expected = self.make_json()
+        expected = alunos_by_tipo_vinculo[0]['byTipvin']
         self.assertListEqual(expected, content)
 
     def test_html_table_content(self):
         """Template should render the html table content"""
-        content = self.make_json()
-        indexes = ['nome', 'cargo', 'email', 'doc_num']
+        content = alunos_by_tipo_vinculo[0]['byTipvin']
+        indexes = ['nompes', 'tipvinext', 'codema', 'codpes']
         for key in indexes:
             with self.subTest():
                 self.assertContains(self.resp, content[0][key])
