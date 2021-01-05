@@ -13,6 +13,7 @@ from intranet.access.filters import AccessFilter, PERPAGE
 from django_filters.views import FilterView
 from intranet.core.mixins import PaginatorMixin
 from intranet.access import resources
+from intranet.access.api_resources import request_alunos
 from django.http import JsonResponse
 
 

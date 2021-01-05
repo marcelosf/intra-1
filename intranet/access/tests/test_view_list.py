@@ -342,17 +342,6 @@ class AccessAuthorizationListTest(TestCase):
         """Template should render csrf"""
         self.assertContains(self.resp, 'csrfmiddlewaretoken')
 
-    def make_json(self):
-        data = '[{"nome": "Capistrano", "cargo": "Aluno graduação", "email": "capis@usp.com",\
-                        "phone": "1112233", "doc": "usp", "doc_num": "456666", "answerable": "Shista",\
-                        "departament": "ACA" }, {"nome": "Tentaculous", "cargo": "Aluno graduação",\
-                        "email": "tents@usp.com", "phone": "187632433", "doc": "usp", "doc_num": "9823456",\
-                        "answerable": "sheba", "deoartament": "ACA"}, {"nome": "Zibauwe", "cargo": "Aluno graduação",\
-                        "email": "zin@usp.com", "phone": "1879999433", "doc": "usp", "doc_num": "9823333",\
-                        "answerable": "sheba", "departament": "AGG"}]'
-        json_data = json.loads(data)
-        return json_data
-
 
 class AlunoSearchFormTest(TestCase):
     def setUp(self):
