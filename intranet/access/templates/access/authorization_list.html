@@ -4,7 +4,6 @@
 {% block content %}
 
     <h4>Conceder Acesso</h4>
-
     <button 
         class="btn btn-primary btn-sm btn-link text-light" 
         data-toggle="collapse" 
@@ -45,9 +44,40 @@
                     <td>{{ aluno.nompes }}</td>
                     <td>{{ aluno.codema }}</td>
                     <td>{{ aluno.tipvinext }}</td>
-                    <td><button class="btn">Acesso</button></td>
+                    <td>
+                        <button 
+                            type="button" 
+                            class="btn btn-sm btn-link action" 
+                            data-toggle="modal" 
+                            data-target="#access-form"
+                        >
+                            Acesso
+                        </button>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+    {% include 'access/modal_form.html' %}
 {% endblock content %}
+
+{% block script %}
+    <script>
+        $(document).ready(function(){
+            $('.action').click(function(){
+                let row = $(this).closest('tr');
+                let codpes = row.children('td:eq(0)').text();
+                let nompes = row.children('td:eq(1)').text();
+                let codema = row.children('td:eq(2)').text();
+                let tipvinext = row.children('td:eq(3)').text();
+
+                $('#id_doc_type').val('USP');
+                $('#id_doc_number').val(codpes);
+                $('#id_name').val(nompes);
+                $('#id_job').val(tipvinext);
+                $('#id_email').val(codema);
+                $('#id_institution').val('IAG');
+            });
+        });
+    </script>
+{% endblock script %}
