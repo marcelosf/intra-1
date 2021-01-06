@@ -321,7 +321,7 @@ class AccessAuthorizationListTest(TestCase):
 
     def test_template_has_aluno_search_form(self):
         """Tempplate should render AlunoSearchForm"""
-        tags = ((1, '<form'), (2, 'type="text"'))
+        tags = ((2, '<form'), (2, 'type="text"'))
 
         for count, expected in tags:
             with self.subTest():
@@ -343,6 +343,9 @@ class AccessAuthorizationListTest(TestCase):
     def test_csrf(self):
         """Template should render csrf"""
         self.assertContains(self.resp, 'csrfmiddlewaretoken')
+
+    def test_modal_form_rendering(self):
+        self.assertTemplateUsed(self.resp, 'access/modal_form.html')
 
 
 class AlunoSearchFormTest(TestCase):
