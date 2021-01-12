@@ -16,8 +16,10 @@ class AccessListViewTest(TestCase):
     def setUp(self):
         user = User.objects.create_user('Marc', 'marc@test.com', 'ktw123@777')
         can_add_access_perm = Permission.objects.get(name='Can add acesso')
-        can_change_access_perm = Permission.objects.get(name='Can change acesso')
-        user.user_permissions.set([can_add_access_perm, can_change_access_perm])
+        can_change_access_perm = Permission.objects.get(
+            name='Can change acesso')
+        user.user_permissions.set(
+            [can_add_access_perm, can_change_access_perm])
         self.client.force_login(user)
         for i in range(40):
             self.obj = Access.objects.create(
@@ -38,7 +40,7 @@ class AccessListViewTest(TestCase):
                 status='Para autorização',
                 created_by=user
             )
-    
+
         self.resp = self.client.get(r('access:access_list'))
 
     def test_url(self):
@@ -75,7 +77,7 @@ class AccessListViewTest(TestCase):
 
     def test_paginator_range_content(self):
         page_range = self.resp.context['page_list']
-        expected = list(range(1,5))
+        expected = list(range(1, 5))
         self.assertListEqual(expected, page_range)
 
     def test_paginator_html(self):
@@ -84,8 +86,8 @@ class AccessListViewTest(TestCase):
             ('page-item', num_of_pages + 2),
             ('page-item active', 1)
         )
-           
-        for expected , count in content:
+
+        for expected, count in content:
             with self.subTest():
                 self.assertContains(self.resp, expected, count)
 
@@ -116,9 +118,9 @@ class AccessListViewTest(TestCase):
         """Template should have actions field"""
         content = (
             'Ativo',
-            'Data de início', 
+            'Data de início',
             'Data de término',
-            'Hora de início', 
+            'Hora de início',
             'Hora de término',
             'Observação',
             '>OK<'
@@ -148,10 +150,13 @@ class AccessListViewTest(TestCase):
         expected = 'href="%s"' % r('access:authorization_list')
         self.assertContains(self.resp, expected)
 
+
 class AccessListPostTest(TestCase):
     def setUp(self):
-        user = User.objects.create_user(login='333', name='Tail', type='I', main_email='tail@test.com')
-        can_change_access_perm = Permission.objects.get(name='Can change acesso') 
+        user = User.objects.create_user(
+            login='333', name='Tail', type='I', main_email='tail@test.com')
+        can_change_access_perm = Permission.objects.get(
+            name='Can change acesso')
         user.user_permissions.add(can_change_access_perm)
         self.client.force_login(user)
         data = {
@@ -176,7 +181,7 @@ class AccessListPostTest(TestCase):
         data_2 = data.copy()
         Access.objects.create(**data)
         Access.objects.create(**data_2)
-    
+
     def test_access_created(self):
         """Access must be created"""
         self.assertEqual(2, Access.objects.count())
@@ -191,7 +196,7 @@ class AccessListPostTest(TestCase):
         self.make_request(period_from='10/20/2020')
         form = self.resp.context['actions_form']
         self.assertGreater(len(form.errors.keys()), 0)
-    
+
     def test_non_fields_error_message(self):
         """It must contain the error message"""
         self.make_request(period_from='10/20/2020')
@@ -201,7 +206,7 @@ class AccessListPostTest(TestCase):
     def make_request(self, **kwargs):
         access = Access.objects.all()
         default = {
-            'access': [access[0].pk, access[1].pk], 
+            'access': [access[0].pk, access[1].pk],
             'period_from': '01/01/2019',
             'period_to': '10/10/2020',
             'time_from': '10:10',
@@ -213,12 +218,12 @@ class AccessListPostTest(TestCase):
         data = dict(default, **kwargs)
         self.resp = self.client.post(r('access:access_list'), data)
 
-        
 
 class AccessListPortariaTest(TestCase):
     def setUp(self):
         status_list = ['Para autorização', 'Não autorizado', 'Autorizado']
-        user = User.objects.create_user(login='333', name='Tail', type='I', main_email='tail@test.com')
+        user = User.objects.create_user(
+            login='333', name='Tail', type='I', main_email='tail@test.com')
         for status in status_list:
             Access.objects.create(
                 enable=True,
@@ -239,10 +244,11 @@ class AccessListPortariaTest(TestCase):
                 created_by=user
             )
 
-        user = User.objects.create_user(login='444', name='Tail', type='I', main_email='tail@test.com')
+        user = User.objects.create_user(
+            login='444', name='Tail', type='I', main_email='tail@test.com')
         group = Group.objects.create(name=settings.PORTARIA_GROUP_NAME)
         user.groups.add(group)
-        self.client.force_login(user)   
+        self.client.force_login(user)
         self.resp = self.client.get(r('access:access_list'))
 
     def test_portaria_list_view(self):
@@ -308,7 +314,7 @@ class AccessAuthorizationListTest(TestCase):
 
     def test_action_button(self):
         """Template shoud render action button"""
-        self.assertContains(self.resp, '>Acesso</')
+        self.assertContains(self.resp, 'Acesso')
 
     def test_template_has_buscar_button(self):
         """Template should render buscar button"""
