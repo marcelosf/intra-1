@@ -13,7 +13,7 @@ from intranet.access.filters import AccessFilter, PERPAGE
 from django_filters.views import FilterView
 from intranet.core.mixins import PaginatorMixin
 from intranet.access import resources
-from intranet.access.api_resources import request_alunos
+from intranet.access.api_resources import request_alunos, request_by_name
 from django.http import JsonResponse
 
 
@@ -91,8 +91,13 @@ def authorization_list(request):
     if request.method == 'POST':
         form = AlunoSearchForm(request.POST)
         if form.is_valid():
-            auth_list = resources.get_alunos(query=form.cleaned_data)
-            return render(request, 'access/authorization_list.html', {'auth_list': auth_list.json()})
+            auth_list = request_by_name(form.cleaned_data['name'])
+            context = {
+                'auth_list': auth_list[0]['byNompes'],
+                'form': AlunoSearchForm(),
+                'access_form': AccessForm()
+            }
+            return render(request, 'access/authorization_list.html', context)
     auth_list = request_alunos()
     context = {'auth_list': auth_list[0]
                ['byTipvin'], 'form': AlunoSearchForm(), 'access_form': AccessForm()}
