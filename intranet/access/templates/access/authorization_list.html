@@ -39,22 +39,24 @@
         </thead>
         <tbody>
             {% for aluno in auth_list %}
-                <tr>
-                    <td>{{ aluno.codpes }}</td>
-                    <td>{{ aluno.nompes }}</td>
-                    <td>{{ aluno.codema }}</td>
-                    <td>{{ aluno.tipvinext }}</td>
-                    <td>
-                        <button 
-                            type="button" 
-                            class="btn btn-sm btn-link action" 
-                            data-toggle="modal" 
-                            data-target="#access-form"
-                        >
-                            Acesso
-                        </button>
-                    </td>
-                </tr>
+                {% if aluno.codpes %}            
+                   <tr>
+                       <td>{{ aluno.codpes }}</td>
+                       <td>{{ aluno.nompes }}</td>
+                       <td>{{ aluno.codema }}</td>
+                       <td>{{ aluno.tipvinext }}</td>
+                       <td>
+                           <button 
+                               type="button" 
+                               class="btn btn-sm btn-link action" 
+                               data-toggle="modal" 
+                               data-target="#access-form"
+                           >
+                               Acesso
+                           </button>
+                       </td>
+                   </tr>
+                {% endif %}
             {% endfor %}
         </tbody>
     </table>
