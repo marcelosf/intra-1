@@ -34,3 +34,24 @@ class Resource:
 def request_alunos():
     resource = Resource()
     return resource.get_alunos()
+
+
+class ResourceBy(Resource):
+    def get_by_name(self, name):
+        self.set_headers()
+        self.get_token()
+        self.get_bearer()
+        self.make_query(name)
+        resp = requests.get(self.query, headers=self.bearer)
+        return resp.json()
+
+    def make_query(self, name):
+        resource_endpoint = getattr(settings, 'RESOURCE_ENDPOINT')
+        query = '?query={byNompes(nompes: "%s"){codpes,nompes,tipvinext,codema,sitatl}}' % name
+        query_endpoint = resource_endpoint + query
+        setattr(self, 'query', query_endpoint)
+
+
+def request_by_name(name):
+    resource = ResourceBy()
+    return resource.get_by_name(name)
