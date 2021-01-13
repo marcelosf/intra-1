@@ -305,7 +305,7 @@ class AccessAuthorizationListTest(TestCase):
 
     def test_template_has_aluno_search_form(self):
         """Tempplate should render AlunoSearchForm"""
-        tags = ((2, '<form'), (7, 'type="text"'))
+        tags = ((2, '<form'), (6, 'type="text"'))
 
         for count, expected in tags:
             with self.subTest():

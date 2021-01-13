@@ -60,4 +60,3 @@ def actions_formset(queryset):
 
 class AlunoSearchForm(forms.Form):
     name = forms.CharField(label='nome', required=False, widget=forms.TextInput(attrs={'id': 'id_search_name'}))
-    num_doc = forms.CharField(label='número usp', required=False)
