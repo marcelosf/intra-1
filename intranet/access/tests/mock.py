@@ -52,6 +52,21 @@ alunos_by_tipo_vinculo = [
     }
 ]
 
+pessoa_by_nompes = [
+    {
+        'byNompes': [
+            {
+                "codpes": "1111111",
+                "tipvinext": "Aluno de Cultura e Extensão",
+                "sitatl": "A",
+                "codundclg": "14",
+                "nompes": "Merlyn Steves",
+                "codema": "mll@gmail.com"
+            }
+        ]
+    }
+]
+
 
 token_payload = {
     'access_token': '87FXExQqaF2NUL9byWcFAQchxUlvoXL', 'token_type': 'bearer'}
@@ -66,10 +81,11 @@ api_list = [
     },
     {
         'method': 'GET',
-        'uri': base_url + 'localizapessoa?query{byTipvin(tipvin: "ALUNOPOS"){codpes,nompes,tipvinext,codema,sitatl}}',
+        'uri': base_url + 'localizapessoa?query={byNompes(nompes: "%s"){codpes,nompes,tipvinext,codema,sitatl}}' % 'Merlyn Steves',
         'headers': {'Content-Type': 'application/json'},
-        'body': json.dumps(alunos_by_tipo_vinculo)
+        'body': json.dumps(pessoa_by_nompes)
     }
+
 ]
 
 

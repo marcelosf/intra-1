@@ -98,9 +98,7 @@ def authorization_list(request):
                 'access_form': AccessForm()
             }
             return render(request, 'access/authorization_list.html', context)
-    auth_list = request_alunos()
-    context = {'auth_list': auth_list[0]
-               ['byTipvin'], 'form': AlunoSearchForm(), 'access_form': AccessForm()}
+    context = {'form': AlunoSearchForm(), 'access_form': AccessForm()}
     return render(request, 'access/authorization_list.html', context)
 
 

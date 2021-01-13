@@ -16,7 +16,7 @@ class ResourceTest(TestCase):
     @mock.mock_api
     def test_get_alunos(self):
         alunos = self.obj.get_alunos()
-        expected = mock.alunos_by_tipo_vinculo
+        expected = mock.pessoa_by_nompes
         self.assertEqual(expected, alunos)
 
     def test_set_headers(self):

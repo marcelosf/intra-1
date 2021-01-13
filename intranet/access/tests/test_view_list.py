@@ -7,7 +7,7 @@ from intranet.access.forms import form_choices, forms
 from django.core.paginator import Page
 from django.shortcuts import resolve_url as r
 from intranet.accounts.models import User
-from .mock import mock_api, alunos_by_tipo_vinculo
+from .mock import mock_api, alunos_by_tipo_vinculo, pessoa_by_nompes
 import json
 import httpretty
 
@@ -290,28 +290,6 @@ class AccessAuthorizationListTest(TestCase):
         """It should render base template"""
         self.assertTemplateUsed(self.resp, 'base.html')
 
-    def test_html_table_list(self):
-        """Template should render the list of alunos"""
-        headers = ['Nome', 'Atividade', 'E-mail', 'Nº USP', 'Ação']
-
-        for expected in headers:
-            with self.subTest():
-                self.assertContains(self.resp, expected)
-
-    def test_table_content(self):
-        """Context should have the table content"""
-        content = self.resp.context['auth_list']
-        expected = alunos_by_tipo_vinculo[0]['byTipvin']
-        self.assertListEqual(expected, content)
-
-    def test_html_table_content(self):
-        """Template should render the html table content"""
-        content = alunos_by_tipo_vinculo[0]['byTipvin']
-        indexes = ['nompes', 'tipvinext', 'codema', 'codpes']
-        for key in indexes:
-            with self.subTest():
-                self.assertContains(self.resp, content[0][key])
-
     def test_action_button(self):
         """Template shoud render action button"""
         self.assertContains(self.resp, 'Acesso')
@@ -327,7 +305,7 @@ class AccessAuthorizationListTest(TestCase):
 
     def test_template_has_aluno_search_form(self):
         """Tempplate should render AlunoSearchForm"""
-        tags = ((2, '<form'), (2, 'type="text"'))
+        tags = ((2, '<form'), (7, 'type="text"'))
 
         for count, expected in tags:
             with self.subTest():
@@ -355,23 +333,10 @@ class AccessAuthorizationListTest(TestCase):
 
 
 class AlunoSearchFormTest(TestCase):
+    @mock_api
     def setUp(self):
-        response = self.make_response()
-        httpretty.enable()
-        httpretty.register_uri(
-            method=httpretty.GET,
-            uri='http://api.iag.usp.br/replicado/alunos/name/Capistrano',
-            body=response,
-            content_type='application/json',
-            status=200
-        )
-
         data = self.make_data()
         self.resp = self.client.post(r('access:authorization_list'), data)
-
-    def tearDown(self):
-        return super().tearDown()
-        httpretty.disable()
 
     def test_status_code(self):
         """Status code should be 200"""
@@ -379,18 +344,12 @@ class AlunoSearchFormTest(TestCase):
 
     def test_search_aluno(self):
         """It should get the searched data"""
-        data = self.make_response()
-        expected = json.loads(data)
+        expected = pessoa_by_nompes[0]['byNompes']
         searched_data = self.resp.context['auth_list']
         self.assertEqual(expected, searched_data)
 
     def make_data(self, **kwargs):
-        default = dict(name='Capistrano')
+        default = dict(name='Merlyn Steves')
         data = dict(default, **kwargs)
         return data
 
-    def make_response(self):
-        response = '[{"nome": "Capistrano", "cargo": "Aluno graduação", "email": "capis@usp.com",\
-                        "phone": "1112233", "doc": "usp", "doc_num": "456666", "answerable": "Shista",\
-                        "departament": "ACA" }]'
-        return response
