@@ -13,6 +13,7 @@ from intranet.access.filters import AccessFilter, PERPAGE
 from django_filters.views import FilterView
 from intranet.core.mixins import PaginatorMixin
 from intranet.access import resources
+from intranet.access.api_resources import request_alunos, request_by_name
 from django.http import JsonResponse
 
 
@@ -27,15 +28,24 @@ def new(request):
 def create(request):
     form = AccessForm(request.POST)
     if not form.is_valid():
-        messages.error(
-            request, 'Alguns campos não foram preenchidos corretamente.')
+        message = 'Alguns campos não foram preenchidos corretamente.'
+        if request.is_ajax():
+            return JsonResponse({'status': 'error', 'message': message, 'form': form.errors})
+
+        messages.error(request, message)
         return render(request, 'access/access_form.html', {'form': form})
 
     access = Access.objects.create(**form.cleaned_data)
     request.user.access_set.add(access)
 
     _send_email({'access': access})
-    messages.success(request, 'Solicitação enviada com sucesso.')
+    
+    message = 'Solicitação enviada com sucesso.'
+    if request.is_ajax():
+        return JsonResponse({'status': 'ok', 'message': message, 'form': ''})
+
+    messages.success(request, message)
+
 
     return empty_form(request)
 
@@ -90,10 +100,14 @@ def authorization_list(request):
     if request.method == 'POST':
         form = AlunoSearchForm(request.POST)
         if form.is_valid():
-            auth_list = resources.get_alunos(query=form.cleaned_data)
-            return render(request, 'access/authorization_list.html', {'auth_list': auth_list.json()})
-    auth_list = resources.get_alunos()
-    context = {'auth_list': auth_list.json(), 'form': AlunoSearchForm()}
+            auth_list = request_by_name(form.cleaned_data['name'])
+            context = {
+                'auth_list': auth_list[0]['byNompes'],
+                'form': AlunoSearchForm(),
+                'access_form': AccessForm()
+            }
+            return render(request, 'access/authorization_list.html', context)
+    context = {'form': AlunoSearchForm(), 'access_form': AccessForm()}
     return render(request, 'access/authorization_list.html', context)
 
 

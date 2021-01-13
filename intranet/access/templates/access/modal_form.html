@@ -1,0 +1,181 @@
+{% load widget_tweaks %}
+
+<div
+  id="access-form"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="access-form"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Solicitar acesso</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Fechar"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+        
+      <form id="modal-form" action="/access/new" novalidate method="post" class="needs-validation">
+        {% csrf_token %}
+        <div class="form-row">
+          <div class="col-sm-12 col-md-6">
+            <div class="form-group {% if access_form.email.errors %}has-danger{% endif %}">
+              {{ access_form.doc_type.label_tag }}
+              {{ access_form.doc_type|add_class:'form-control'|add_error_class:'is-invalid' }}
+              <div class="invalid-feedback">
+                {{ access_form.doc_type.errors.as_text }}
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <div class="form-group {% if access_form.email.errors %}has-danger{% endif %}">
+              {{ access_form.doc_number.label_tag }} 
+              {{ access_form.doc_number|add_class:'form-control'|add_error_class:'is-invalid' }}
+              <div class="invalid-feedback">
+                {{ access_form.doc_number.errors.as_text }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="complement-info">
+          <div class="form-row">
+            <div class="col-sm-12 col-md-12 mb-5">
+              {{ access_form.weekdays.label_tag }}
+              <div class="form-check">
+                {% for checkbox in access_form.weekdays %} 
+                    {{ checkbox }} 
+                    {{ checkbox.label_tag }} 
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="col-sm-12 col-md-6">
+              <div class="form-check">
+                {{ access_form.enable|add_class:'form-check-input' }} 
+                {{ access_form.enable.label_tag }}
+              </div>
+            </div>
+            {% if perms.access.can_manage_access_status %}
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group">
+                {{ access_form.status.label_tag }}
+                {{ access_form.status|add_class:'form-control' }}
+              </div>
+            </div>
+            {% endif %}
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group {% if access_form.email.errors %}has-danger{% endif %}">
+                {{ access_form.period_from.label_tag }} 
+                {{ access_form.period_from|add_class:'form-control'|add_error_class:'is-invalid' }}
+                <div class="invalid-feedback">
+                  {{ access_form.period_from.errors.as_text }}
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group {% if access_form.email.errors %}has-danger{% endif %}" >
+                {{ access_form.time_from.label_tag }} 
+                {{ access_form.time_from|add_class:'form-control'|add_error_class:'is-invalid' }}
+                <div class="invalid-feedback">
+                  {{ access_form.time_from.errors.as_text }}
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group {% if access_form.email.errors %}has-danger{% endif %}">
+                {{ access_form.period_to.label_tag }} 
+                {{ access_form.period_to|add_class:'form-control'|add_error_class:'is-invalid' }}
+                <div class="invalid-feedback">
+                  {{ access_form.period_to.errors.as_text }}
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group {% if access_form.email.errors %}has-danger{% endif %}" >
+                {{ access_form.time_to.label_tag }} 
+                {{ access_form.time_to|add_class:'form-control'|add_error_class:'is-invalid' }}
+                <div class="invalid-feedback">
+                  {{ access_form.time_to.errors.as_text }}
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group {% if access_form.email.errors %}has-danger{% endif %}">
+                {{ access_form.name.label_tag }} 
+                {{ access_form.name|add_class:'form-control'|add_error_class:'is-invalid' }}
+                <div class="invalid-feedback">
+                  {{ access_form.name.errors.as_text }}
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group {% if access_form.email.errors %}has-danger{% endif %}">
+                {{ access_form.job.label_tag }} 
+                {{ access_form.job|add_class:'form-control'|add_error_class:'is-invalid' }}
+                <div class="invalid-feedback">
+                  {{ access_form.job.errors.as_text }}
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group {% if access_form.email.errors %}has-danger{% endif %}">
+                {{ access_form.email.label_tag }} 
+                {{ access_form.email|add_class:'form-control'|add_error_class:'is-invalid' }}
+                <div class="invalid-feedback">
+                  {{ access_form.email.errors.as_text }}
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group {% if access_form.email.errors %}has-danger{% endif %}">
+                {{ access_form.phone.label_tag }}
+                {{ access_form.phone|add_class:'form-control'|add_error_class:'is-invalid' }}
+                <div class="invalid-feedback">
+                  {{ access_form.phone.errors.as_text }}
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group {% if access_form.email.errors %}has-danger{% endif %}">
+                {{ access_form.institution.label_tag }} 
+                {{ access_form.institution|add_class:'form-control'|add_error_class:'is-invalid' }}
+                {{ access_form.institution.errors.as_text }}
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <div class="form-group {% if access_form.email.errors %}has-danger{% endif %}">
+                {{ access_form.answerable.label_tag }} 
+                {{ access_form.answerable|add_class:'form-control'|add_error_class:'is-invalid' }}
+                <div class="invalid-feedback">
+                  {{ access_form.answerable.errors.as_text }}
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-12 col-md-12">
+              <div class="form-group {% if access_form.email.errors %}has-danger{% endif %}">
+                {{ access_form.observation.label_tag }}
+                {{ access_form.observation|add_class:'form-control'|add_error_class:'is-invalid' }}
+                <div class="invalid-feedback">
+                  {{ access_form.observation.errors.as_text }}
+                </div>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar</button>
+          </div>
+        </div>
+      </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -5,49 +5,111 @@
 
     <h4>Conceder Acesso</h4>
 
-    <button 
-        class="btn btn-primary btn-sm btn-link text-light" 
-        data-toggle="collapse" 
-        data-target="#action-form"
-        aria-expanded="false"
-        aria-controls="action-form"
-    >
-    <i class="fas fa-plus-circle"></i>Buscar</button>
+    <div id="messages"></div>
 
     <form action="{% url 'access:authorization_list' %}" method="POST">
         
         {% csrf_token %}
 
-        {{ form.name.label_tag }}
-        {{ form.name|add_class:"form-control" }}
-
-        {{ form.num_doc.label }}
-        {{ form.num_doc|add_class:"form-control" }}
-
-        <button class="btn btn-primary" type="submit">Buscar</button>
-
+        <div class="input-group my-5">
+            {{ form.name|add_class:"form-control"|attr:"aria-label:Nome"|attr:"aria-describedby:search-button"|attr:"placeholder:Informe o nome da pessoa" }}
+            <div class="input-group-append">
+                <button class="btn btn-outline-primary" type="submit" id="search-button">Buscar</button>
+            </div>
+        </div>
     </form>
 
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>Nº USP</th>
-                <th>Nome</th>
-                <th>E-mail</th>
-                <th>Atividade</th>
-                <th>Ação</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for aluno in auth_list %}
+    {% if auth_list %}
+        <table class="table table-hover">
+            <thead>
                 <tr>
-                    <td>{{ aluno.doc_num }}</td>
-                    <td>{{ aluno.nome }}</td>
-                    <td>{{ aluno.email }}</td>
-                    <td>{{ aluno.cargo }}</td>
-                    <td><button class="btn">Acesso</button></td>
+                    <th>Nº USP</th>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th>Atividade</th>
+                    <th>Ação</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for aluno in auth_list %}
+                    {% if aluno.codpes %}            
+                       <tr>
+                           <td>{{ aluno.codpes }}</td>
+                           <td>{{ aluno.nompes }}</td>
+                           <td>{{ aluno.codema }}</td>
+                           <td>{{ aluno.tipvinext }}</td>
+                           <td>
+                               <button 
+                                   type="button" 
+                                   class="btn btn-sm btn-outline-primary action" 
+                                   data-toggle="modal" 
+                                   data-target="#access-form"
+                               >
+                                   Acesso
+                               </button>
+                           </td>
+                       </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    {% include 'access/modal_form.html' %}
 {% endblock content %}
+
+{% block script %}
+    <script>
+        $(document).ready(function(){
+            $('.action').click(function(){
+                let row = $(this).closest('tr');
+                let codpes = row.children('td:eq(0)').text();
+                let nompes = row.children('td:eq(1)').text();
+                let codema = row.children('td:eq(2)').text();
+                let tipvinext = row.children('td:eq(3)').text();
+
+                $('#id_doc_type').val('USP');
+                $('#id_doc_number').val(codpes);
+                $('#id_name').val(nompes);
+                $('#id_job').val(tipvinext);
+                $('#id_email').val(codema);
+                $('#id_institution').val('IAG');
+            });
+
+
+            $("#modal-form").submit(function(e) {
+                const form = $(this);
+                e.preventDefault();
+                
+                if (form[0].checkValidity() === false) {
+                    e.stopPropagation();
+                }
+
+                form[0].classList.add('was-validated');
+
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                const request = new Request('/access/new', {headers: {'X-CSRFToken': csrfToken, "X-Requested-With": "XMLHttpRequest"}})
+
+                const data = new FormData(form[0]);
+
+                fetch(request, {
+                    method: 'POST',
+                    mode: 'same-origin',
+                    body: data,
+                }).then(function(response){
+                    return response.text();
+                }).then(function(data){
+                    data = JSON.parse(data)
+                    if (data.status == "ok") {
+                        $('#access-form').modal('hide');
+                        $('#messages').html(
+                            `<div class="alert alert-success" role="alert">${data.message}</div>`
+                        )
+                    }
+                });
+                
+            });
+            
+        });
+    </script>
+{% endblock script %}

@@ -122,16 +122,8 @@ class AlunoSearchFormTest(TestCase):
 
     def test_fields(self):
         """Form should have fields"""
-        fields = ['num_doc', 'name']
-        
-        for expected in fields:
-            with self.subTest():
-                self.assertIn(expected, list(self.form.fields))
+        self.assertIn('name', list(self.form.fields))
 
-    def test_fields_not_required(self):
+    def test_field_required(self):
         """Fields should not be required"""
-        fields = ['name', 'num_doc']
-
-        for field in fields:
-            with self.subTest():
-                self.assertFalse(self.form.fields[field].required)
+        self.assertTrue(self.form.fields['name'].required)

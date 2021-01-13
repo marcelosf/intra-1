@@ -94,7 +94,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'intranet.urls'
 
-LOGIN_URL='/auth/login'
+LOGIN_URL = '/auth/login'
 
 TEMPLATES = [
     {
@@ -165,7 +165,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
-#Email configuration
+# Email configuration
 EMAIL_BACKEND = config('EMAIL_BACKEND')
 EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_PORT = config('EMAIL_PORT', cast=int)
@@ -173,11 +173,19 @@ EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
-#Access Module settings
+# Access Module settings
 PORTARIA_GROUP_NAME = config('PORTARIA_GROUP_NAME')
 
-#RESOURCES
+# RESOURCES
 SET_REPLICADO = config('SET_REPLICADO', default=False, cast=bool)
 ANSWERABLE_RESOURCE = config('ANSWERABLE_RESOURCE')
 ALUNOS_RESOURCES = config('ALUNOS_RESOURCES')
-GET_ALUNOS_RESOURCE = config('GET_ALUNOS_RESOURCE', cast=lambda v: json.loads(v))
+GET_ALUNOS_RESOURCE = config(
+    'GET_ALUNOS_RESOURCE', cast=lambda v: json.loads(v))
+
+
+RESOURCE_TOKEN_URL = config('RESOURCE_TOKEN_URL')
+RESOURCE_CLIENT = config('RESOURCE_CLIENT')
+RESOURCE_SECRET = config('RESOURCE_SECRET')
+RESOURCE_ALUNOS = config('RESOURCE_ALUNOS')
+RESOURCE_ENDPOINT = config('RESOURCE_ENDPOINT')

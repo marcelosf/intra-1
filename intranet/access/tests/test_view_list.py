@@ -7,6 +7,7 @@ from intranet.access.forms import form_choices, forms
 from django.core.paginator import Page
 from django.shortcuts import resolve_url as r
 from intranet.accounts.models import User
+from .mock import mock_api, alunos_by_tipo_vinculo, pessoa_by_nompes
 import json
 import httpretty
 
@@ -15,8 +16,10 @@ class AccessListViewTest(TestCase):
     def setUp(self):
         user = User.objects.create_user('Marc', 'marc@test.com', 'ktw123@777')
         can_add_access_perm = Permission.objects.get(name='Can add acesso')
-        can_change_access_perm = Permission.objects.get(name='Can change acesso')
-        user.user_permissions.set([can_add_access_perm, can_change_access_perm])
+        can_change_access_perm = Permission.objects.get(
+            name='Can change acesso')
+        user.user_permissions.set(
+            [can_add_access_perm, can_change_access_perm])
         self.client.force_login(user)
         for i in range(40):
             self.obj = Access.objects.create(
@@ -37,7 +40,7 @@ class AccessListViewTest(TestCase):
                 status='Para autorização',
                 created_by=user
             )
-    
+
         self.resp = self.client.get(r('access:access_list'))
 
     def test_url(self):
@@ -74,7 +77,7 @@ class AccessListViewTest(TestCase):
 
     def test_paginator_range_content(self):
         page_range = self.resp.context['page_list']
-        expected = list(range(1,5))
+        expected = list(range(1, 5))
         self.assertListEqual(expected, page_range)
 
     def test_paginator_html(self):
@@ -83,8 +86,8 @@ class AccessListViewTest(TestCase):
             ('page-item', num_of_pages + 2),
             ('page-item active', 1)
         )
-           
-        for expected , count in content:
+
+        for expected, count in content:
             with self.subTest():
                 self.assertContains(self.resp, expected, count)
 
@@ -115,9 +118,9 @@ class AccessListViewTest(TestCase):
         """Template should have actions field"""
         content = (
             'Ativo',
-            'Data de início', 
+            'Data de início',
             'Data de término',
-            'Hora de início', 
+            'Hora de início',
             'Hora de término',
             'Observação',
             '>OK<'
@@ -147,10 +150,13 @@ class AccessListViewTest(TestCase):
         expected = 'href="%s"' % r('access:authorization_list')
         self.assertContains(self.resp, expected)
 
+
 class AccessListPostTest(TestCase):
     def setUp(self):
-        user = User.objects.create_user(login='333', name='Tail', type='I', main_email='tail@test.com')
-        can_change_access_perm = Permission.objects.get(name='Can change acesso') 
+        user = User.objects.create_user(
+            login='333', name='Tail', type='I', main_email='tail@test.com')
+        can_change_access_perm = Permission.objects.get(
+            name='Can change acesso')
         user.user_permissions.add(can_change_access_perm)
         self.client.force_login(user)
         data = {
@@ -175,7 +181,7 @@ class AccessListPostTest(TestCase):
         data_2 = data.copy()
         Access.objects.create(**data)
         Access.objects.create(**data_2)
-    
+
     def test_access_created(self):
         """Access must be created"""
         self.assertEqual(2, Access.objects.count())
@@ -190,7 +196,7 @@ class AccessListPostTest(TestCase):
         self.make_request(period_from='10/20/2020')
         form = self.resp.context['actions_form']
         self.assertGreater(len(form.errors.keys()), 0)
-    
+
     def test_non_fields_error_message(self):
         """It must contain the error message"""
         self.make_request(period_from='10/20/2020')
@@ -200,7 +206,7 @@ class AccessListPostTest(TestCase):
     def make_request(self, **kwargs):
         access = Access.objects.all()
         default = {
-            'access': [access[0].pk, access[1].pk], 
+            'access': [access[0].pk, access[1].pk],
             'period_from': '01/01/2019',
             'period_to': '10/10/2020',
             'time_from': '10:10',
@@ -212,12 +218,12 @@ class AccessListPostTest(TestCase):
         data = dict(default, **kwargs)
         self.resp = self.client.post(r('access:access_list'), data)
 
-        
 
 class AccessListPortariaTest(TestCase):
     def setUp(self):
         status_list = ['Para autorização', 'Não autorizado', 'Autorizado']
-        user = User.objects.create_user(login='333', name='Tail', type='I', main_email='tail@test.com')
+        user = User.objects.create_user(
+            login='333', name='Tail', type='I', main_email='tail@test.com')
         for status in status_list:
             Access.objects.create(
                 enable=True,
@@ -238,10 +244,11 @@ class AccessListPortariaTest(TestCase):
                 created_by=user
             )
 
-        user = User.objects.create_user(login='444', name='Tail', type='I', main_email='tail@test.com')
+        user = User.objects.create_user(
+            login='444', name='Tail', type='I', main_email='tail@test.com')
         group = Group.objects.create(name=settings.PORTARIA_GROUP_NAME)
         user.groups.add(group)
-        self.client.force_login(user)   
+        self.client.force_login(user)
         self.resp = self.client.get(r('access:access_list'))
 
     def test_portaria_list_view(self):
@@ -267,6 +274,7 @@ class AccessListPortariaTest(TestCase):
 
 
 class AccessAuthorizationListTest(TestCase):
+    @mock_api
     def setUp(self):
         self.resp = self.client.get(r('access:authorization_list'))
 
@@ -282,31 +290,9 @@ class AccessAuthorizationListTest(TestCase):
         """It should render base template"""
         self.assertTemplateUsed(self.resp, 'base.html')
 
-    def test_html_table_list(self):
-        """Template should render the list of alunos"""
-        headers = ['Nome', 'Atividade', 'E-mail', 'Nº USP', 'Ação']
-
-        for expected in headers:
-            with self.subTest():
-                self.assertContains(self.resp, expected)
-
-    def test_table_content(self):
-        """Context should have the table content"""
-        content = self.resp.context['auth_list']
-        expected = self.make_json()
-        self.assertListEqual(expected, content)
-
-    def test_html_table_content(self):
-        """Template should render the html table content"""
-        content = self.make_json()
-        indexes = ['nome', 'cargo', 'email', 'doc_num']
-        for key in indexes:
-            with self.subTest():
-                self.assertContains(self.resp, content[0][key])
-
     def test_action_button(self):
         """Template shoud render action button"""
-        self.assertContains(self.resp, '>Acesso</')
+        self.assertContains(self.resp, 'Acesso')
 
     def test_template_has_buscar_button(self):
         """Template should render buscar button"""
@@ -319,7 +305,7 @@ class AccessAuthorizationListTest(TestCase):
 
     def test_template_has_aluno_search_form(self):
         """Tempplate should render AlunoSearchForm"""
-        tags = ((1, '<form'), (2, 'type="text"'))
+        tags = ((2, '<form'), (6, 'type="text"'))
 
         for count, expected in tags:
             with self.subTest():
@@ -342,36 +328,15 @@ class AccessAuthorizationListTest(TestCase):
         """Template should render csrf"""
         self.assertContains(self.resp, 'csrfmiddlewaretoken')
 
-    def make_json(self):
-        data = '[{"nome": "Capistrano", "cargo": "Aluno graduação", "email": "capis@usp.com",\
-                        "phone": "1112233", "doc": "usp", "doc_num": "456666", "answerable": "Shista",\
-                        "departament": "ACA" }, {"nome": "Tentaculous", "cargo": "Aluno graduação",\
-                        "email": "tents@usp.com", "phone": "187632433", "doc": "usp", "doc_num": "9823456",\
-                        "answerable": "sheba", "deoartament": "ACA"}, {"nome": "Zibauwe", "cargo": "Aluno graduação",\
-                        "email": "zin@usp.com", "phone": "1879999433", "doc": "usp", "doc_num": "9823333",\
-                        "answerable": "sheba", "departament": "AGG"}]'
-        json_data = json.loads(data)
-        return json_data
+    def test_modal_form_rendering(self):
+        self.assertTemplateUsed(self.resp, 'access/modal_form.html')
 
 
 class AlunoSearchFormTest(TestCase):
+    @mock_api
     def setUp(self):
-        response = self.make_response()
-        httpretty.enable()
-        httpretty.register_uri(
-            method=httpretty.GET,
-            uri='http://api.iag.usp.br/replicado/alunos/name/Capistrano',
-            body=response,
-            content_type='application/json',
-            status=200
-        )
-
         data = self.make_data()
         self.resp = self.client.post(r('access:authorization_list'), data)
-
-    def tearDown(self):
-        return super().tearDown()
-        httpretty.disable()
 
     def test_status_code(self):
         """Status code should be 200"""
@@ -379,18 +344,12 @@ class AlunoSearchFormTest(TestCase):
 
     def test_search_aluno(self):
         """It should get the searched data"""
-        data = self.make_response()
-        expected = json.loads(data)
+        expected = pessoa_by_nompes[0]['byNompes']
         searched_data = self.resp.context['auth_list']
         self.assertEqual(expected, searched_data)
 
     def make_data(self, **kwargs):
-        default = dict(name='Capistrano')
+        default = dict(name='Merlyn Steves')
         data = dict(default, **kwargs)
         return data
 
-    def make_response(self):
-        response = '[{"nome": "Capistrano", "cargo": "Aluno graduação", "email": "capis@usp.com",\
-                        "phone": "1112233", "doc": "usp", "doc_num": "456666", "answerable": "Shista",\
-                        "departament": "ACA" }]'
-        return response
