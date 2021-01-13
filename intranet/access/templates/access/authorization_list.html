@@ -5,6 +5,8 @@
 
     <h4>Conceder Acesso</h4>
 
+    <div id="messages"></div>
+
     <form action="{% url 'access:authorization_list' %}" method="POST">
         
         {% csrf_token %}
@@ -73,6 +75,41 @@
                 $('#id_email').val(codema);
                 $('#id_institution').val('IAG');
             });
+
+
+            $("#modal-form").submit(function(e) {
+                const form = $(this);
+                e.preventDefault();
+                
+                if (form[0].checkValidity() === false) {
+                    e.stopPropagation();
+                }
+
+                form[0].classList.add('was-validated');
+
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                const request = new Request('/access/new', {headers: {'X-CSRFToken': csrfToken, "X-Requested-With": "XMLHttpRequest"}})
+
+                const data = new FormData(form[0]);
+
+                fetch(request, {
+                    method: 'POST',
+                    mode: 'same-origin',
+                    body: data,
+                }).then(function(response){
+                    return response.text();
+                }).then(function(data){
+                    data = JSON.parse(data)
+                    if (data.status == "ok") {
+                        $('#access-form').modal('hide');
+                        $('#messages').html(
+                            `<div class="alert alert-success" role="alert">${data.message}</div>`
+                        )
+                    }
+                });
+                
+            });
+            
         });
     </script>
 {% endblock script %}

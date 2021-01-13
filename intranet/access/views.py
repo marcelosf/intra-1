@@ -28,15 +28,24 @@ def new(request):
 def create(request):
     form = AccessForm(request.POST)
     if not form.is_valid():
-        messages.error(
-            request, 'Alguns campos não foram preenchidos corretamente.')
+        message = 'Alguns campos não foram preenchidos corretamente.'
+        if request.is_ajax():
+            return JsonResponse({'status': 'error', 'message': message, 'form': form.errors})
+
+        messages.error(request, message)
         return render(request, 'access/access_form.html', {'form': form})
 
     access = Access.objects.create(**form.cleaned_data)
     request.user.access_set.add(access)
 
     _send_email({'access': access})
-    messages.success(request, 'Solicitação enviada com sucesso.')
+    
+    message = 'Solicitação enviada com sucesso.'
+    if request.is_ajax():
+        return JsonResponse({'status': 'ok', 'message': message, 'form': ''})
+
+    messages.success(request, message)
+
 
     return empty_form(request)
 
