@@ -35,7 +35,8 @@ def create(request):
         messages.error(request, message)
         return render(request, 'access/access_form.html', {'form': form})
 
-    access = Access.objects.create(**form.cleaned_data)
+    doc_number = {'doc_number': form.cleaned_data.get('doc_number')}
+    access, created = Access.objects.update_or_create(defaults=form.cleaned_data, **doc_number)
     request.user.access_set.add(access)
 
     _send_email({'access': access})
