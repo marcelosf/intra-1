@@ -46,3 +46,8 @@ ANSWERABLE_RESOURCE=http://relpicado.url.com/pessoa.json
 ALUNOS_RESOURCES=http://api.iag.usp.br/replicado/alunos
 GET_ALUNOS_RESOURCE={"replicado": "alunos"}
 
+
+RESOURCE_TOKEN_URL=http://api.iag.usp.br/token/
+RESOURCE_ALUNOS=http://api.iag.usp.br/localizapessoa?query{byTipvin(tipvin: "ALUNOPOS"){codpes,nompes,tipvinext,codema,sitatl}}
+RESOURCE_ENDPOINT=http://api.iag.usp.br/localizapessoa
+
