@@ -96,6 +96,11 @@ class AccessFormValidationTest(TestCase):
         form = self.make_form(doc_type='CPF', doc_number='46792039004')
         self.assertIn('doc_number', form.cleaned_data)
 
+    def test_observation_is_not_required(self):
+        """Observation field should not be required"""
+        form = self.make_form()
+        self.assertFalse(form.fields['observation'].required)
+
     def assertFormMessage(self, form, field, msg):
         errors = form.errors.as_data()
         error_list = errors[field]

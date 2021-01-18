@@ -21,7 +21,7 @@ class AccessForm(forms.Form):
     doc_type = forms.ChoiceField(label='Documento', choices=DOCS)
     doc_number = forms.CharField(label='Número do documento')
     answerable = forms.ChoiceField(label='Responsável', choices=ANSWERABLE)
-    observation = forms.CharField(label='Observação', widget=forms.Textarea(attrs={'class': 'materialize-textarea'}))
+    observation = forms.CharField(label='Observação', widget=forms.Textarea(attrs={'class': 'materialize-textarea'}), required=False)
 
     def clean(self):
         cleaned_data = super().clean()
