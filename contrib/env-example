@@ -51,3 +51,5 @@ RESOURCE_TOKEN_URL=http://api.iag.usp.br/token/
 RESOURCE_ALUNOS=http://api.iag.usp.br/localizapessoa?query{byTipvin(tipvin: "ALUNOPOS"){codpes,nompes,tipvinext,codema,sitatl}}
 RESOURCE_ENDPOINT=http://api.iag.usp.br/localizapessoa
 
+RESOURCE_CLIENT=my_client
+RESOURCE_SECRET=my_secret
