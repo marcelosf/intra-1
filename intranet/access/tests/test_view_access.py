@@ -113,6 +113,11 @@ class TestAccessNewPostValid(TestCase):
         count = Access.objects.filter(weekdays="['0', '2']").count()
         self.assertEqual(1, count)
 
+    def test_update_or_create(self):
+        """If an access object already exists, it should be updated"""
+        self.send_post()
+        self.assertEqual(1, Access.objects.count())
+
     def send_post(self, **kwargs):
         default_data = {'enable': True, 'period_to': '2019-12-20', 'period_from': '2019-12-12',
                         'time_to': '13:13', 'time_from': '20:20', 'institution': 'IAG',
